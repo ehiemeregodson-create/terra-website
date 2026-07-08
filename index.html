@@ -328,6 +328,33 @@
   </div>
 </footer>
 
+<div class="chat-widget" id="chatWidget">
+  <button class="chat-toggle" id="chatToggle" aria-label="Open Terra Assistant" aria-expanded="false">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>
+    </svg>
+  </button>
+
+  <div class="chat-panel" id="chatPanel" hidden>
+    <div class="chat-header">
+      <div>
+        <strong>Terra Assistant</strong>
+        <span>Ask about your case or how Terra works</span>
+      </div>
+      <button class="chat-close" id="chatClose" aria-label="Close chat">&times;</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-msg chat-msg-bot">
+        Hi! I'm the Terra Assistant. Ask me about immigration processes and policy, or how Terra's features and pricing work. I'm not a lawyer and this isn't legal advice — for anything case-critical, Premium members can connect directly with a licensed attorney.
+      </div>
+    </div>
+    <form class="chat-input-row" id="chatForm">
+      <input type="text" id="chatInput" placeholder="Ask a question…" autocomplete="off" maxlength="600" required>
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+  </div>
+</div>
+
 <script src="script.js"></script>
 </body>
 </html>
