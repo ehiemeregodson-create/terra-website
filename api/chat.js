@@ -42,27 +42,30 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    res.status(500).json({ error: 'Server is missing ANTHROPIC_API_KEY' });
+    res.status(500).json({ error: 'Server is missing GEMINI_API_KEY' });
     return;
   }
 
+  const contents = trimmed.map((m) => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: m.content }],
+  }));
+
   try {
-    const upstream = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-5',
-        max_tokens: 600,
-        system: SYSTEM_PROMPT,
-        messages: trimmed,
-      }),
-    });
+    const upstream = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+          contents,
+          generationConfig: { maxOutputTokens: 600 },
+        }),
+      }
+    );
 
     if (!upstream.ok) {
       const detail = await upstream.text();
@@ -71,7 +74,9 @@ module.exports = async (req, res) => {
     }
 
     const data = await upstream.json();
-    const reply = data.content?.[0]?.text || "Sorry, I couldn't generate a response.";
+    const reply =
+      data.candidates?.[0]?.content?.parts?.map((p) => p.text).join('') ||
+      "Sorry, I couldn't generate a response.";
     res.status(200).json({ reply });
   } catch (err) {
     res.status(500).json({ error: 'Request to AI provider failed' });
