@@ -62,7 +62,10 @@ module.exports = async (req, res) => {
         body: JSON.stringify({
           system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
           contents,
-          generationConfig: { maxOutputTokens: 600 },
+          generationConfig: {
+            maxOutputTokens: 600,
+            thinkingConfig: { thinkingBudget: 0 },
+          },
         }),
       }
     );
