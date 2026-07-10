@@ -55,7 +55,7 @@ module.exports = async (req, res) => {
 
   try {
     const upstream = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
