@@ -536,6 +536,7 @@ a { color: inherit; text-decoration: none; }
   transition: transform 0.15s ease, background 0.15s ease;
 }
 .chat-toggle:hover { background: var(--forest-light); transform: translateY(-2px); }
+.chat-toggle[hidden] { display: none; }
 
 .chat-panel {
   position: absolute;
@@ -553,6 +554,7 @@ a { color: inherit; text-decoration: none; }
   flex-direction: column;
   overflow: hidden;
 }
+.chat-panel[hidden] { display: none; }
 
 .chat-header {
   background: var(--forest-dark);
@@ -565,14 +567,32 @@ a { color: inherit; text-decoration: none; }
 }
 .chat-header strong { display: block; font-family: Georgia, serif; font-size: 1.02rem; }
 .chat-header span { font-size: 0.78rem; color: #c7d1cb; }
-.chat-close {
+.chat-header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.chat-icon-btn {
   background: none;
   border: none;
   color: #fff;
   font-size: 1.4rem;
   line-height: 1;
   cursor: pointer;
-  padding: 0 2px;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.85;
+}
+.chat-icon-btn:hover { opacity: 1; }
+
+/* Minimized: only the header bar shows, as a persistent bottom-right strip */
+.chat-panel.minimized {
+  height: auto;
+}
+.chat-panel.minimized .chat-messages,
+.chat-panel.minimized .chat-input-row {
+  display: none;
+}
+.chat-panel.minimized .chat-header {
+  cursor: pointer;
 }
 
 .chat-messages {

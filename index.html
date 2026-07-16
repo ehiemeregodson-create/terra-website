@@ -336,12 +336,17 @@
   </button>
 
   <div class="chat-panel" id="chatPanel" hidden>
-    <div class="chat-header">
+    <div class="chat-header" id="chatHeader">
       <div>
         <strong>Terra Assistant</strong>
         <span>Ask about your case or how Terra works</span>
       </div>
-      <button class="chat-close" id="chatClose" aria-label="Close chat">&times;</button>
+      <div class="chat-header-actions">
+        <button class="chat-icon-btn" id="chatMinimize" aria-label="Minimize chat" title="Minimize">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <button class="chat-icon-btn" id="chatClose" aria-label="Close chat" title="Close">&times;</button>
+      </div>
     </div>
     <div class="chat-messages" id="chatMessages">
       <div class="chat-msg chat-msg-bot">
