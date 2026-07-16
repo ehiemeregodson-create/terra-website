@@ -16,11 +16,35 @@ document.querySelectorAll('.nav-links a, .header-actions a').forEach((link) => {
 const signupForm = document.getElementById('signupForm');
 const formNote = document.getElementById('formNote');
 
-signupForm.addEventListener('submit', (e) => {
+signupForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const email = signupForm.querySelector('input[type="email"]').value;
-  formNote.textContent = `We'll send your Terra roadmap invite to ${email}.`;
-  signupForm.reset();
+  const emailInput = signupForm.querySelector('input[type="email"]');
+  const submitBtn = signupForm.querySelector('button');
+  const email = emailInput.value;
+
+  submitBtn.disabled = true;
+  formNote.textContent = 'Joining…';
+
+  try {
+    const res = await fetch('/api/waitlist', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok || !data.success) {
+      formNote.textContent = "Something went wrong — please try again in a moment.";
+      return;
+    }
+
+    formNote.textContent = `You're on the waitlist! We'll email ${email} as soon as a spot opens up.`;
+    signupForm.reset();
+  } catch (err) {
+    formNote.textContent = "Sorry, I couldn't reach the server. Please check your connection and try again.";
+  } finally {
+    submitBtn.disabled = false;
+  }
 });
 
 const chatToggle = document.getElementById('chatToggle');
