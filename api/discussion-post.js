@@ -41,10 +41,9 @@ module.exports = async (req, res) => {
     return;
   }
 
-  let moderation = { harmful: false, harmfulReason: '', questionable: false, calloutNote: '' };
-  let debugInfo = null;
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  try {
+  async function callModeration() {
     const modResponse = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`,
       {
@@ -61,40 +60,62 @@ module.exports = async (req, res) => {
         }),
       }
     );
-
     const modData = await modResponse.json().catch(() => null);
-    const blockReason = modData?.promptFeedback?.blockReason;
-    const finishReason = modData?.candidates?.[0]?.finishReason;
+    return { ok: modResponse.ok, status: modResponse.status, modData };
+  }
 
-    if (req.query && req.query.debug === 'terra123') {
-      debugInfo = { status: modResponse.status, blockReason: blockReason || null, finishReason: finishReason || null, modData };
-    }
+  let moderation = { harmful: false, harmfulReason: '', questionable: false, calloutNote: '' };
+  let debugInfo = null;
+  let resolved = false;
 
-    if (!modResponse.ok || blockReason || finishReason === 'SAFETY' || finishReason === 'RECITATION') {
-      // Gemini's own safety filter refusing to even classify the text is itself a strong
-      // signal the content is harmful — treat that as a block rather than failing open.
-      moderation = {
-        harmful: true,
-        harmfulReason: 'flagged by automated safety filter',
-        questionable: false,
-        calloutNote: '',
-      };
-    } else {
-      const raw = modData?.candidates?.[0]?.content?.parts?.map((p) => p.text).join('') || '';
-      try {
-        const parsed = JSON.parse(raw);
+  for (let attempt = 0; attempt < 2 && !resolved; attempt++) {
+    try {
+      if (attempt > 0) await sleep(600);
+      const { ok, status, modData } = await callModeration();
+      const blockReason = modData?.promptFeedback?.blockReason;
+      const finishReason = modData?.candidates?.[0]?.finishReason;
+
+      if (req.query && req.query.debug === 'terra123') {
+        debugInfo = { attempt, status, blockReason: blockReason || null, finishReason: finishReason || null, modData };
+      }
+
+      // A transient server-side error (e.g. free-tier overload) is worth retrying once
+      // before treating it as a real moderation outcome.
+      if (!ok && status >= 500 && attempt === 0) {
+        continue;
+      }
+
+      if (!ok || blockReason || finishReason === 'SAFETY' || finishReason === 'RECITATION') {
+        // Either the call failed for a non-transient reason, or Gemini's own safety filter
+        // refused to classify the text — either way, fail closed rather than let it through.
         moderation = {
-          harmful: Boolean(parsed.harmful),
-          harmfulReason: cleanString(parsed.harmfulReason, 200),
-          questionable: Boolean(parsed.questionable),
-          calloutNote: cleanString(parsed.calloutNote, 300),
+          harmful: true,
+          harmfulReason: 'could not be automatically reviewed',
+          questionable: false,
+          calloutNote: '',
         };
-      } catch (parseErr) {
-        // Moderation response wasn't valid JSON despite a normal finish reason — fail open (allow, unflagged).
+      } else {
+        const raw = modData?.candidates?.[0]?.content?.parts?.map((p) => p.text).join('') || '';
+        try {
+          const parsed = JSON.parse(raw);
+          moderation = {
+            harmful: Boolean(parsed.harmful),
+            harmfulReason: cleanString(parsed.harmfulReason, 200),
+            questionable: Boolean(parsed.questionable),
+            calloutNote: cleanString(parsed.calloutNote, 300),
+          };
+        } catch (parseErr) {
+          // Valid response, but not parseable JSON — fail open rather than block on a formatting fluke.
+        }
+      }
+      resolved = true;
+    } catch (modErr) {
+      if (attempt === 1) {
+        // Both attempts failed outright (network error, etc.) — fail closed.
+        moderation = { harmful: true, harmfulReason: 'could not be automatically reviewed', questionable: false, calloutNote: '' };
+        resolved = true;
       }
     }
-  } catch (modErr) {
-    // Moderation call failed outright (network error, etc.) — fail open rather than block legitimate posts.
   }
 
   if (moderation.harmful) {
