@@ -136,9 +136,9 @@ a { color: inherit; text-decoration: none; }
 .destinations-inner {
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 12px;
+  gap: 20px;
+  padding: 0 32px;
+  width: 100%;
 }
 .destinations-label {
   font-size: 0.7rem;
@@ -147,10 +147,13 @@ a { color: inherit; text-decoration: none; }
   text-transform: uppercase;
   color: var(--ink-soft);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 .destinations-flags {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  flex: 1;
   gap: 10px;
   flex-wrap: wrap;
 }
@@ -735,6 +738,8 @@ a { color: inherit; text-decoration: none; }
   .chat-widget { right: 16px; bottom: 16px; }
   .chat-panel { width: calc(100vw - 32px); height: calc(100vh - 120px); bottom: 72px; }
   .destinations-label { display: none; }
+  .destinations-inner { padding: 0 16px; gap: 0; }
+  .destinations-flags { justify-content: space-between; gap: 8px; }
   .flag { font-size: 0.9rem; }
   .flag-featured { font-size: 1.3rem; }
 }
