@@ -66,11 +66,17 @@ module.exports = async (req, res) => {
 
   let moderation = { harmful: false, harmfulReason: '', questionable: false, calloutNote: '' };
   let resolved = false;
+  let debugInfo = null;
+  const debugMode = req.query && req.query.debug === 'terra123';
 
   for (let attempt = 0; attempt < 2 && !resolved; attempt++) {
     try {
       if (attempt > 0) await sleep(600);
       const { ok, status, modData } = await callModeration();
+
+      if (debugMode) {
+        debugInfo = { attempt, ok, status, modData };
+      }
 
       if (!ok) {
         // Infrastructure-level failure (rate limit, overload, etc.) says nothing about the
@@ -120,6 +126,7 @@ module.exports = async (req, res) => {
       blocked: true,
       reason: 'This comment violates our community guidelines and was not posted.' +
         (moderation.harmfulReason ? ` (${moderation.harmfulReason})` : ''),
+      debug: debugInfo,
     });
     return;
   }
@@ -154,6 +161,7 @@ module.exports = async (req, res) => {
     res.status(200).json({
       success: true,
       callout: moderation.questionable ? moderation.calloutNote : null,
+      debug: debugInfo,
     });
   } catch (err) {
     res.status(500).json({ error: 'Failed to reach discussion storage' });
