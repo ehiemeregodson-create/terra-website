@@ -71,21 +71,25 @@ module.exports = async (req, res) => {
     try {
       if (attempt > 0) await sleep(600);
       const { ok, status, modData } = await callModeration();
+
+      if (!ok) {
+        // Infrastructure-level failure (rate limit, overload, etc.) says nothing about the
+        // content itself. Retry once; if it still fails, fail OPEN rather than block a real
+        // user's legitimate post over Google's free-tier capacity.
+        if (attempt === 0 && status >= 500) continue;
+        resolved = true;
+        break;
+      }
+
       const blockReason = modData?.promptFeedback?.blockReason;
       const finishReason = modData?.candidates?.[0]?.finishReason;
 
-      // A transient server-side error (e.g. free-tier overload) is worth retrying once
-      // before treating it as a real moderation outcome.
-      if (!ok && status >= 500 && attempt === 0) {
-        continue;
-      }
-
-      if (!ok || blockReason || finishReason === 'SAFETY' || finishReason === 'RECITATION') {
-        // Either the call failed for a non-transient reason, or Gemini's own safety filter
-        // refused to classify the text — either way, fail closed rather than let it through.
+      if (blockReason || finishReason === 'SAFETY' || finishReason === 'RECITATION') {
+        // Gemini's own safety filter refusing to classify the text IS a signal about the
+        // content — this is the one case worth failing closed on.
         moderation = {
           harmful: true,
-          harmfulReason: 'could not be automatically reviewed',
+          harmfulReason: 'flagged by automated safety filter',
           questionable: false,
           calloutNote: '',
         };
@@ -105,11 +109,9 @@ module.exports = async (req, res) => {
       }
       resolved = true;
     } catch (modErr) {
-      if (attempt === 1) {
-        // Both attempts failed outright (network error, etc.) — fail closed.
-        moderation = { harmful: true, harmfulReason: 'could not be automatically reviewed', questionable: false, calloutNote: '' };
-        resolved = true;
-      }
+      // Network-level failure calling Gemini at all. Retry once, then fail open — same
+      // reasoning as an HTTP-level infra failure above.
+      if (attempt === 1) resolved = true;
     }
   }
 
