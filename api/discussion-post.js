@@ -65,7 +65,6 @@ module.exports = async (req, res) => {
   }
 
   let moderation = { harmful: false, harmfulReason: '', questionable: false, calloutNote: '' };
-  let debugInfo = null;
   let resolved = false;
 
   for (let attempt = 0; attempt < 2 && !resolved; attempt++) {
@@ -74,10 +73,6 @@ module.exports = async (req, res) => {
       const { ok, status, modData } = await callModeration();
       const blockReason = modData?.promptFeedback?.blockReason;
       const finishReason = modData?.candidates?.[0]?.finishReason;
-
-      if (req.query && req.query.debug === 'terra123') {
-        debugInfo = { attempt, status, blockReason: blockReason || null, finishReason: finishReason || null, modData };
-      }
 
       // A transient server-side error (e.g. free-tier overload) is worth retrying once
       // before treating it as a real moderation outcome.
@@ -123,7 +118,6 @@ module.exports = async (req, res) => {
       blocked: true,
       reason: 'This comment violates our community guidelines and was not posted.' +
         (moderation.harmfulReason ? ` (${moderation.harmfulReason})` : ''),
-      debug: debugInfo,
     });
     return;
   }
@@ -158,7 +152,6 @@ module.exports = async (req, res) => {
     res.status(200).json({
       success: true,
       callout: moderation.questionable ? moderation.calloutNote : null,
-      debug: debugInfo,
     });
   } catch (err) {
     res.status(500).json({ error: 'Failed to reach discussion storage' });
