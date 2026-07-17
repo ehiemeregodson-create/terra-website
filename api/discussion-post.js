@@ -34,10 +34,12 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  // Uses a separate API key/project from Ike's chat widget so the two features don't
+  // compete for the same 20-requests/day free-tier quota.
+  const apiKey = process.env.GEMINI_MODERATION_API_KEY;
   const sheetUrl = process.env.WAITLIST_SHEET_URL;
   if (!apiKey || !sheetUrl) {
-    res.status(500).json({ error: 'Server is missing GEMINI_API_KEY or WAITLIST_SHEET_URL' });
+    res.status(500).json({ error: 'Server is missing GEMINI_MODERATION_API_KEY or WAITLIST_SHEET_URL' });
     return;
   }
 
