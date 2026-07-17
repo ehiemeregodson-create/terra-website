@@ -127,6 +127,48 @@ a { color: inherit; text-decoration: none; }
 }
 .nav-toggle span { width: 22px; height: 2px; background: var(--forest-dark); border-radius: 2px; }
 
+/* Destinations strip */
+.destinations-strip {
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  padding: 10px 0;
+}
+.destinations-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.destinations-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.destinations-flags {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.flag {
+  display: inline-block;
+  font-size: 1.05rem;
+  line-height: 1;
+  opacity: 0.5;
+  filter: grayscale(15%);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.flag-featured {
+  font-size: 1.55rem;
+  opacity: 1;
+  filter: none;
+}
+.flag:hover { transform: translateY(-2px); opacity: 1; filter: none; }
+
 /* Hero */
 .hero { padding: 88px 0 80px; overflow: hidden; }
 .hero-inner {
@@ -692,6 +734,9 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 480px) {
   .chat-widget { right: 16px; bottom: 16px; }
   .chat-panel { width: calc(100vw - 32px); height: calc(100vh - 120px); bottom: 72px; }
+  .destinations-label { display: none; }
+  .flag { font-size: 0.9rem; }
+  .flag-featured { font-size: 1.3rem; }
 }
 
 @media (prefers-color-scheme: dark) {
