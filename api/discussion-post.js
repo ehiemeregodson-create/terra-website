@@ -42,6 +42,7 @@ module.exports = async (req, res) => {
   }
 
   let moderation = { harmful: false, harmfulReason: '', questionable: false, calloutNote: '' };
+  let debugInfo = null;
 
   try {
     const modResponse = await fetch(
@@ -61,9 +62,25 @@ module.exports = async (req, res) => {
       }
     );
 
-    if (modResponse.ok) {
-      const modData = await modResponse.json();
-      const raw = modData.candidates?.[0]?.content?.parts?.map((p) => p.text).join('') || '';
+    const modData = await modResponse.json().catch(() => null);
+    const blockReason = modData?.promptFeedback?.blockReason;
+    const finishReason = modData?.candidates?.[0]?.finishReason;
+
+    if (req.query && req.query.debug === 'terra123') {
+      debugInfo = { status: modResponse.status, blockReason: blockReason || null, finishReason: finishReason || null, modData };
+    }
+
+    if (!modResponse.ok || blockReason || finishReason === 'SAFETY' || finishReason === 'RECITATION') {
+      // Gemini's own safety filter refusing to even classify the text is itself a strong
+      // signal the content is harmful — treat that as a block rather than failing open.
+      moderation = {
+        harmful: true,
+        harmfulReason: 'flagged by automated safety filter',
+        questionable: false,
+        calloutNote: '',
+      };
+    } else {
+      const raw = modData?.candidates?.[0]?.content?.parts?.map((p) => p.text).join('') || '';
       try {
         const parsed = JSON.parse(raw);
         moderation = {
@@ -73,11 +90,11 @@ module.exports = async (req, res) => {
           calloutNote: cleanString(parsed.calloutNote, 300),
         };
       } catch (parseErr) {
-        // Moderation response wasn't valid JSON — fail open (allow, unflagged) rather than block legitimate posts.
+        // Moderation response wasn't valid JSON despite a normal finish reason — fail open (allow, unflagged).
       }
     }
   } catch (modErr) {
-    // Moderation call failed — fail open rather than block legitimate posts.
+    // Moderation call failed outright (network error, etc.) — fail open rather than block legitimate posts.
   }
 
   if (moderation.harmful) {
@@ -85,6 +102,7 @@ module.exports = async (req, res) => {
       blocked: true,
       reason: 'This comment violates our community guidelines and was not posted.' +
         (moderation.harmfulReason ? ` (${moderation.harmfulReason})` : ''),
+      debug: debugInfo,
     });
     return;
   }
@@ -119,6 +137,7 @@ module.exports = async (req, res) => {
     res.status(200).json({
       success: true,
       callout: moderation.questionable ? moderation.calloutNote : null,
+      debug: debugInfo,
     });
   } catch (err) {
     res.status(500).json({ error: 'Failed to reach discussion storage' });
