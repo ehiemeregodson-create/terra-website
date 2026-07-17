@@ -586,6 +586,140 @@ a { color: inherit; text-decoration: none; }
   .cta-form { flex-direction: column; }
 }
 
+/* Jobs page */
+.jobs-hero { padding: 64px 0 48px; text-align: center; }
+.jobs-hero h1 {
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  max-width: 780px;
+  margin: 0 auto 0.4em;
+}
+.jobs-hero .section-sub { max-width: 640px; margin: 0 auto; }
+
+.discussion { padding: 0 0 96px; }
+.discussion-form {
+  max-width: 720px;
+  margin: 0 auto 40px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.discussion-form input,
+.discussion-form textarea {
+  padding: 11px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--cream);
+  font-size: 0.92rem;
+  font-family: inherit;
+  color: var(--ink);
+  resize: vertical;
+}
+.discussion-form input:focus,
+.discussion-form textarea:focus { outline: 2px solid var(--forest-light); outline-offset: 1px; }
+.discussion-form button { align-self: flex-start; }
+
+.discussion-list { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+.discussion-empty { text-align: center; color: var(--ink-soft); }
+.discussion-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.discussion-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 6px;
+  font-size: 0.82rem;
+}
+.discussion-meta strong { color: var(--forest-dark); }
+.discussion-meta span { color: var(--ink-soft); }
+.discussion-q p { margin: 0; color: var(--ink); }
+.discussion-callout {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: rgba(212, 162, 78, 0.15);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: var(--forest-dark);
+}
+.discussion-answers { margin: 16px 0 0; padding-left: 20px; border-left: 2px solid var(--line); display: flex; flex-direction: column; gap: 14px; }
+.discussion-answer p { margin: 0; font-size: 0.92rem; }
+.answer-form { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.answer-form input,
+.answer-form textarea {
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--cream);
+  font-size: 0.88rem;
+  font-family: inherit;
+  color: var(--ink);
+  resize: vertical;
+}
+.answer-form .btn { align-self: flex-start; }
+
+.recommendations { padding: 0 0 96px; }
+.recommend-empty {
+  max-width: 560px;
+  margin: 0 auto;
+  text-align: center;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 32px;
+}
+.recommend-empty p { margin-bottom: 20px; }
+.recommend-profile { text-align: center; color: var(--ink-soft); font-size: 0.9rem; margin-bottom: 24px; }
+.recommend-columns { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 900px; margin: 0 auto; }
+.recommend-col {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.recommend-col h3 { font-size: 1.02rem; margin-bottom: 12px; }
+.recommend-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.recommend-col li {
+  font-size: 0.9rem;
+  padding-left: 22px;
+  position: relative;
+  color: var(--ink);
+}
+.recommend-col li::before { content: "→"; position: absolute; left: 0; color: var(--forest-light); font-weight: 700; }
+
+.companies { padding: 0 0 96px; }
+.company-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.company-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.company-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.company-card-top strong { font-size: 0.98rem; color: var(--forest-dark); }
+.company-flag { font-size: 1.2rem; }
+.company-card p { font-size: 0.85rem; margin: 0; }
+
+@media (max-width: 900px) {
+  .company-grid { grid-template-columns: repeat(2, 1fr); }
+  .recommend-columns { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .company-grid { grid-template-columns: 1fr; }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --cream: #10281f;
