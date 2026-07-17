@@ -29,7 +29,7 @@
       </nav>
       <div class="header-actions">
         <a href="#" class="btn btn-ghost">Log in</a>
-        <a href="#get-started" class="btn btn-primary">Get started</a>
+        <a href="#start-form" class="btn btn-primary">Get started</a>
       </div>
     </div>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
@@ -217,34 +217,102 @@
         <p class="eyebrow">Pricing</p>
         <h2>Start free. Upgrade when your case needs more.</h2>
       </div>
-      <div class="pricing-grid">
+      <div class="pricing-grid pricing-grid-3">
         <div class="price-card">
           <h3>Free</h3>
           <p class="price">$0<span>/month</span></p>
           <p class="price-desc">For anyone starting to navigate their case.</p>
           <ul>
-            <li>Case update tracking &amp; timeline</li>
-            <li>Personalized policy alerts</li>
-            <li>Predictive timeline estimates</li>
+            <li>Policy interpretation &amp; personalized alerts</li>
             <li>Career resource library</li>
           </ul>
-          <a href="#get-started" class="btn btn-outline btn-block">Get started</a>
+          <a href="#start-form" class="btn btn-outline btn-block">Get started</a>
         </div>
         <div class="price-card featured">
           <span class="price-badge">Most popular</span>
-          <h3>Premium</h3>
-          <p class="price">$29<span>/month</span></p>
-          <p class="price-desc">For cases that need expert eyes.</p>
+          <h3>Terra Pro</h3>
+          <p class="price">$49<span>/month</span></p>
+          <p class="price-desc">For cases that need active tracking.</p>
           <ul>
             <li>Everything in Free</li>
+            <li>Case update tracking &amp; timeline</li>
+            <li>Predictive timeline estimates</li>
             <li>Guided interview &amp; application prep</li>
-            <li>Priority predictive updates</li>
-            <li>Direct legal representation matching</li>
+          </ul>
+          <a href="#start-form" class="btn btn-primary btn-block">Start Terra Pro</a>
+        </div>
+        <div class="price-card">
+          <h3>Premium</h3>
+          <p class="price">$299<span>+</span></p>
+          <p class="price-desc">For cases that need expert eyes.</p>
+          <ul>
+            <li>Everything in Terra Pro</li>
+            <li>Expert phone call &amp; discovery meeting</li>
+            <li>Direct introduction to licensed immigration attorneys</li>
             <li>Secure case-file sharing with attorneys</li>
           </ul>
-          <a href="#get-started" class="btn btn-primary btn-block">Start Premium</a>
+          <a href="#start-form" class="btn btn-outline btn-block">Talk to an expert</a>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="intake" id="start-form">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Get started</p>
+        <h2>Tell us about your case</h2>
+        <p class="section-sub">A few quick details so Terra can start sending you policy interpretation and alerts relevant to your specific situation.</p>
+      </div>
+      <form class="intake-form" id="intakeForm">
+        <div class="intake-grid">
+          <div class="intake-field">
+            <label for="intakeName">Full name</label>
+            <input type="text" id="intakeName" name="name" required autocomplete="name">
+          </div>
+          <div class="intake-field">
+            <label for="intakeEmail">Email</label>
+            <input type="email" id="intakeEmail" name="email" required autocomplete="email">
+          </div>
+          <div class="intake-field">
+            <label for="intakeCountry">Country you're applying from</label>
+            <input type="text" id="intakeCountry" name="country" required autocomplete="country-name">
+          </div>
+          <div class="intake-field">
+            <label for="intakeCategory">Immigration case category</label>
+            <select id="intakeCategory" name="category" required>
+              <option value="" disabled selected>Select one</option>
+              <option>Family-based green card</option>
+              <option>Employment-based green card</option>
+              <option>Work visa (H-1B, L-1, O-1, etc.)</option>
+              <option>Student visa (F-1/J-1)</option>
+              <option>Asylum / refugee</option>
+              <option>Naturalization / citizenship</option>
+              <option>DACA / TPS</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="intake-field">
+            <label for="intakeStage">Current stage</label>
+            <select id="intakeStage" name="stage" required>
+              <option value="" disabled selected>Select one</option>
+              <option>Haven't filed yet</option>
+              <option>Filed — awaiting decision</option>
+              <option>Received an RFE</option>
+              <option>Interview scheduled</option>
+              <option>Approved</option>
+              <option>Denied / appealing</option>
+              <option>Not sure</option>
+            </select>
+          </div>
+        </div>
+        <div class="intake-field intake-field-full">
+          <label for="intakeNotes">Anything else we should know? (optional)</label>
+          <textarea id="intakeNotes" name="notes" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg">Get started</button>
+        <p class="cta-note" id="intakeNote"></p>
+      </form>
     </div>
   </section>
 

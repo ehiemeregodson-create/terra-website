@@ -47,6 +47,40 @@ signupForm.addEventListener('submit', async (e) => {
   }
 });
 
+const intakeForm = document.getElementById('intakeForm');
+const intakeNote = document.getElementById('intakeNote');
+
+intakeForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const submitBtn = intakeForm.querySelector('button');
+  const formData = new FormData(intakeForm);
+  const payload = Object.fromEntries(formData.entries());
+
+  submitBtn.disabled = true;
+  intakeNote.textContent = 'Submitting…';
+
+  try {
+    const res = await fetch('/api/get-started', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok || !data.success) {
+      intakeNote.textContent = "Something went wrong — please try again in a moment.";
+      return;
+    }
+
+    intakeNote.textContent = "You're in! We'll start sending policy alerts relevant to your case to " + payload.email + ".";
+    intakeForm.reset();
+  } catch (err) {
+    intakeNote.textContent = "Sorry, I couldn't reach the server. Please check your connection and try again.";
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+
 const chatToggle = document.getElementById('chatToggle');
 const chatPanel = document.getElementById('chatPanel');
 const chatHeader = document.getElementById('chatHeader');

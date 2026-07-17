@@ -1,16 +1,25 @@
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+function cleanString(value, maxLength) {
+  return typeof value === 'string' ? value.trim().slice(0, maxLength) : '';
+}
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
     return;
   }
 
-  const { email } = req.body || {};
-  const trimmedEmail = typeof email === 'string' ? email.trim() : '';
+  const body = req.body || {};
+  const name = cleanString(body.name, 200);
+  const email = cleanString(body.email, 200);
+  const country = cleanString(body.country, 200);
+  const category = cleanString(body.category, 200);
+  const stage = cleanString(body.stage, 200);
+  const notes = cleanString(body.notes, 2000);
 
-  if (!EMAIL_PATTERN.test(trimmedEmail)) {
-    res.status(400).json({ error: 'A valid email is required' });
+  if (!name || !EMAIL_PATTERN.test(email) || !country || !category || !stage) {
+    res.status(400).json({ error: 'Name, a valid email, country, category, and stage are required' });
     return;
   }
 
@@ -24,7 +33,15 @@ module.exports = async (req, res) => {
     const upstream = await fetch(sheetUrl, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ formType: 'waitlist', email: trimmedEmail }),
+      body: JSON.stringify({
+        formType: 'get-started',
+        name,
+        email,
+        country,
+        category,
+        stage,
+        notes,
+      }),
       redirect: 'follow',
     });
 
