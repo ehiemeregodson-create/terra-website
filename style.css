@@ -440,6 +440,18 @@ a { color: inherit; text-decoration: none; }
 
 /* Intake form */
 .intake { padding: 0 0 96px; }
+.intake-plan-banner {
+  max-width: 720px;
+  margin: 0 auto 20px;
+  background: rgba(212, 162, 78, 0.15);
+  border: 1px solid var(--gold);
+  border-radius: 10px;
+  padding: 12px 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--forest-dark);
+}
+.intake-plan-banner span { color: var(--ink-soft); margin-right: 6px; }
 .intake-form {
   max-width: 720px;
   margin: 0 auto;

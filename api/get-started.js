@@ -22,6 +22,7 @@ module.exports = async (req, res) => {
   const legalRepresentation = cleanString(body.legalRepresentation, 200);
   const urgency = cleanString(body.urgency, 200);
   const notes = cleanString(body.notes, 2000);
+  const selectedPlan = cleanString(body.selectedPlan, 50);
 
   if (
     !name ||
@@ -62,6 +63,7 @@ module.exports = async (req, res) => {
         legalRepresentation,
         urgency,
         notes,
+        selectedPlan,
       }),
       redirect: 'follow',
     });

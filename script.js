@@ -19,9 +19,24 @@ document.querySelectorAll('.nav-links a, .header-actions a').forEach((link) => {
   });
 });
 
+const PLAN_LABELS = {
+  free: 'the Free plan',
+  pro: 'Terra Pro ($49/month)',
+  premium: 'Premium ($299+)',
+};
+
 document.querySelectorAll('[data-tier]').forEach((link) => {
   link.addEventListener('click', () => {
     trackEvent('pricing_cta_click', { tier: link.dataset.tier });
+
+    const selectedPlanInput = document.getElementById('intakeSelectedPlan');
+    const planBanner = document.getElementById('intakePlanBanner');
+    const planNameEl = document.getElementById('intakePlanName');
+    if (selectedPlanInput && planBanner && planNameEl) {
+      selectedPlanInput.value = link.dataset.tier;
+      planNameEl.textContent = PLAN_LABELS[link.dataset.tier] || link.dataset.tier;
+      planBanner.hidden = false;
+    }
   });
 });
 
@@ -88,8 +103,10 @@ if (intakeForm) {
         return;
       }
 
-      intakeNote.textContent = "You're in! We'll start sending policy alerts relevant to your case to " + payload.email + ".";
-      trackEvent('get_started_signup', { category: payload.category, stage: payload.stage });
+      const planLabel = PLAN_LABELS[payload.selectedPlan];
+      intakeNote.textContent = (planLabel ? `You're signed up for ${planLabel}! ` : "You're in! ") +
+        "We'll start sending policy alerts relevant to your case to " + payload.email + ".";
+      trackEvent('get_started_signup', { category: payload.category, stage: payload.stage, plan: payload.selectedPlan || 'none' });
 
       try {
         localStorage.setItem('terraProfile', JSON.stringify(payload));
@@ -98,6 +115,8 @@ if (intakeForm) {
       }
 
       intakeForm.reset();
+      const planBanner = document.getElementById('intakePlanBanner');
+      if (planBanner) planBanner.hidden = true;
     } catch (err) {
       intakeNote.textContent = "Sorry, I couldn't reach the server. Please check your connection and try again.";
     } finally {
