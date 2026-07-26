@@ -305,16 +305,20 @@
             <input type="text" id="intakeCountry" name="country" required autocomplete="country-name">
           </div>
           <div class="intake-field">
-            <label for="intakeCategory">Immigration case category</label>
+            <label for="intakeDestination">Country you're applying to</label>
+            <input type="text" id="intakeDestination" name="destinationCountry" required>
+          </div>
+          <div class="intake-field">
+            <label for="intakeCategory">Purpose of your immigration case</label>
             <select id="intakeCategory" name="category" required>
               <option value="" disabled selected>Select one</option>
-              <option>Family-based green card</option>
-              <option>Employment-based green card</option>
-              <option>Work visa (H-1B, L-1, O-1, etc.)</option>
-              <option>Student visa (F-1/J-1)</option>
-              <option>Asylum / refugee</option>
-              <option>Naturalization / citizenship</option>
-              <option>DACA / TPS</option>
+              <option>Employment / work visa</option>
+              <option>Family reunification</option>
+              <option>Study (student visa)</option>
+              <option>Asylum / refugee protection</option>
+              <option>Permanent residency / settlement</option>
+              <option>Investment / business</option>
+              <option>Citizenship / naturalization</option>
               <option>Other</option>
             </select>
           </div>
@@ -324,10 +328,53 @@
               <option value="" disabled selected>Select one</option>
               <option>Haven't filed yet</option>
               <option>Filed — awaiting decision</option>
-              <option>Received an RFE</option>
+              <option>Asked for more evidence/documents</option>
               <option>Interview scheduled</option>
               <option>Approved</option>
               <option>Denied / appealing</option>
+              <option>Not sure</option>
+            </select>
+          </div>
+          <div class="intake-field">
+            <label for="intakeSponsor">Do you have a sponsor?</label>
+            <select id="intakeSponsor" name="sponsorStatus" required>
+              <option value="" disabled selected>Select one</option>
+              <option>Employer-sponsored</option>
+              <option>Family-sponsored</option>
+              <option>Self-filing (no sponsor)</option>
+              <option>Not sure</option>
+            </select>
+          </div>
+          <div class="intake-field">
+            <label for="intakeCurrentStatus">Your current status in the destination country</label>
+            <select id="intakeCurrentStatus" name="currentStatus" required>
+              <option value="" disabled selected>Select one</option>
+              <option>Not yet in the country</option>
+              <option>Visitor / tourist</option>
+              <option>Student</option>
+              <option>Worker (visa or permit holder)</option>
+              <option>Undocumented / no legal status</option>
+              <option>Permanent resident</option>
+              <option>Not sure</option>
+            </select>
+          </div>
+          <div class="intake-field">
+            <label for="intakeLegalRep">Do you have legal representation?</label>
+            <select id="intakeLegalRep" name="legalRepresentation" required>
+              <option value="" disabled selected>Select one</option>
+              <option>Yes, I have a lawyer</option>
+              <option>No, self-filing</option>
+              <option>Looking for one</option>
+            </select>
+          </div>
+          <div class="intake-field">
+            <label for="intakeUrgency">Is there a deadline driving this case?</label>
+            <select id="intakeUrgency" name="urgency" required>
+              <option value="" disabled selected>Select one</option>
+              <option>No specific deadline</option>
+              <option>Within 3 months</option>
+              <option>3–12 months</option>
+              <option>Over a year</option>
               <option>Not sure</option>
             </select>
           </div>

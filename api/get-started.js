@@ -14,12 +14,28 @@ module.exports = async (req, res) => {
   const name = cleanString(body.name, 200);
   const email = cleanString(body.email, 200);
   const country = cleanString(body.country, 200);
+  const destinationCountry = cleanString(body.destinationCountry, 200);
   const category = cleanString(body.category, 200);
   const stage = cleanString(body.stage, 200);
+  const sponsorStatus = cleanString(body.sponsorStatus, 200);
+  const currentStatus = cleanString(body.currentStatus, 200);
+  const legalRepresentation = cleanString(body.legalRepresentation, 200);
+  const urgency = cleanString(body.urgency, 200);
   const notes = cleanString(body.notes, 2000);
 
-  if (!name || !EMAIL_PATTERN.test(email) || !country || !category || !stage) {
-    res.status(400).json({ error: 'Name, a valid email, country, category, and stage are required' });
+  if (
+    !name ||
+    !EMAIL_PATTERN.test(email) ||
+    !country ||
+    !destinationCountry ||
+    !category ||
+    !stage ||
+    !sponsorStatus ||
+    !currentStatus ||
+    !legalRepresentation ||
+    !urgency
+  ) {
+    res.status(400).json({ error: 'All fields except notes are required' });
     return;
   }
 
@@ -38,8 +54,13 @@ module.exports = async (req, res) => {
         name,
         email,
         country,
+        destinationCountry,
         category,
         stage,
+        sponsorStatus,
+        currentStatus,
+        legalRepresentation,
+        urgency,
         notes,
       }),
       redirect: 'follow',

@@ -170,32 +170,32 @@ loadDiscussion();
 /* ---------- Recommendations ---------- */
 
 const CATEGORY_RECOMMENDATIONS = {
-  'Family-based green card': [
-    "Family-based cases often allow you to apply for a work permit (EAD) while your green card is pending — check eligibility once your I-485 is filed.",
-    'Once you have work authorization, you can apply anywhere — no employer sponsorship is required for family-based cases.',
+  'Employment / work visa': [
+    'Look for employers with a track record of sponsoring work visas in your destination country — see the Employers section below for a starting list.',
+    'Research your destination country\'s specific work visa program (e.g. H-1B in the US, Skilled Worker in the UK, Express Entry in Canada) so you know what employers need to file.',
   ],
-  'Employment-based green card': [
-    'Look for employers with a track record of PERM labor certification filings — they\'re more likely to support your case through to the end.',
-    "The DOL's PERM disclosure data can show which companies sponsor your occupation most often.",
+  'Family reunification': [
+    'Many countries allow a work permit once your family-sponsorship application reaches a certain stage — check your destination country\'s rules.',
+    'Once you have work authorization, general job boards are usually open to you without needing employer sponsorship.',
   ],
-  'Work visa (H-1B, L-1, O-1, etc.)': [
-    'Focus your search on companies with a consistent history of H-1B or L-1 filings — see the Employers section below for a starting list.',
-    'Consulting and staffing firms often have higher sponsorship approval rates if you\'re early in your search.',
+  'Study (student visa)': [
+    'Look for employers open to hiring international students under your destination country\'s post-study work programs (e.g. OPT in the US, Graduate Route in the UK, PGWP in Canada).',
+    'Your university\'s international student office often keeps an updated list of visa-friendly employers.',
   ],
-  'Student visa (F-1/J-1)': [
-    'Look for employers explicitly listed as STEM OPT partners if your degree qualifies for the 24-month extension.',
-    'Your university career center often keeps an updated list of F-1-friendly employers in your field.',
+  'Asylum / refugee protection': [
+    'Many countries allow work authorization once your protection claim has been pending for a set period — check your destination country\'s specific rules.',
+    'Refugee resettlement organizations often run job placement programs specifically for asylum seekers and refugees.',
   ],
-  'Asylum / refugee': [
-    'Once your asylum application has been pending 150+ days, you can apply for an Employment Authorization Document (EAD).',
-    'Refugee resettlement agencies (like IRC or HIAS) often run job placement programs for asylees and refugees.',
+  'Permanent residency / settlement': [
+    'Once you have permanent residency (or an equivalent status), you can generally work for any employer without sponsorship.',
+    'Focus your search on roles that match your skills — sponsorship is no longer a constraint.',
   ],
-  'Naturalization / citizenship': [
-    'Your work authorization doesn\'t change during naturalization — a good time to pursue roles requiring a security clearance or federal employment.',
+  'Investment / business': [
+    'Look for destination-country business support programs and chambers of commerce that assist immigrant entrepreneurs.',
+    'Many countries have dedicated investor/entrepreneur visa pathways with their own capital and documentation requirements — confirm yours early.',
   ],
-  'DACA / TPS': [
-    'Look for employers who have explicitly stated they hire DACA/TPS holders — many large tech and retail companies do.',
-    'Confirm your EAD renewal timeline early; some employers require proof of continued work authorization before extending offers.',
+  'Citizenship / naturalization': [
+    'Your existing work authorization typically doesn\'t change during naturalization — a good time to pursue roles requiring citizenship, like government or security-cleared positions.',
   ],
   Other: [
     'Check the Employers section below for companies with strong track records of sponsoring a range of visa types.',
@@ -205,22 +205,22 @@ const CATEGORY_RECOMMENDATIONS = {
 const STAGE_TIPS = {
   "Haven't filed yet": [
     'Start gathering your documents now (passport, prior visas, employment/education records) — missing paperwork causes most delays.',
-    'Check current USCIS processing times for your form type before you file.',
+    'Check current processing times for your form or application type with your destination country\'s immigration authority before you file.',
   ],
   'Filed — awaiting decision': [
     'Check your case status periodically, and set a reminder around the average processing time for your category.',
-    'Keep your mailing address up to date with USCIS — missed mail is a common cause of delays.',
+    'Keep your mailing address and contact details up to date with the immigration authority — missed correspondence is a common cause of delays.',
   ],
-  'Received an RFE': [
-    'Read your RFE notice carefully and note the response deadline — missing it can result in a denial.',
-    'Consider Terra Premium to connect with an attorney for higher-stakes RFEs.',
+  'Asked for more evidence/documents': [
+    'Read the request carefully and note the response deadline — missing it can result in a denial.',
+    'Consider Terra Premium to connect with an attorney for higher-stakes requests.',
   ],
   'Interview scheduled': [
     'Bring original documents (not just copies) to your interview, plus a full set of copies.',
     'Review your application for consistency — officers often ask about details from your original forms.',
   ],
   Approved: [
-    'Congratulations! Double check any next steps tied to your approval notice (e.g. physical card arrival, further filings).',
+    'Congratulations! Double check any next steps tied to your approval (e.g. physical card/visa arrival, further filings).',
   ],
   'Denied / appealing': [
     'Note your appeal deadline immediately — these are often short and strict.',
@@ -254,7 +254,7 @@ function renderRecommendations() {
   const stageTips = STAGE_TIPS[profile.stage] || [];
 
   container.innerHTML = `
-    <p class="recommend-profile">Showing recommendations for <strong>${escapeHtml(profile.category)}</strong> &middot; <strong>${escapeHtml(profile.stage || 'stage not set')}</strong></p>
+    <p class="recommend-profile">Showing recommendations for <strong>${escapeHtml(profile.category)}</strong> &middot; <strong>${escapeHtml(profile.stage || 'stage not set')}</strong>${profile.destinationCountry ? ` &middot; applying to <strong>${escapeHtml(profile.destinationCountry)}</strong>` : ''}</p>
     <div class="recommend-columns">
       <div class="recommend-col">
         <h3>Job search recommendations</h3>
