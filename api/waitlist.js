@@ -1,3 +1,5 @@
+const { supabaseRequest } = require('../lib/supabase');
+
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 module.exports = async (req, res) => {
@@ -14,18 +16,11 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const sheetUrl = process.env.WAITLIST_SHEET_URL;
-  if (!sheetUrl) {
-    res.status(500).json({ error: 'Server is missing WAITLIST_SHEET_URL' });
-    return;
-  }
-
   try {
-    const upstream = await fetch(sheetUrl, {
+    const upstream = await supabaseRequest('waitlist', {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ formType: 'waitlist', email: trimmedEmail }),
-      redirect: 'follow',
+      body: { email: trimmedEmail },
+      extraHeaders: { prefer: 'return=minimal' },
     });
 
     if (!upstream.ok) {
@@ -34,14 +29,8 @@ module.exports = async (req, res) => {
       return;
     }
 
-    const data = await upstream.json().catch(() => ({}));
-    if (data.error) {
-      res.status(502).json({ error: data.error });
-      return;
-    }
-
     res.status(200).json({ success: true });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to reach waitlist storage' });
+    res.status(500).json({ error: err.message || 'Failed to reach waitlist storage' });
   }
 };

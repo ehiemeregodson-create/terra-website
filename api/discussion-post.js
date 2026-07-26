@@ -1,3 +1,5 @@
+const { supabaseRequest } = require('../lib/supabase');
+
 const MODERATION_PROMPT = `You are a content moderation classifier for Terra's immigration community discussion board. You will be given a single post (a question or an answer written by a visitor).
 
 Classify it and respond with STRICT JSON only, matching this shape exactly:
@@ -33,13 +35,16 @@ module.exports = async (req, res) => {
     res.status(400).json({ error: 'parentId is required for answers' });
     return;
   }
+  if (postType === 'answer' && !/^[0-9a-f-]{36}$/i.test(parentId)) {
+    res.status(400).json({ error: 'parentId must be a valid post id' });
+    return;
+  }
 
   // Uses a separate API key/project from Ike's chat widget so the two features don't
   // compete for the same 20-requests/day free-tier quota.
   const apiKey = process.env.GEMINI_MODERATION_API_KEY;
-  const sheetUrl = process.env.WAITLIST_SHEET_URL;
-  if (!apiKey || !sheetUrl) {
-    res.status(500).json({ error: 'Server is missing GEMINI_MODERATION_API_KEY or WAITLIST_SHEET_URL' });
+  if (!apiKey) {
+    res.status(500).json({ error: 'Server is missing GEMINI_MODERATION_API_KEY' });
     return;
   }
 
@@ -127,18 +132,16 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const upstream = await fetch(sheetUrl, {
+    const upstream = await supabaseRequest('discussion_posts', {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        formType: 'discussion',
-        postType,
-        parentId,
+      body: {
+        post_type: postType,
+        parent_id: parentId || null,
         name: name || 'Anonymous',
         text,
-        callout: moderation.questionable ? moderation.calloutNote : '',
-      }),
-      redirect: 'follow',
+        callout: moderation.questionable ? moderation.calloutNote : null,
+      },
+      extraHeaders: { prefer: 'return=minimal' },
     });
 
     if (!upstream.ok) {
@@ -147,17 +150,11 @@ module.exports = async (req, res) => {
       return;
     }
 
-    const data = await upstream.json().catch(() => ({}));
-    if (data.error) {
-      res.status(502).json({ error: data.error });
-      return;
-    }
-
     res.status(200).json({
       success: true,
       callout: moderation.questionable ? moderation.calloutNote : null,
     });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to reach discussion storage' });
+    res.status(500).json({ error: err.message || 'Failed to reach discussion storage' });
   }
 };
