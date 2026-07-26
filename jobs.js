@@ -110,6 +110,7 @@ function renderDiscussion(posts) {
         return;
       }
 
+      trackEvent('discussion_post', { postType: 'answer', flagged: Boolean(result.callout) });
       btn.disabled = false;
       answerForm.reset();
       loadDiscussion();
@@ -158,6 +159,7 @@ questionForm.addEventListener('submit', async (e) => {
   }
 
   questionNote.textContent = result.callout ? 'Posted — note: ' + result.callout : 'Posted!';
+  trackEvent('discussion_post', { postType: 'question', flagged: Boolean(result.callout) });
   questionForm.reset();
   btn.disabled = false;
   loadDiscussion();

@@ -1,3 +1,9 @@
+function trackEvent(name, data) {
+  if (typeof window.va === 'function') {
+    window.va('event', data ? { name, data } : { name });
+  }
+}
+
 const header = document.getElementById('header');
 const navToggle = document.getElementById('navToggle');
 
@@ -10,6 +16,12 @@ document.querySelectorAll('.nav-links a, .header-actions a').forEach((link) => {
   link.addEventListener('click', () => {
     header.classList.remove('menu-open');
     navToggle.setAttribute('aria-expanded', 'false');
+  });
+});
+
+document.querySelectorAll('[data-tier]').forEach((link) => {
+  link.addEventListener('click', () => {
+    trackEvent('pricing_cta_click', { tier: link.dataset.tier });
   });
 });
 
@@ -40,6 +52,7 @@ if (signupForm) {
       }
 
       formNote.textContent = `You're on the waitlist! We'll email ${email} as soon as a spot opens up.`;
+      trackEvent('waitlist_signup');
       signupForm.reset();
     } catch (err) {
       formNote.textContent = "Sorry, I couldn't reach the server. Please check your connection and try again.";
@@ -76,6 +89,7 @@ if (intakeForm) {
       }
 
       intakeNote.textContent = "You're in! We'll start sending policy alerts relevant to your case to " + payload.email + ".";
+      trackEvent('get_started_signup', { category: payload.category, stage: payload.stage });
 
       try {
         localStorage.setItem('terraProfile', JSON.stringify(payload));
