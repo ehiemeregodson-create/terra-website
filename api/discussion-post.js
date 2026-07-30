@@ -15,6 +15,21 @@ function cleanString(value, maxLength) {
   return typeof value === 'string' ? value.trim().slice(0, maxLength) : '';
 }
 
+// Fast local pre-filter for the most blatant, unambiguous cases — catches them for free
+// and instantly, without spending API quota on something a keyword match already settles.
+// This is a backstop, not the primary check: it only matches severe, hard-to-misfire phrases
+// and leaves everything else (including all nuanced/borderline content) to the AI classifier below.
+const LOCAL_HARMFUL_PATTERNS = [
+  /\bkill\s*(yourself|urself|ur\s*self|u\s*rself)\b/i,
+  /\bkys\b/i,
+  /\bgo\s+die\b/i,
+  /\byou\s+should\s+die\b/i,
+];
+
+function localHarmfulCheck(text) {
+  return LOCAL_HARMFUL_PATTERNS.some((re) => re.test(text));
+}
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
@@ -40,11 +55,21 @@ module.exports = async (req, res) => {
     return;
   }
 
-  // Uses a separate API key/project from Ike's chat widget so the two features don't
-  // compete for the same 20-requests/day free-tier quota.
-  const apiKey = process.env.GEMINI_MODERATION_API_KEY;
+  if (localHarmfulCheck(text)) {
+    res.status(403).json({
+      blocked: true,
+      reason: 'This comment violates our community guidelines and was not posted.',
+    });
+    return;
+  }
+
+  // Prefers a separate API key/project from Ike's chat widget so the two features don't
+  // compete for the same quota, but falls back to the shared chat key if a dedicated
+  // moderation key hasn't been configured — gemini-flash-lite-latest's free quota is high
+  // enough that sharing one key is realistically fine for a site this size.
+  const apiKey = process.env.GEMINI_MODERATION_API_KEY || process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    res.status(500).json({ error: 'Server is missing GEMINI_MODERATION_API_KEY' });
+    res.status(500).json({ error: 'Server is missing GEMINI_MODERATION_API_KEY or GEMINI_API_KEY' });
     return;
   }
 
@@ -52,7 +77,7 @@ module.exports = async (req, res) => {
 
   async function callModeration() {
     const modResponse = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
