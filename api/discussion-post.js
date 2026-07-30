@@ -63,7 +63,7 @@ module.exports = async (req, res) => {
     return;
   }
 
-  // Prefers a separate API key/project from Ike's chat widget so the two features don't
+  // Prefers a separate API key/project from Jay's chat widget so the two features don't
   // compete for the same quota, but falls back to the shared chat key if a dedicated
   // moderation key hasn't been configured — gemini-flash-lite-latest's free quota is high
   // enough that sharing one key is realistically fine for a site this size.
