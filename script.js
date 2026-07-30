@@ -1,3 +1,5 @@
+window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+
 function trackEvent(name, data) {
   if (typeof window.va === 'function') {
     window.va('event', data ? { name, data } : { name });

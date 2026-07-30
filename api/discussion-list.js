@@ -11,7 +11,8 @@ module.exports = async (req, res) => {
 
     if (!upstream.ok) {
       const detail = await upstream.text();
-      res.status(502).json({ error: 'Failed to load discussion', detail });
+      console.error('discussion-list: upstream error', upstream.status, detail);
+      res.status(502).json({ error: 'Failed to load discussion' });
       return;
     }
 
@@ -30,6 +31,7 @@ module.exports = async (req, res) => {
 
     res.status(200).json({ posts });
   } catch (err) {
-    res.status(500).json({ error: err.message || 'Failed to reach discussion storage' });
+    console.error('discussion-list: request failed', err);
+    res.status(500).json({ error: 'Failed to reach discussion storage' });
   }
 };

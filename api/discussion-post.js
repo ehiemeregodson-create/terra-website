@@ -170,7 +170,8 @@ module.exports = async (req, res) => {
 
     if (!upstream.ok) {
       const detail = await upstream.text();
-      res.status(502).json({ error: 'Failed to record post', detail });
+      console.error('discussion-post: upstream error', upstream.status, detail);
+      res.status(502).json({ error: 'Failed to record post' });
       return;
     }
 
@@ -179,6 +180,7 @@ module.exports = async (req, res) => {
       callout: moderation.questionable ? moderation.calloutNote : null,
     });
   } catch (err) {
-    res.status(500).json({ error: err.message || 'Failed to reach discussion storage' });
+    console.error('discussion-post: request failed', err);
+    res.status(500).json({ error: 'Failed to reach discussion storage' });
   }
 };

@@ -75,7 +75,8 @@ module.exports = async (req, res) => {
 
     if (!upstream.ok) {
       const detail = await upstream.text();
-      res.status(502).json({ error: 'Upstream request failed', detail });
+      console.error('chat: upstream error', upstream.status, detail);
+      res.status(502).json({ error: 'Upstream request failed' });
       return;
     }
 

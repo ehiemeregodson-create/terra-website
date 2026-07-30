@@ -64,12 +64,14 @@ module.exports = async (req, res) => {
 
     if (!upstream.ok) {
       const detail = await upstream.text();
-      res.status(502).json({ error: 'Failed to record signup', detail });
+      console.error('get-started: upstream error', upstream.status, detail);
+      res.status(502).json({ error: 'Failed to record signup' });
       return;
     }
 
     res.status(200).json({ success: true });
   } catch (err) {
-    res.status(500).json({ error: err.message || 'Failed to reach database' });
+    console.error('get-started: request failed', err);
+    res.status(500).json({ error: 'Failed to reach database' });
   }
 };
