@@ -86,7 +86,6 @@ module.exports = async (req, res) => {
           contents: [{ role: 'user', parts: [{ text }] }],
           generationConfig: {
             maxOutputTokens: 300,
-            thinkingConfig: { thinkingBudget: 0 },
             responseMimeType: 'application/json',
           },
         }),
