@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log in or sign up — Terra</title>
+<meta name="description" content="Create a free Terra account or log in to continue.">
+<link rel="stylesheet" href="style.css">
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+
+<header class="site-header" id="header">
+  <div class="container header-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="28" height="28" fill="none">
+          <path d="M16 2C9 8 4 14.5 4 20a12 12 0 0024 0c0-5.5-5-12-12-18z" fill="currentColor"/>
+        </svg>
+      </span>
+      Terra
+    </a>
+    <div class="mobile-panel" id="mobilePanel">
+      <nav class="nav-links" id="navLinks">
+        <a href="index.html#features">Features</a>
+        <a href="index.html#how-it-works">How it works</a>
+        <a href="index.html#premium">Premium</a>
+        <a href="index.html#pricing">Pricing</a>
+        <a href="index.html#faq">FAQ</a>
+        <a href="community.html">Community</a>
+        <a href="jobs.html">Jobs</a>
+      </nav>
+      <div class="header-actions">
+        <a href="account.html" class="btn btn-ghost" aria-current="page">Log in</a>
+        <a href="get-started.html" class="btn btn-primary">Get started</a>
+      </div>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <section class="account-section">
+    <div class="container">
+      <div class="account-card">
+        <div class="account-tabs" role="tablist">
+          <button type="button" class="account-tab active" id="tabSignup" role="tab" aria-selected="true">Sign up</button>
+          <button type="button" class="account-tab" id="tabLogin" role="tab" aria-selected="false">Log in</button>
+        </div>
+
+        <form id="signupPanel" class="account-form">
+          <h1>Create your free account</h1>
+          <p class="section-sub">You'll need an account to start a case with Terra — Free, Pro, or Premium.</p>
+
+          <div class="intake-field">
+            <label for="signupName">Full name</label>
+            <input type="text" id="signupName" name="fullName" required autocomplete="name">
+          </div>
+          <div class="intake-field">
+            <label for="signupEmail">Email</label>
+            <input type="email" id="signupEmail" name="email" required autocomplete="email">
+          </div>
+          <div class="intake-field">
+            <label for="signupPassword">Password</label>
+            <input type="password" id="signupPassword" name="password" required autocomplete="new-password" minlength="9">
+            <p class="password-hint">More than 8 characters, with an uppercase letter, a lowercase letter, and a symbol (e.g. <code>Terra#Journey1</code>).</p>
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg btn-block">Create account</button>
+          <p class="cta-note" id="signupNote"></p>
+        </form>
+
+        <form id="loginPanel" class="account-form" hidden>
+          <h1>Welcome back</h1>
+          <p class="section-sub">Log in to pick up where you left off.</p>
+
+          <div class="intake-field">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" name="email" required autocomplete="email">
+          </div>
+          <div class="intake-field">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" name="password" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg btn-block">Log in</button>
+          <p class="cta-note" id="loginNote"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="logo">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="24" height="24" fill="none">
+            <path d="M16 2C9 8 4 14.5 4 20a12 12 0 0024 0c0-5.5-5-12-12-18z" fill="currentColor"/>
+          </svg>
+        </span>
+        Terra
+      </a>
+      <p>Guiding immigrants through every step of their case, from first filing to final decision.</p>
+    </div>
+    <div class="footer-links">
+      <div>
+        <h4>Product</h4>
+        <a href="index.html#features">Features</a>
+        <a href="index.html#premium">Premium</a>
+        <a href="index.html#pricing">Pricing</a>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Disclaimer</a>
+      </div>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <p>© 2026 Terra. Terra is not a law firm and does not provide legal advice.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script src="account.js"></script>
+</body>
+</html>

@@ -21,6 +21,64 @@ document.querySelectorAll('.nav-links a, .header-actions a').forEach((link) => {
   });
 });
 
+/* ---------- Auth state (every page) ---------- */
+
+async function checkAuthState() {
+  const loginLink = document.querySelector('.header-actions a[href="account.html"]');
+  if (!loginLink) return null;
+
+  try {
+    const res = await fetch('/api/auth-me');
+    const data = await res.json();
+    if (data.authenticated) {
+      loginLink.textContent = 'Log out';
+      loginLink.removeAttribute('aria-current');
+      loginLink.setAttribute('href', '#');
+      loginLink.addEventListener('click', async (e) => {
+        e.preventDefault();
+        await fetch('/api/auth-logout', { method: 'POST' }).catch(() => {});
+        window.location.href = 'index.html';
+      });
+    }
+    return data;
+  } catch (err) {
+    return null;
+  }
+}
+
+const authStatePromise = checkAuthState();
+
+/* ---------- 45-second signup overlay ---------- */
+
+(function initSignupOverlay() {
+  const overlay = document.getElementById('signupOverlay');
+  if (!overlay) return;
+
+  const SHOWN_KEY = 'terraSignupOverlayShown';
+  const closeBtn = document.getElementById('signupOverlayClose');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      overlay.hidden = true;
+    });
+  }
+
+  authStatePromise.then((data) => {
+    if (data && data.authenticated) return; // don't nag people who already have an account
+    if (sessionStorage.getItem(SHOWN_KEY)) return;
+
+    setTimeout(() => {
+      if (sessionStorage.getItem(SHOWN_KEY)) return;
+      overlay.hidden = false;
+      try {
+        sessionStorage.setItem(SHOWN_KEY, '1');
+      } catch (err) {
+        // sessionStorage unavailable — overlay just won't remember it already showed this tab.
+      }
+      trackEvent('signup_overlay_shown');
+    }, 45000);
+  });
+})();
+
 const PLAN_LABELS = {
   free: 'the Free plan',
   pro: 'Terra Pro ($49/month)',
@@ -76,19 +134,44 @@ const intakeForm = document.getElementById('intakeForm');
 const intakeNote = document.getElementById('intakeNote');
 
 if (intakeForm) {
-  // get-started.html can be reached with ?plan=free|pro|premium (set on each pricing
-  // card's href on the homepage) — show which plan the visitor picked, if any.
+  const intakeSection = intakeForm.closest('section');
+  // Hidden until we've confirmed there's a logged-in account — avoids a flash of the form
+  // right before redirecting an unauthenticated visitor to account.html.
+  if (intakeSection) intakeSection.style.visibility = 'hidden';
+
   const requestedPlan = new URLSearchParams(window.location.search).get('plan');
-  if (requestedPlan && PLAN_LABELS[requestedPlan]) {
-    const selectedPlanInput = document.getElementById('intakeSelectedPlan');
-    const planBanner = document.getElementById('intakePlanBanner');
-    const planNameEl = document.getElementById('intakePlanName');
-    if (selectedPlanInput && planBanner && planNameEl) {
-      selectedPlanInput.value = requestedPlan;
-      planNameEl.textContent = PLAN_LABELS[requestedPlan];
-      planBanner.hidden = false;
+
+  authStatePromise.then((authData) => {
+    if (!authData || !authData.authenticated) {
+      const target =
+        'account.html?redirect=get-started.html' +
+        (requestedPlan ? '&plan=' + encodeURIComponent(requestedPlan) : '');
+      window.location.replace(target);
+      return;
     }
-  }
+
+    if (intakeSection) intakeSection.style.visibility = 'visible';
+
+    const nameField = document.getElementById('intakeName');
+    const emailField = document.getElementById('intakeEmail');
+    if (authData.user) {
+      if (nameField && !nameField.value && authData.user.fullName) nameField.value = authData.user.fullName;
+      if (emailField && !emailField.value && authData.user.email) emailField.value = authData.user.email;
+    }
+
+    // get-started.html can be reached with ?plan=free|pro|premium (set on each pricing
+    // card's href on the homepage) — show which plan the visitor picked, if any.
+    if (requestedPlan && PLAN_LABELS[requestedPlan]) {
+      const selectedPlanInput = document.getElementById('intakeSelectedPlan');
+      const planBanner = document.getElementById('intakePlanBanner');
+      const planNameEl = document.getElementById('intakePlanName');
+      if (selectedPlanInput && planBanner && planNameEl) {
+        selectedPlanInput.value = requestedPlan;
+        planNameEl.textContent = PLAN_LABELS[requestedPlan];
+        planBanner.hidden = false;
+      }
+    }
+  });
 
   intakeForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -107,6 +190,10 @@ if (intakeForm) {
       });
       const data = await res.json().catch(() => ({}));
 
+      if (res.status === 401) {
+        window.location.href = 'account.html?redirect=get-started.html';
+        return;
+      }
       if (!res.ok || !data.success) {
         intakeNote.textContent = "Something went wrong — please try again in a moment.";
         return;
@@ -116,12 +203,6 @@ if (intakeForm) {
       intakeNote.textContent = (planLabel ? `You're signed up for ${planLabel}! ` : "You're in! ") +
         "We'll start sending policy alerts relevant to your case to " + payload.email + ".";
       trackEvent('get_started_signup', { category: payload.category, stage: payload.stage, plan: payload.selectedPlan || 'none' });
-
-      try {
-        localStorage.setItem('terraProfile', JSON.stringify(payload));
-      } catch (storageErr) {
-        // localStorage unavailable (private browsing, etc.) — personalization on the Jobs page just falls back to generic content.
-      }
 
       intakeForm.reset();
       const planBanner = document.getElementById('intakePlanBanner');

@@ -1,4 +1,5 @@
 const { supabaseRequest } = require('../lib/supabase');
+const { getUserFromRequest } = require('../lib/auth');
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -9,6 +10,16 @@ function cleanString(value, maxLength) {
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  // Require a logged-in account — the frontend already redirects unauthenticated visitors to
+  // account.html, but that's a UX nicety, not security. This is the real gate: anyone could
+  // otherwise POST here directly, bypassing the redirect entirely.
+  const { user, newCookie } = await getUserFromRequest(req);
+  if (newCookie) res.setHeader('Set-Cookie', newCookie);
+  if (!user) {
+    res.status(401).json({ error: 'Please log in to continue' });
     return;
   }
 
@@ -46,6 +57,7 @@ module.exports = async (req, res) => {
     const upstream = await supabaseRequest('get_started', {
       method: 'POST',
       body: {
+        user_id: user.id,
         name,
         email,
         country_from: country,
