@@ -1,4 +1,6 @@
 const { supabaseRequest } = require('../lib/supabase');
+const { checkRateLimit, clientIp } = require('../lib/rateLimit');
+const { captureError } = require('../lib/monitor');
 
 const MODERATION_PROMPT = `You are a content moderation classifier for Terra's immigration community discussion board. You will be given a single post (a question or an answer written by a visitor).
 
@@ -33,6 +35,12 @@ function localHarmfulCheck(text) {
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  const allowed = await checkRateLimit(`discussion-post:${clientIp(req)}`, { limit: 15, windowSeconds: 3600 });
+  if (!allowed) {
+    res.status(429).json({ error: 'Too many posts. Please slow down and try again later.' });
     return;
   }
 
@@ -181,6 +189,7 @@ module.exports = async (req, res) => {
     });
   } catch (err) {
     console.error('discussion-post: request failed', err);
+    await captureError(err, { route: 'discussion-post' });
     res.status(500).json({ error: 'Failed to reach discussion storage' });
   }
 };

@@ -1,6 +1,7 @@
 const { passwordLogin, buildSessionCookieHeader } = require('../lib/auth');
-
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const { EMAIL_PATTERN } = require('../lib/validation');
+const { checkRateLimit, clientIp } = require('../lib/rateLimit');
+const { captureError } = require('../lib/monitor');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -14,6 +15,18 @@ module.exports = async (req, res) => {
 
   if (!EMAIL_PATTERN.test(email) || !password) {
     res.status(400).json({ error: 'Email and password are required' });
+    return;
+  }
+
+  const ip = clientIp(req);
+  // Two limits: one per IP+email (stops brute-forcing a single account) and one broader
+  // per-IP limit (stops spraying many emails from one source, e.g. a leaked password list).
+  const [perAccountOk, perIpOk] = await Promise.all([
+    checkRateLimit(`auth-login:acct:${ip}:${email}`, { limit: 8, windowSeconds: 900 }),
+    checkRateLimit(`auth-login:ip:${ip}`, { limit: 30, windowSeconds: 900 }),
+  ]);
+  if (!perAccountOk || !perIpOk) {
+    res.status(429).json({ error: 'Too many login attempts. Please try again in a few minutes.' });
     return;
   }
 
@@ -35,6 +48,7 @@ module.exports = async (req, res) => {
     });
   } catch (err) {
     console.error('auth-login: request failed', err);
+    await captureError(err, { route: 'auth-login' });
     res.status(500).json({ error: 'Failed to log in' });
   }
 };

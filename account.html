@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Log in or sign up — Terra</title>
 <meta name="description" content="Create a free Terra account or log in to continue.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Log in or sign up — Terra">
+<meta property="og:description" content="Create a free Terra account or log in to continue.">
+<meta property="og:url" content="https://terra-website-delta.vercel.app/account.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Log in or sign up — Terra">
+<meta name="twitter:description" content="Create a free Terra account or log in to continue.">
 <link rel="stylesheet" href="style.css">
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
@@ -85,7 +93,30 @@
           </div>
           <button type="submit" class="btn btn-primary btn-lg btn-block">Log in</button>
           <p class="cta-note" id="loginNote"></p>
+          <button type="button" class="link-btn" id="forgotPasswordLink">Forgot password?</button>
         </form>
+
+        <form id="forgotPanel" class="account-form" hidden>
+          <h1>Reset your password</h1>
+          <p class="section-sub">Enter your account email and we'll send you a link to set a new password.</p>
+
+          <div class="intake-field">
+            <label for="forgotEmail">Email</label>
+            <input type="email" id="forgotEmail" name="email" required autocomplete="email">
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg btn-block">Send reset link</button>
+          <p class="cta-note" id="forgotNote"></p>
+          <button type="button" class="link-btn" id="backToLoginLink">Back to log in</button>
+        </form>
+
+        <div id="accountAuthenticated" class="account-form" hidden>
+          <h1>You're logged in</h1>
+          <p class="section-sub" id="authenticatedEmail"></p>
+          <button type="button" class="btn btn-primary btn-lg btn-block" id="goToGetStarted">Go to Get Started</button>
+          <button type="button" class="btn btn-ghost btn-lg btn-block" id="accountLogoutBtn">Log out</button>
+          <button type="button" class="link-btn link-btn-danger" id="deleteAccountBtn">Delete my account</button>
+          <p class="cta-note" id="accountNote"></p>
+        </div>
       </div>
     </div>
   </section>
@@ -119,9 +150,9 @@
       </div>
       <div>
         <h4>Legal</h4>
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
-        <a href="#">Disclaimer</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="disclaimer.html">Disclaimer</a>
       </div>
     </div>
   </div>

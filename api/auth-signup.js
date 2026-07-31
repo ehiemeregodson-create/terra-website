@@ -1,13 +1,17 @@
 const { adminCreateUser, passwordLogin, buildSessionCookieHeader } = require('../lib/auth');
-
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-// Must be more than 8 characters and include at least one uppercase letter, one lowercase
-// letter, and one symbol. Enforced here (not just client-side) so it can't be bypassed.
-const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{9,}$/;
+const { EMAIL_PATTERN, PASSWORD_PATTERN, PASSWORD_ERROR } = require('../lib/validation');
+const { checkRateLimit, clientIp } = require('../lib/rateLimit');
+const { captureError } = require('../lib/monitor');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  const allowed = await checkRateLimit(`auth-signup:${clientIp(req)}`, { limit: 8, windowSeconds: 3600 });
+  if (!allowed) {
+    res.status(429).json({ error: 'Too many signup attempts. Please try again later.' });
     return;
   }
 
@@ -21,10 +25,7 @@ module.exports = async (req, res) => {
     return;
   }
   if (!PASSWORD_PATTERN.test(password)) {
-    res.status(400).json({
-      error:
-        'Password must be more than 8 characters and include an uppercase letter, a lowercase letter, and a symbol.',
-    });
+    res.status(400).json({ error: PASSWORD_ERROR });
     return;
   }
 
@@ -52,6 +53,7 @@ module.exports = async (req, res) => {
     res.status(200).json({ success: true, user: { id: created.data.id, email, fullName } });
   } catch (err) {
     console.error('auth-signup: request failed', err);
+    await captureError(err, { route: 'auth-signup' });
     res.status(500).json({ error: 'Failed to create account' });
   }
 };

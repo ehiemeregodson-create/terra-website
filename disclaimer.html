@@ -3,16 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Community — Terra</title>
-<meta name="description" content="Ask the immigrant community questions and get real answers — every post is AI-moderated, and Jay answers anything left unanswered after 24 hours.">
+<title>Disclaimer — Terra</title>
+<meta name="description" content="Terra is not a law firm and does not provide legal advice. Read what that means before you rely on anything here.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Community — Terra">
-<meta property="og:description" content="Ask the immigrant community questions and get real answers — every post is AI-moderated, and Jay answers anything left unanswered after 24 hours.">
-<meta property="og:url" content="https://terra-website-delta.vercel.app/community.html">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Community — Terra">
-<meta name="twitter:description" content="Ask the immigrant community questions and get real answers — every post is AI-moderated, and Jay answers anything left unanswered after 24 hours.">
 <link rel="stylesheet" href="style.css">
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
@@ -35,7 +28,7 @@
         <a href="index.html#premium">Premium</a>
         <a href="index.html#pricing">Pricing</a>
         <a href="index.html#faq">FAQ</a>
-        <a href="community.html" aria-current="page">Community</a>
+        <a href="community.html">Community</a>
         <a href="jobs.html">Jobs</a>
       </nav>
       <div class="header-actions">
@@ -50,30 +43,34 @@
 </header>
 
 <main>
+  <section class="legal-section">
+    <div class="container legal-content">
+      <p class="eyebrow">Legal</p>
+      <h1>Disclaimer</h1>
+      <p class="legal-updated">Last updated: July 30, 2026</p>
 
-  <section class="jobs-hero">
-    <div class="container">
-      <p class="eyebrow">Community</p>
-      <h1>Ask the community, get real answers</h1>
-      <p class="section-sub">Post a question about your case or the process. Every post is AI-moderated before it appears — and if no one's answered within 24 hours, Jay will.</p>
+      <h2>Not a law firm, not legal advice</h2>
+      <p>Terra is a software platform, not a law firm. Nothing on Terra — including policy alerts, predictive timelines, community answers, or responses from Jay, our AI assistant — is legal advice, and using Terra does not create an attorney-client relationship between you and Terra or anyone affiliated with it.</p>
+
+      <h2>About Jay, our AI assistant</h2>
+      <p>Jay is powered by a large language model and can make mistakes, including about specific rules, deadlines, or eligibility criteria. Jay is meant to help you understand general immigration concepts and how Terra works — not to tell you what to do in your specific legal situation. Always verify anything case-critical against official government sources, and for anything high-stakes, talk to a licensed immigration attorney.</p>
+
+      <h2>Predictive timelines</h2>
+      <p>Timeline estimates and outcome predictions are based on patterns in historical, publicly available data. They are informational estimates, not guarantees. Actual processing times and outcomes depend on your specific case, the relevant government agency, and factors outside Terra's knowledge or control.</p>
+
+      <h2>Community content</h2>
+      <p>Answers posted by other community members, or generated automatically by Jay when a question goes unanswered, reflect the views of individual users or an AI system — not professional legal advice, and not necessarily accurate for your situation.</p>
+
+      <h2>Premium attorney connections</h2>
+      <p>On Terra Premium, we can introduce you to a licensed immigration attorney. That attorney relationship, and any advice given within it, is between you and the attorney directly — governed by their own professional obligations, not by Terra.</p>
+
+      <h2>When in doubt</h2>
+      <p>If a decision genuinely matters to your case — a filing, a deadline, a response to a government notice — verify it with an official source or a licensed attorney before acting on it.</p>
+
+      <h2>Contact</h2>
+      <p>Questions about this disclaimer? Email <a href="mailto:legal@terra.example">legal@terra.example</a>.</p>
     </div>
   </section>
-
-  <section class="discussion" id="discussion">
-    <div class="container">
-      <form class="discussion-form" id="questionForm">
-        <input type="text" id="questionName" placeholder="Your name (optional)" maxlength="80" autocomplete="name">
-        <textarea id="questionText" placeholder="Ask a question about your case, the process, or what to expect…" rows="3" maxlength="1000" required></textarea>
-        <button type="submit" class="btn btn-primary">Post question</button>
-        <p class="cta-note" id="questionNote"></p>
-      </form>
-
-      <div class="discussion-list" id="discussionList">
-        <p class="discussion-empty" id="discussionLoading">Loading discussion…</p>
-      </div>
-    </div>
-  </section>
-
 </main>
 
 <footer class="site-footer">
@@ -106,7 +103,7 @@
         <h4>Legal</h4>
         <a href="privacy.html">Privacy</a>
         <a href="terms.html">Terms</a>
-        <a href="disclaimer.html">Disclaimer</a>
+        <a href="disclaimer.html" aria-current="page">Disclaimer</a>
       </div>
     </div>
   </div>
@@ -147,19 +144,6 @@
   </div>
 </div>
 
-<div class="signup-overlay" id="signupOverlay" hidden>
-  <div class="signup-overlay-card">
-    <button class="signup-overlay-close" id="signupOverlayClose" aria-label="Close">&times;</button>
-    <h2>Don't lose your spot</h2>
-    <p>Create a free Terra account to track your case, get policy alerts, and pick up right where you left off.</p>
-    <div class="signup-overlay-actions">
-      <a href="account.html" class="btn btn-primary btn-lg">Create free account</a>
-      <a href="account.html?mode=login" class="btn btn-ghost">I already have an account</a>
-    </div>
-  </div>
-</div>
-
 <script src="script.js"></script>
-<script src="community.js"></script>
 </body>
 </html>

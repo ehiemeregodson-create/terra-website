@@ -3,16 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Community — Terra</title>
-<meta name="description" content="Ask the immigrant community questions and get real answers — every post is AI-moderated, and Jay answers anything left unanswered after 24 hours.">
+<title>Privacy Policy — Terra</title>
+<meta name="description" content="How Terra collects, uses, and protects your information, including sensitive immigration case details.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Community — Terra">
-<meta property="og:description" content="Ask the immigrant community questions and get real answers — every post is AI-moderated, and Jay answers anything left unanswered after 24 hours.">
-<meta property="og:url" content="https://terra-website-delta.vercel.app/community.html">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Community — Terra">
-<meta name="twitter:description" content="Ask the immigrant community questions and get real answers — every post is AI-moderated, and Jay answers anything left unanswered after 24 hours.">
 <link rel="stylesheet" href="style.css">
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
@@ -35,7 +28,7 @@
         <a href="index.html#premium">Premium</a>
         <a href="index.html#pricing">Pricing</a>
         <a href="index.html#faq">FAQ</a>
-        <a href="community.html" aria-current="page">Community</a>
+        <a href="community.html">Community</a>
         <a href="jobs.html">Jobs</a>
       </nav>
       <div class="header-actions">
@@ -50,30 +43,59 @@
 </header>
 
 <main>
+  <section class="legal-section">
+    <div class="container legal-content">
+      <p class="eyebrow">Legal</p>
+      <h1>Privacy Policy</h1>
+      <p class="legal-updated">Last updated: July 30, 2026</p>
 
-  <section class="jobs-hero">
-    <div class="container">
-      <p class="eyebrow">Community</p>
-      <h1>Ask the community, get real answers</h1>
-      <p class="section-sub">Post a question about your case or the process. Every post is AI-moderated before it appears — and if no one's answered within 24 hours, Jay will.</p>
+      <p>Terra helps immigrants navigate their case, and doing that well means asking for information that can be genuinely sensitive — including, in some cases, whether someone currently has legal status at all. We take that seriously. This policy explains what we collect, why, who else touches it, and the control you have over it.</p>
+
+      <h2>What we collect</h2>
+      <ul>
+        <li><strong>Account information:</strong> your name, email address, and a securely hashed password when you create a Terra account.</li>
+        <li><strong>Case information:</strong> what you share through the Get Started form — country of origin and destination, immigration category, case stage, sponsorship status, current status, legal representation, deadlines, and any notes you add.</li>
+        <li><strong>Community content:</strong> questions and answers you post publicly on the Community board.</li>
+        <li><strong>Chat messages:</strong> conversations with Jay, Terra's AI assistant.</li>
+        <li><strong>Usage data:</strong> basic, aggregated analytics about how the site is used (pages visited, general interactions) — this does not include the content of what you type.</li>
+      </ul>
+
+      <h2>How we use it</h2>
+      <p>We use your information to operate your account, send you the policy alerts and case guidance you sign up for, respond to your questions (via Jay or, on Premium, a licensed attorney), moderate community content, and improve the product. We do not sell your personal information.</p>
+
+      <h2>Who processes it</h2>
+      <p>We rely on a small number of service providers to run Terra, each bound to only use your data to provide their service to us:</p>
+      <ul>
+        <li><strong>Supabase</strong> — stores your account and case data, and handles authentication.</li>
+        <li><strong>Google (Gemini API)</strong> — processes chat messages and community posts to generate responses and check content against our community guidelines.</li>
+        <li><strong>Vercel</strong> — hosts the site and provides aggregated, anonymized usage analytics.</li>
+        <li><strong>Resend</strong> — delivers transactional emails, such as case confirmations and password reset links.</li>
+      </ul>
+      <p>We do not share your case details with employers, government agencies, or any other third party unless you explicitly direct us to (for example, connecting with an attorney on Premium) or we're legally required to.</p>
+
+      <h2>Cookies</h2>
+      <p>Terra uses a single essential cookie to keep you logged in. It's marked HttpOnly and Secure, meaning it can't be read by page scripts and is only ever sent over an encrypted connection. We don't use advertising or cross-site tracking cookies.</p>
+
+      <h2>Your controls</h2>
+      <ul>
+        <li>You can update or remove your case notes at any time by contacting us.</li>
+        <li>You can delete your account and associated case data yourself, at any time, from your <a href="account.html">account page</a> — this is permanent and cannot be undone.</li>
+        <li>You can ask us what data we hold about you by contacting <a href="mailto:privacy@terra.example">privacy@terra.example</a>.</li>
+      </ul>
+
+      <h2>Retention</h2>
+      <p>We keep your data for as long as your account is active, or as needed to provide the service. If you delete your account, your case data is permanently removed; a small amount of information may be retained where required by law or to prevent fraud.</p>
+
+      <h2>Security</h2>
+      <p>Case data is stored with row-level access controls so it's only ever reachable through your authenticated session or our backend — never directly from the browser. Passwords are never stored in plain text.</p>
+
+      <h2>Changes to this policy</h2>
+      <p>If we make material changes to this policy, we'll update the date above and, where appropriate, notify you directly.</p>
+
+      <h2>Contact</h2>
+      <p>Questions about this policy or your data? Email <a href="mailto:privacy@terra.example">privacy@terra.example</a>.</p>
     </div>
   </section>
-
-  <section class="discussion" id="discussion">
-    <div class="container">
-      <form class="discussion-form" id="questionForm">
-        <input type="text" id="questionName" placeholder="Your name (optional)" maxlength="80" autocomplete="name">
-        <textarea id="questionText" placeholder="Ask a question about your case, the process, or what to expect…" rows="3" maxlength="1000" required></textarea>
-        <button type="submit" class="btn btn-primary">Post question</button>
-        <p class="cta-note" id="questionNote"></p>
-      </form>
-
-      <div class="discussion-list" id="discussionList">
-        <p class="discussion-empty" id="discussionLoading">Loading discussion…</p>
-      </div>
-    </div>
-  </section>
-
 </main>
 
 <footer class="site-footer">
@@ -104,7 +126,7 @@
       </div>
       <div>
         <h4>Legal</h4>
-        <a href="privacy.html">Privacy</a>
+        <a href="privacy.html" aria-current="page">Privacy</a>
         <a href="terms.html">Terms</a>
         <a href="disclaimer.html">Disclaimer</a>
       </div>
@@ -147,19 +169,6 @@
   </div>
 </div>
 
-<div class="signup-overlay" id="signupOverlay" hidden>
-  <div class="signup-overlay-card">
-    <button class="signup-overlay-close" id="signupOverlayClose" aria-label="Close">&times;</button>
-    <h2>Don't lose your spot</h2>
-    <p>Create a free Terra account to track your case, get policy alerts, and pick up right where you left off.</p>
-    <div class="signup-overlay-actions">
-      <a href="account.html" class="btn btn-primary btn-lg">Create free account</a>
-      <a href="account.html?mode=login" class="btn btn-ghost">I already have an account</a>
-    </div>
-  </div>
-</div>
-
 <script src="script.js"></script>
-<script src="community.js"></script>
 </body>
 </html>

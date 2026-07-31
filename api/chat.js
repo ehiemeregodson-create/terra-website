@@ -1,3 +1,6 @@
+const { checkRateLimit, clientIp } = require('../lib/rateLimit');
+const { captureError } = require('../lib/monitor');
+
 const SYSTEM_PROMPT = `You are Jay, the AI chat assistant embedded on Terra's website.
 
 Terra is an immigrant resource platform that helps people navigate the immigration process end to end:
@@ -26,6 +29,12 @@ Rules:
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  const allowed = await checkRateLimit(`chat:${clientIp(req)}`, { limit: 30, windowSeconds: 3600 });
+  if (!allowed) {
+    res.status(429).json({ error: 'Too many messages. Please slow down and try again shortly.' });
     return;
   }
 
@@ -86,6 +95,7 @@ module.exports = async (req, res) => {
       "Sorry, I couldn't generate a response.";
     res.status(200).json({ reply });
   } catch (err) {
+    await captureError(err, { route: 'chat' });
     res.status(500).json({ error: 'Request to AI provider failed' });
   }
 };

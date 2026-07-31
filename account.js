@@ -8,17 +8,29 @@ function getRedirectTarget() {
   return plan ? `${redirect}?plan=${encodeURIComponent(plan)}` : redirect;
 }
 
-/* ---------- Tab switching ---------- */
+/* ---------- Panels ---------- */
 
 const tabSignup = document.getElementById('tabSignup');
 const tabLogin = document.getElementById('tabLogin');
+const accountTabs = document.querySelector('.account-tabs');
 const signupPanel = document.getElementById('signupPanel');
 const loginPanel = document.getElementById('loginPanel');
+const forgotPanel = document.getElementById('forgotPanel');
+const accountAuthenticated = document.getElementById('accountAuthenticated');
+const accountCard = document.querySelector('.account-card');
+
+// Hidden until we know whether this visitor is already logged in — avoids a flash of the
+// signup form for someone who's actually authenticated (same pattern as get-started.html's
+// auth check).
+accountCard.style.visibility = 'hidden';
 
 function showTab(tab) {
   const showSignup = tab === 'signup';
+  accountTabs.hidden = false;
   signupPanel.hidden = !showSignup;
   loginPanel.hidden = showSignup;
+  forgotPanel.hidden = true;
+  accountAuthenticated.hidden = true;
   tabSignup.classList.toggle('active', showSignup);
   tabLogin.classList.toggle('active', !showSignup);
   tabSignup.setAttribute('aria-selected', String(showSignup));
@@ -32,6 +44,75 @@ tabLogin.addEventListener('click', () => showTab('login'));
 if (new URLSearchParams(window.location.search).get('mode') === 'login') {
   showTab('login');
 }
+
+/* ---------- Authenticated view ---------- */
+
+function showAuthenticated(user) {
+  accountTabs.hidden = true;
+  signupPanel.hidden = true;
+  loginPanel.hidden = true;
+  forgotPanel.hidden = true;
+  accountAuthenticated.hidden = false;
+  document.getElementById('authenticatedEmail').textContent = user.email
+    ? `Logged in as ${user.email}`
+    : 'You have an active session.';
+}
+
+fetch('/api/auth-me')
+  .then((res) => res.json())
+  .then((data) => {
+    if (data && data.authenticated && data.user) {
+      // Someone landed on account.html while already logged in via a stale bookmark/back
+      // button — if they arrived with a redirect target (e.g. from the Get Started gate),
+      // send them straight there instead of showing the login form again.
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('redirect')) {
+        window.location.replace(getRedirectTarget());
+        return;
+      }
+      showAuthenticated(data.user);
+    }
+    accountCard.style.visibility = 'visible';
+  })
+  .catch(() => {
+    accountCard.style.visibility = 'visible';
+  });
+
+document.getElementById('goToGetStarted').addEventListener('click', () => {
+  window.location.href = 'get-started.html';
+});
+
+document.getElementById('accountLogoutBtn').addEventListener('click', async () => {
+  await fetch('/api/auth-logout', { method: 'POST' }).catch(() => {});
+  window.location.href = 'index.html';
+});
+
+document.getElementById('deleteAccountBtn').addEventListener('click', async () => {
+  const confirmed = window.confirm(
+    'Delete your Terra account? This permanently removes your account and case data and cannot be undone.'
+  );
+  if (!confirmed) return;
+
+  const btn = document.getElementById('deleteAccountBtn');
+  const note = document.getElementById('accountNote');
+  btn.disabled = true;
+  note.textContent = 'Deleting your account…';
+
+  try {
+    const res = await fetch('/api/auth-delete-account', { method: 'POST' });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.success) {
+      note.textContent = data.error || 'Something went wrong — please try again.';
+      btn.disabled = false;
+      return;
+    }
+    trackEvent('account_deleted');
+    window.location.href = 'index.html';
+  } catch (err) {
+    note.textContent = "Sorry, I couldn't reach the server. Please check your connection and try again.";
+    btn.disabled = false;
+  }
+});
 
 /* ---------- Sign up ---------- */
 
@@ -113,6 +194,45 @@ loginPanel.addEventListener('submit', async (e) => {
     window.location.href = getRedirectTarget();
   } catch (err) {
     loginNote.textContent = "Sorry, I couldn't reach the server. Please check your connection and try again.";
+    btn.disabled = false;
+  }
+});
+
+/* ---------- Forgot password ---------- */
+
+document.getElementById('forgotPasswordLink').addEventListener('click', () => {
+  loginPanel.hidden = true;
+  forgotPanel.hidden = false;
+});
+
+document.getElementById('backToLoginLink').addEventListener('click', () => {
+  forgotPanel.hidden = true;
+  showTab('login');
+});
+
+const forgotNote = document.getElementById('forgotNote');
+
+forgotPanel.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const emailInput = document.getElementById('forgotEmail');
+  const btn = forgotPanel.querySelector('button');
+
+  btn.disabled = true;
+  forgotNote.textContent = 'Sending…';
+
+  try {
+    await fetch('/api/auth-forgot-password', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ email: emailInput.value.trim() }),
+    });
+    // Always show the same message, whether or not the email is registered — avoids
+    // revealing which emails have accounts.
+    trackEvent('password_reset_requested');
+    forgotNote.textContent = "If that email has a Terra account, we've sent a reset link.";
+  } catch (err) {
+    forgotNote.textContent = "Sorry, I couldn't reach the server. Please check your connection and try again.";
+  } finally {
     btn.disabled = false;
   }
 });

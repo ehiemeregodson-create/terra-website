@@ -610,6 +610,7 @@ a { color: inherit; text-decoration: none; }
   box-shadow: var(--shadow);
 }
 .account-tabs { display: flex; gap: 4px; margin-bottom: 28px; background: var(--cream); border-radius: 10px; padding: 4px; }
+.account-tabs[hidden] { display: none; }
 .account-tab {
   flex: 1;
   padding: 10px;
@@ -638,6 +639,30 @@ a { color: inherit; text-decoration: none; }
 .account-form .intake-field input:focus { outline: 2px solid var(--forest-light); outline-offset: 1px; }
 .password-hint { font-size: 0.78rem; color: var(--ink-soft); margin: 4px 0 0; }
 .password-hint code { background: var(--cream); padding: 1px 5px; border-radius: 4px; font-size: 0.76rem; }
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  align-self: center;
+}
+.link-btn:hover { color: var(--ink); }
+.link-btn-danger { color: #b3402f; margin-top: 4px; }
+.link-btn-danger:hover { color: #8f2f22; }
+
+/* Legal pages (Privacy, Terms, Disclaimer) */
+.legal-section { padding: 64px 0 96px; }
+.legal-content { max-width: 720px; }
+.legal-content h1 { margin: 4px 0 4px; }
+.legal-updated { color: var(--ink-soft); font-size: 0.88rem; margin-bottom: 32px; }
+.legal-content h2 { font-size: 1.15rem; margin: 32px 0 10px; }
+.legal-content p { margin-bottom: 14px; line-height: 1.65; }
+.legal-content ul { margin: 0 0 14px; padding-left: 22px; line-height: 1.65; }
+.legal-content li { margin-bottom: 6px; }
+.legal-content a { color: var(--forest-dark); text-decoration: underline; }
 
 /* 45-second signup overlay */
 .signup-overlay {

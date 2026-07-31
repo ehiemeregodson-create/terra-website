@@ -3,16 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Community — Terra</title>
-<meta name="description" content="Ask the immigrant community questions and get real answers — every post is AI-moderated, and Jay answers anything left unanswered after 24 hours.">
+<title>Terms of Service — Terra</title>
+<meta name="description" content="The terms that govern your use of Terra.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Community — Terra">
-<meta property="og:description" content="Ask the immigrant community questions and get real answers — every post is AI-moderated, and Jay answers anything left unanswered after 24 hours.">
-<meta property="og:url" content="https://terra-website-delta.vercel.app/community.html">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Community — Terra">
-<meta name="twitter:description" content="Ask the immigrant community questions and get real answers — every post is AI-moderated, and Jay answers anything left unanswered after 24 hours.">
 <link rel="stylesheet" href="style.css">
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
@@ -35,7 +28,7 @@
         <a href="index.html#premium">Premium</a>
         <a href="index.html#pricing">Pricing</a>
         <a href="index.html#faq">FAQ</a>
-        <a href="community.html" aria-current="page">Community</a>
+        <a href="community.html">Community</a>
         <a href="jobs.html">Jobs</a>
       </nav>
       <div class="header-actions">
@@ -50,30 +43,42 @@
 </header>
 
 <main>
+  <section class="legal-section">
+    <div class="container legal-content">
+      <p class="eyebrow">Legal</p>
+      <h1>Terms of Service</h1>
+      <p class="legal-updated">Last updated: July 30, 2026</p>
 
-  <section class="jobs-hero">
-    <div class="container">
-      <p class="eyebrow">Community</p>
-      <h1>Ask the community, get real answers</h1>
-      <p class="section-sub">Post a question about your case or the process. Every post is AI-moderated before it appears — and if no one's answered within 24 hours, Jay will.</p>
+      <p>These terms govern your use of Terra. By creating an account or using the site, you agree to them.</p>
+
+      <h2>What Terra is</h2>
+      <p>Terra is a software platform that helps people navigate the immigration process — policy interpretation, case tracking, predictive timelines, career resources, and interview prep. <strong>Terra is not a law firm and does not provide legal advice.</strong> Nothing on Terra, including responses from Jay (our AI assistant), creates an attorney-client relationship. See our <a href="disclaimer.html">Disclaimer</a> for details.</p>
+
+      <h2>Accounts</h2>
+      <p>You need an account to use Terra's case features. You're responsible for keeping your login credentials secure and for anything that happens under your account. You must provide accurate information when creating an account and using the Get Started intake.</p>
+
+      <h2>Plans and billing</h2>
+      <p>Terra offers a Free tier and paid Terra Pro and Premium tiers. Paid tiers are billed on a recurring basis until cancelled. You can cancel at any time; cancellation takes effect at the end of your current billing period. Prices are shown on our <a href="index.html#pricing">pricing page</a> and may change with notice.</p>
+
+      <h2>Acceptable use</h2>
+      <p>Don't use Terra to post content that is harassing, hateful, fraudulent, or unrelated spam, to attempt to access other users' accounts or data, or to interfere with the operation of the site. Community posts are moderated, including by automated tools, and we may remove content or suspend accounts that violate these terms.</p>
+
+      <h2>Your content</h2>
+      <p>You retain ownership of what you submit to Terra — case details, notes, and community posts. You grant us the license needed to store, process, and (for public community posts) display that content in order to operate the service.</p>
+
+      <h2>Disclaimers and limitation of liability</h2>
+      <p>Terra is provided "as is." Immigration outcomes depend on many factors outside our control, including government processing times and individual case facts — we don't guarantee any particular result, timeline, or outcome. To the extent permitted by law, Terra is not liable for indirect, incidental, or consequential damages arising from your use of the service.</p>
+
+      <h2>Termination</h2>
+      <p>You can delete your account at any time from your <a href="account.html">account page</a>. We may suspend or terminate accounts that violate these terms.</p>
+
+      <h2>Changes to these terms</h2>
+      <p>We may update these terms from time to time. Material changes will be reflected by an updated date above.</p>
+
+      <h2>Contact</h2>
+      <p>Questions about these terms? Email <a href="mailto:legal@terra.example">legal@terra.example</a>.</p>
     </div>
   </section>
-
-  <section class="discussion" id="discussion">
-    <div class="container">
-      <form class="discussion-form" id="questionForm">
-        <input type="text" id="questionName" placeholder="Your name (optional)" maxlength="80" autocomplete="name">
-        <textarea id="questionText" placeholder="Ask a question about your case, the process, or what to expect…" rows="3" maxlength="1000" required></textarea>
-        <button type="submit" class="btn btn-primary">Post question</button>
-        <p class="cta-note" id="questionNote"></p>
-      </form>
-
-      <div class="discussion-list" id="discussionList">
-        <p class="discussion-empty" id="discussionLoading">Loading discussion…</p>
-      </div>
-    </div>
-  </section>
-
 </main>
 
 <footer class="site-footer">
@@ -105,7 +110,7 @@
       <div>
         <h4>Legal</h4>
         <a href="privacy.html">Privacy</a>
-        <a href="terms.html">Terms</a>
+        <a href="terms.html" aria-current="page">Terms</a>
         <a href="disclaimer.html">Disclaimer</a>
       </div>
     </div>
@@ -147,19 +152,6 @@
   </div>
 </div>
 
-<div class="signup-overlay" id="signupOverlay" hidden>
-  <div class="signup-overlay-card">
-    <button class="signup-overlay-close" id="signupOverlayClose" aria-label="Close">&times;</button>
-    <h2>Don't lose your spot</h2>
-    <p>Create a free Terra account to track your case, get policy alerts, and pick up right where you left off.</p>
-    <div class="signup-overlay-actions">
-      <a href="account.html" class="btn btn-primary btn-lg">Create free account</a>
-      <a href="account.html?mode=login" class="btn btn-ghost">I already have an account</a>
-    </div>
-  </div>
-</div>
-
 <script src="script.js"></script>
-<script src="community.js"></script>
 </body>
 </html>

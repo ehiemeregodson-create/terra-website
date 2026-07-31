@@ -1,10 +1,18 @@
 const { supabaseRequest } = require('../lib/supabase');
+const { checkRateLimit, clientIp } = require('../lib/rateLimit');
+const { captureError } = require('../lib/monitor');
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+
+  const allowed = await checkRateLimit(`waitlist:${clientIp(req)}`, { limit: 10, windowSeconds: 3600 });
+  if (!allowed) {
+    res.status(429).json({ error: 'Too many submissions. Please try again later.' });
     return;
   }
 
@@ -33,6 +41,7 @@ module.exports = async (req, res) => {
     res.status(200).json({ success: true });
   } catch (err) {
     console.error('waitlist: request failed', err);
+    await captureError(err, { route: 'waitlist' });
     res.status(500).json({ error: 'Failed to reach waitlist storage' });
   }
 };

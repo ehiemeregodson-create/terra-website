@@ -1,7 +1,16 @@
 const { supabaseRequest } = require('../lib/supabase');
 const { getUserFromRequest } = require('../lib/auth');
+const { sendEmail } = require('../lib/email');
+const { checkRateLimit, clientIp } = require('../lib/rateLimit');
+const { captureError } = require('../lib/monitor');
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const PLAN_LABELS = {
+  free: 'Terra Free',
+  pro: 'Terra Pro',
+  premium: 'Terra Premium',
+};
 
 function cleanString(value, maxLength) {
   return typeof value === 'string' ? value.trim().slice(0, maxLength) : '';
@@ -20,6 +29,12 @@ module.exports = async (req, res) => {
   if (newCookie) res.setHeader('Set-Cookie', newCookie);
   if (!user) {
     res.status(401).json({ error: 'Please log in to continue' });
+    return;
+  }
+
+  const allowed = await checkRateLimit(`get-started:${clientIp(req)}`, { limit: 15, windowSeconds: 3600 });
+  if (!allowed) {
+    res.status(429).json({ error: 'Too many submissions. Please try again later.' });
     return;
   }
 
@@ -81,9 +96,23 @@ module.exports = async (req, res) => {
       return;
     }
 
+    // Awaited (not fire-and-forget) — a serverless invocation can be frozen the moment the
+    // response is sent, so an un-awaited background call here has no guarantee of completing.
+    const planLabel = PLAN_LABELS[selectedPlan] || 'Terra';
+    await sendEmail({
+      to: email,
+      subject: "You're signed up with Terra",
+      html: `
+        <p>Hi ${name || 'there'},</p>
+        <p>Thanks for telling us about your case. You're signed up for <strong>${planLabel}</strong>, and we'll start sending you policy interpretation and alerts relevant to your ${category.toLowerCase()} case in ${destinationCountry}.</p>
+        <p>— Terra</p>
+      `,
+    });
+
     res.status(200).json({ success: true });
   } catch (err) {
     console.error('get-started: request failed', err);
+    await captureError(err, { route: 'get-started' });
     res.status(500).json({ error: 'Failed to reach database' });
   }
 };

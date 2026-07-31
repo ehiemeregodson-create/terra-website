@@ -1,4 +1,5 @@
 const { supabaseRequest } = require('../../lib/supabase');
+const { captureError } = require('../../lib/monitor');
 
 const JAY_ANSWER_PROMPT = `You are Jay, Terra's AI assistant. A visitor posted a question on Terra's community discussion board more than 24 hours ago and no one else has answered it yet. Write a helpful, direct answer.
 
@@ -96,6 +97,7 @@ module.exports = async (req, res) => {
     res.status(200).json({ checked: questions.length, stale: stale.length, answered: answeredCount });
   } catch (err) {
     console.error('cron/auto-answer: failed', err);
+    await captureError(err, { route: 'cron/auto-answer' });
     res.status(500).json({ error: 'Cron job failed' });
   }
 };
