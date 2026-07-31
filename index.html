@@ -31,7 +31,7 @@
       </nav>
       <div class="header-actions">
         <a href="#" class="btn btn-ghost">Log in</a>
-        <a href="#start-form" class="btn btn-primary">Get started</a>
+        <a href="get-started.html" class="btn btn-primary">Get started</a>
       </div>
     </div>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
@@ -251,7 +251,7 @@
             <li>Policy interpretation &amp; personalized alerts</li>
             <li>Career resource library</li>
           </ul>
-          <a href="#start-form" class="btn btn-outline btn-block" data-tier="free">Get started</a>
+          <a href="get-started.html?plan=free" class="btn btn-outline btn-block" data-tier="free">Get started</a>
         </div>
         <div class="price-card featured">
           <span class="price-badge">Most popular</span>
@@ -264,7 +264,7 @@
             <li>Predictive timeline estimates</li>
             <li>Guided interview &amp; application prep</li>
           </ul>
-          <a href="#start-form" class="btn btn-primary btn-block" data-tier="pro">Start Terra Pro</a>
+          <a href="get-started.html?plan=pro" class="btn btn-primary btn-block" data-tier="pro">Start Terra Pro</a>
         </div>
         <div class="price-card">
           <h3>Premium</h3>
@@ -276,120 +276,9 @@
             <li>Direct introduction to licensed immigration attorneys</li>
             <li>Secure case-file sharing with attorneys</li>
           </ul>
-          <a href="#start-form" class="btn btn-outline btn-block" data-tier="premium">Talk to an expert</a>
+          <a href="get-started.html?plan=premium" class="btn btn-outline btn-block" data-tier="premium">Talk to an expert</a>
         </div>
       </div>
-    </div>
-  </section>
-
-  <section class="intake" id="start-form">
-    <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">Get started</p>
-        <h2>Tell us about your case</h2>
-        <p class="section-sub">A few quick details so Terra can start sending you policy interpretation and alerts relevant to your specific situation.</p>
-      </div>
-      <div class="intake-plan-banner" id="intakePlanBanner" hidden>
-        <span>Signing up for</span>
-        <strong id="intakePlanName"></strong>
-      </div>
-      <form class="intake-form" id="intakeForm">
-        <input type="hidden" id="intakeSelectedPlan" name="selectedPlan" value="">
-        <div class="intake-grid">
-          <div class="intake-field">
-            <label for="intakeName">Full name</label>
-            <input type="text" id="intakeName" name="name" required autocomplete="name">
-          </div>
-          <div class="intake-field">
-            <label for="intakeEmail">Email</label>
-            <input type="email" id="intakeEmail" name="email" required autocomplete="email">
-          </div>
-          <div class="intake-field">
-            <label for="intakeCountry">Country you're applying from</label>
-            <input type="text" id="intakeCountry" name="country" required autocomplete="country-name">
-          </div>
-          <div class="intake-field">
-            <label for="intakeDestination">Country you're applying to</label>
-            <input type="text" id="intakeDestination" name="destinationCountry" required>
-          </div>
-          <div class="intake-field">
-            <label for="intakeCategory">Purpose of your immigration case</label>
-            <select id="intakeCategory" name="category" required>
-              <option value="" disabled selected>Select one</option>
-              <option>Employment / work visa</option>
-              <option>Family reunification</option>
-              <option>Study (student visa)</option>
-              <option>Asylum / refugee protection</option>
-              <option>Permanent residency / settlement</option>
-              <option>Investment / business</option>
-              <option>Citizenship / naturalization</option>
-              <option>Other</option>
-            </select>
-          </div>
-          <div class="intake-field">
-            <label for="intakeStage">Current stage</label>
-            <select id="intakeStage" name="stage" required>
-              <option value="" disabled selected>Select one</option>
-              <option>Haven't filed yet</option>
-              <option>Filed — awaiting decision</option>
-              <option>Asked for more evidence/documents</option>
-              <option>Interview scheduled</option>
-              <option>Approved</option>
-              <option>Denied / appealing</option>
-              <option>Not sure</option>
-            </select>
-          </div>
-          <div class="intake-field">
-            <label for="intakeSponsor">Do you have a sponsor?</label>
-            <select id="intakeSponsor" name="sponsorStatus" required>
-              <option value="" disabled selected>Select one</option>
-              <option>Employer-sponsored</option>
-              <option>Family-sponsored</option>
-              <option>Self-filing (no sponsor)</option>
-              <option>Not sure</option>
-            </select>
-          </div>
-          <div class="intake-field">
-            <label for="intakeCurrentStatus">Your current status in the destination country</label>
-            <select id="intakeCurrentStatus" name="currentStatus" required>
-              <option value="" disabled selected>Select one</option>
-              <option>Not yet in the country</option>
-              <option>Visitor / tourist</option>
-              <option>Student</option>
-              <option>Worker (visa or permit holder)</option>
-              <option>Undocumented / no legal status</option>
-              <option>Permanent resident</option>
-              <option>Not sure</option>
-            </select>
-          </div>
-          <div class="intake-field">
-            <label for="intakeLegalRep">Do you have legal representation?</label>
-            <select id="intakeLegalRep" name="legalRepresentation" required>
-              <option value="" disabled selected>Select one</option>
-              <option>Yes, I have a lawyer</option>
-              <option>No, self-filing</option>
-              <option>Looking for one</option>
-            </select>
-          </div>
-          <div class="intake-field">
-            <label for="intakeUrgency">Is there a deadline driving this case?</label>
-            <select id="intakeUrgency" name="urgency" required>
-              <option value="" disabled selected>Select one</option>
-              <option>No specific deadline</option>
-              <option>Within 3 months</option>
-              <option>3–12 months</option>
-              <option>Over a year</option>
-              <option>Not sure</option>
-            </select>
-          </div>
-        </div>
-        <div class="intake-field intake-field-full">
-          <label for="intakeNotes">Anything else we should know? (optional)</label>
-          <textarea id="intakeNotes" name="notes" rows="3"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary btn-lg">Get started</button>
-        <p class="cta-note" id="intakeNote"></p>
-      </form>
     </div>
   </section>
 

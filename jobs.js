@@ -244,7 +244,7 @@ function renderRecommendations() {
     container.innerHTML = `
       <div class="recommend-empty">
         <p>We don't have your case details yet. Fill out the Get Started form and come back — we'll tailor job recommendations and reminders to your category and stage.</p>
-        <a href="index.html#start-form" class="btn btn-primary">Get started</a>
+        <a href="get-started.html" class="btn btn-primary">Get started</a>
       </div>
     `;
     return;

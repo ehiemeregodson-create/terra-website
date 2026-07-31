@@ -27,18 +27,11 @@ const PLAN_LABELS = {
   premium: 'Premium ($299+)',
 };
 
+// The tier is carried across to get-started.html via a ?plan= query param on the link's
+// href (see index.html) — this listener just fires the analytics event before navigation.
 document.querySelectorAll('[data-tier]').forEach((link) => {
   link.addEventListener('click', () => {
     trackEvent('pricing_cta_click', { tier: link.dataset.tier });
-
-    const selectedPlanInput = document.getElementById('intakeSelectedPlan');
-    const planBanner = document.getElementById('intakePlanBanner');
-    const planNameEl = document.getElementById('intakePlanName');
-    if (selectedPlanInput && planBanner && planNameEl) {
-      selectedPlanInput.value = link.dataset.tier;
-      planNameEl.textContent = PLAN_LABELS[link.dataset.tier] || link.dataset.tier;
-      planBanner.hidden = false;
-    }
   });
 });
 
@@ -83,6 +76,20 @@ const intakeForm = document.getElementById('intakeForm');
 const intakeNote = document.getElementById('intakeNote');
 
 if (intakeForm) {
+  // get-started.html can be reached with ?plan=free|pro|premium (set on each pricing
+  // card's href on the homepage) — show which plan the visitor picked, if any.
+  const requestedPlan = new URLSearchParams(window.location.search).get('plan');
+  if (requestedPlan && PLAN_LABELS[requestedPlan]) {
+    const selectedPlanInput = document.getElementById('intakeSelectedPlan');
+    const planBanner = document.getElementById('intakePlanBanner');
+    const planNameEl = document.getElementById('intakePlanName');
+    if (selectedPlanInput && planBanner && planNameEl) {
+      selectedPlanInput.value = requestedPlan;
+      planNameEl.textContent = PLAN_LABELS[requestedPlan];
+      planBanner.hidden = false;
+    }
+  }
+
   intakeForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const submitBtn = intakeForm.querySelector('button');
