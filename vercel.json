@@ -14,5 +14,11 @@
         }
       ]
     }
-  ]
+  ],
+  "crons": [
+    { "path": "/api/cron/auto-answer", "schedule": "0 12 * * *" }
+  ],
+  "functions": {
+    "api/cron/auto-answer.js": { "maxDuration": 60 }
+  }
 }

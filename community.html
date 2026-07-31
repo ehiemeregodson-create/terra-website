@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jobs — Terra</title>
-<meta name="description" content="Live immigration deadline alerts, recommendations tailored to your case, and companies known for sponsoring international talent.">
+<title>Community — Terra</title>
+<meta name="description" content="Ask the immigrant community questions and get real answers — every post is AI-moderated, and Jay answers anything left unanswered after 24 hours.">
 <link rel="stylesheet" href="style.css">
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
@@ -27,8 +27,8 @@
         <a href="index.html#premium">Premium</a>
         <a href="index.html#pricing">Pricing</a>
         <a href="index.html#faq">FAQ</a>
-        <a href="community.html">Community</a>
-        <a href="jobs.html" aria-current="page">Jobs</a>
+        <a href="community.html" aria-current="page">Community</a>
+        <a href="jobs.html">Jobs</a>
       </nav>
       <div class="header-actions">
         <a href="#" class="btn btn-ghost">Log in</a>
@@ -45,44 +45,24 @@
 
   <section class="jobs-hero">
     <div class="container">
-      <p class="eyebrow">Jobs</p>
-      <h1>Live alerts, tailored guidance, and employers who sponsor</h1>
-      <p class="section-sub">A running feed of immigration deadlines and reminders, recommendations based on what you told us, and companies that hire and file for international talent.</p>
+      <p class="eyebrow">Community</p>
+      <h1>Ask the community, get real answers</h1>
+      <p class="section-sub">Post a question about your case or the process. Every post is AI-moderated before it appears — and if no one's answered within 24 hours, Jay will.</p>
     </div>
   </section>
 
-  <section class="newsroom" id="newsroom">
+  <section class="discussion" id="discussion">
     <div class="container">
-      <div class="newsroom-card">
-        <div class="newsroom-header">
-          <span class="live-dot" aria-hidden="true"></span>
-          <span class="newsroom-label">Live — Immigration Alerts</span>
-          <div class="newsroom-dots" id="newsroomDots"></div>
-        </div>
-        <div class="newsroom-body" id="newsroomBody"></div>
-      </div>
-    </div>
-  </section>
+      <form class="discussion-form" id="questionForm">
+        <input type="text" id="questionName" placeholder="Your name (optional)" maxlength="80" autocomplete="name">
+        <textarea id="questionText" placeholder="Ask a question about your case, the process, or what to expect…" rows="3" maxlength="1000" required></textarea>
+        <button type="submit" class="btn btn-primary">Post question</button>
+        <p class="cta-note" id="questionNote"></p>
+      </form>
 
-  <section class="recommendations" id="recommendations">
-    <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">For you</p>
-        <h2>Recommendations &amp; reminders</h2>
-        <p class="section-sub">Tailored to the case details you shared when you filled out Get Started, right down to your category and current stage.</p>
+      <div class="discussion-list" id="discussionList">
+        <p class="discussion-empty" id="discussionLoading">Loading discussion…</p>
       </div>
-      <div id="recommendationsContent"></div>
-    </div>
-  </section>
-
-  <section class="companies" id="companies">
-    <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">Employers</p>
-        <h2>Companies known for sponsoring international talent</h2>
-        <p class="section-sub">A curated list based on publicly known visa sponsorship patterns, weighted toward the US, UK, and Canada — not a live ranked feed. Refresh the page for a different mix.</p>
-      </div>
-      <div class="company-grid" id="companyGrid"></div>
     </div>
   </section>
 
@@ -160,6 +140,6 @@
 </div>
 
 <script src="script.js"></script>
-<script src="jobs.js"></script>
+<script src="community.js"></script>
 </body>
 </html>

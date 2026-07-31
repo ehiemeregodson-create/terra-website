@@ -4,168 +4,73 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
-function formatDate(value) {
-  if (!value) return '';
-  const d = new Date(value);
-  if (isNaN(d.getTime())) return '';
-  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-}
+/* ---------- Live news ticker ---------- */
 
-/* ---------- Discussion board ---------- */
+const NEWS_ALERTS = [
+  { flag: '🇺🇸', text: "US employers: H-1B cap registration typically opens in March — confirm this year's exact window with USCIS and register early." },
+  { flag: '🇺🇸', text: 'F-1 students on OPT: file your STEM OPT extension before your current EAD expires, ideally 90 days ahead.' },
+  { flag: '🇬🇧', text: "UK Skilled Worker visa holders: check your Certificate of Sponsorship for its start-work deadline as soon as it's issued." },
+  { flag: '🇨🇦', text: 'Canada Express Entry draws happen roughly every two weeks — keep your profile active and updated to stay competitive.' },
+  { flag: '🇨🇦', text: "Post-Graduation Work Permit applications must be submitted before your study permit expires — don't wait." },
+  { flag: '🌍', text: 'Renew your passport at least 6 months before it expires — many countries deny boarding or entry otherwise.' },
+  { flag: '🇺🇸', text: 'Green card holders: file Form I-90 to renew your card about 6 months before it expires.' },
+  { flag: '🇬🇧', text: 'ILR applicants: you can apply up to 28 days before your qualifying period ends — mark your calendar.' },
+  { flag: '🌍', text: 'Save every immigration document digitally the day you receive it — receipts, notices, and correspondence.' },
+  { flag: '🇺🇸', text: 'Received an RFE? Your response deadline is usually 30–90 days from the notice date — check yours immediately.' },
+  { flag: '🇨🇦', text: 'LMIA processing takes time — start the employer sponsorship conversation early if your role requires one.' },
+  { flag: '🇬🇧', text: 'UK employers: right-to-work share codes expire — refresh yours before it lapses.' },
+  { flag: '🇺🇸', text: 'F-1 grads: your 60-day grace period after program completion is strict — plan your next status early.' },
+  { flag: '🌍', text: "Biometrics appointments often have limited rescheduling windows — confirm yours the moment it's scheduled." },
+];
 
-async function submitPost({ postType, parentId, name, text }) {
-  try {
-    const res = await fetch('/api/discussion-post', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ postType, parentId: parentId || '', name, text }),
-    });
-    const data = await res.json().catch(() => ({}));
+let newsroomIndex = 0;
+let newsroomTimer = null;
 
-    if (res.status === 403) {
-      return { blocked: true, reason: data.reason || 'This comment violates our community guidelines and was not posted.' };
-    }
-    if (!res.ok || !data.success) {
-      return { success: false };
-    }
-    return { success: true, callout: data.callout || null };
-  } catch (err) {
-    return { success: false };
-  }
-}
-
-function renderDiscussion(posts) {
-  const listEl = document.getElementById('discussionList');
-  const questions = posts.filter((p) => p['Type'] === 'question');
-  const answers = posts.filter((p) => p['Type'] === 'answer');
-
-  if (questions.length === 0) {
-    listEl.innerHTML = '<p class="discussion-empty">No questions yet — be the first to ask.</p>';
-    return;
-  }
-
-  listEl.innerHTML = '';
-
-  questions.slice().reverse().forEach((q) => {
-    const qAnswers = answers.filter((a) => a['Parent ID'] === q['ID']);
-
-    const card = document.createElement('div');
-    card.className = 'discussion-card';
-    card.innerHTML = `
-      <div class="discussion-q">
-        <div class="discussion-meta">
-          <strong>${escapeHtml(q['Name'] || 'Anonymous')}</strong>
-          <span>${formatDate(q['Submitted At'])}</span>
-        </div>
-        <p>${escapeHtml(q['Text'])}</p>
-        ${q['Callout'] ? `<div class="discussion-callout">⚠️ ${escapeHtml(q['Callout'])}</div>` : ''}
-      </div>
-      <div class="discussion-answers"></div>
-      <form class="answer-form">
-        <input type="text" class="answer-name" placeholder="Your name (optional)" maxlength="80">
-        <textarea class="answer-text" placeholder="Write an answer…" rows="2" maxlength="1000" required></textarea>
-        <button type="submit" class="btn btn-outline btn-block">Post answer</button>
-        <p class="cta-note answer-note"></p>
-      </form>
+function renderNewsroomItem(index) {
+  const body = document.getElementById('newsroomBody');
+  if (!body) return;
+  body.style.opacity = '0';
+  setTimeout(() => {
+    const item = NEWS_ALERTS[index];
+    body.innerHTML = `
+      <span class="newsroom-flag">${item.flag}</span>
+      <p class="newsroom-text">${escapeHtml(item.text)}</p>
     `;
+    body.style.opacity = '1';
+  }, 200);
 
-    const answersEl = card.querySelector('.discussion-answers');
-    qAnswers.forEach((a) => {
-      const aDiv = document.createElement('div');
-      aDiv.className = 'discussion-answer';
-      aDiv.innerHTML = `
-        <div class="discussion-meta">
-          <strong>${escapeHtml(a['Name'] || 'Anonymous')}</strong>
-          <span>${formatDate(a['Submitted At'])}</span>
-        </div>
-        <p>${escapeHtml(a['Text'])}</p>
-        ${a['Callout'] ? `<div class="discussion-callout">⚠️ ${escapeHtml(a['Callout'])}</div>` : ''}
-      `;
-      answersEl.appendChild(aDiv);
+  document.querySelectorAll('.newsroom-dot').forEach((d, i) => d.classList.toggle('active', i === index));
+}
+
+function resetNewsroomTimer() {
+  if (newsroomTimer) clearInterval(newsroomTimer);
+  newsroomTimer = setInterval(() => {
+    newsroomIndex = (newsroomIndex + 1) % NEWS_ALERTS.length;
+    renderNewsroomItem(newsroomIndex);
+  }, 6000);
+}
+
+function initNewsroom() {
+  const dotsContainer = document.getElementById('newsroomDots');
+  if (!dotsContainer) return;
+
+  dotsContainer.innerHTML = NEWS_ALERTS.map(
+    (_, i) => `<button type="button" class="newsroom-dot" data-index="${i}" aria-label="Alert ${i + 1}"></button>`
+  ).join('');
+
+  dotsContainer.querySelectorAll('.newsroom-dot').forEach((dot) => {
+    dot.addEventListener('click', () => {
+      newsroomIndex = parseInt(dot.dataset.index, 10);
+      renderNewsroomItem(newsroomIndex);
+      resetNewsroomTimer();
     });
-
-    const answerForm = card.querySelector('.answer-form');
-    answerForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const nameInput = answerForm.querySelector('.answer-name');
-      const textInput = answerForm.querySelector('.answer-text');
-      const note = answerForm.querySelector('.answer-note');
-      const btn = answerForm.querySelector('button');
-      const text = textInput.value.trim();
-      if (!text) return;
-
-      btn.disabled = true;
-      note.textContent = 'Checking your answer…';
-
-      const result = await submitPost({ postType: 'answer', parentId: q['ID'], name: nameInput.value.trim(), text });
-
-      if (result.blocked) {
-        note.textContent = result.reason;
-        btn.disabled = false;
-        return;
-      }
-      if (!result.success) {
-        note.textContent = 'Something went wrong — please try again.';
-        btn.disabled = false;
-        return;
-      }
-
-      trackEvent('discussion_post', { postType: 'answer', flagged: Boolean(result.callout) });
-      btn.disabled = false;
-      answerForm.reset();
-      loadDiscussion();
-    });
-
-    listEl.appendChild(card);
   });
+
+  renderNewsroomItem(newsroomIndex);
+  resetNewsroomTimer();
 }
 
-async function loadDiscussion() {
-  const listEl = document.getElementById('discussionList');
-  try {
-    const res = await fetch('/api/discussion-list');
-    const data = await res.json();
-    renderDiscussion(data.posts || []);
-  } catch (err) {
-    listEl.innerHTML = "<p class=\"discussion-empty\">Couldn't load the discussion right now.</p>";
-  }
-}
-
-const questionForm = document.getElementById('questionForm');
-const questionNote = document.getElementById('questionNote');
-
-questionForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const nameInput = document.getElementById('questionName');
-  const textInput = document.getElementById('questionText');
-  const btn = questionForm.querySelector('button');
-  const text = textInput.value.trim();
-  if (!text) return;
-
-  btn.disabled = true;
-  questionNote.textContent = 'Checking your question…';
-
-  const result = await submitPost({ postType: 'question', parentId: '', name: nameInput.value.trim(), text });
-
-  if (result.blocked) {
-    questionNote.textContent = result.reason;
-    btn.disabled = false;
-    return;
-  }
-  if (!result.success) {
-    questionNote.textContent = 'Something went wrong — please try again.';
-    btn.disabled = false;
-    return;
-  }
-
-  questionNote.textContent = result.callout ? 'Posted — note: ' + result.callout : 'Posted!';
-  trackEvent('discussion_post', { postType: 'question', flagged: Boolean(result.callout) });
-  questionForm.reset();
-  btn.disabled = false;
-  loadDiscussion();
-});
-
-loadDiscussion();
+initNewsroom();
 
 /* ---------- Recommendations ---------- */
 

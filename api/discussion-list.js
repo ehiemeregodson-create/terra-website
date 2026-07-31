@@ -17,8 +17,6 @@ module.exports = async (req, res) => {
     }
 
     const rows = await upstream.json();
-    // Mapped to the same shape the frontend already expects (originally Google Sheets
-    // header names), so jobs.js needs no changes for this storage swap.
     const posts = rows.map((row) => ({
       ID: row.id,
       Type: row.post_type,
@@ -27,6 +25,8 @@ module.exports = async (req, res) => {
       Text: row.text,
       Callout: row.callout || '',
       'Submitted At': row.created_at,
+      Upvotes: row.upvotes || 0,
+      IsAI: Boolean(row.is_ai),
     }));
 
     res.status(200).json({ posts });
