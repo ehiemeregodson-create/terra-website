@@ -139,7 +139,9 @@ if (intakeForm) {
   // right before redirecting an unauthenticated visitor to account.html.
   if (intakeSection) intakeSection.style.visibility = 'hidden';
 
-  const requestedPlan = new URLSearchParams(window.location.search).get('plan');
+  const urlParams = new URLSearchParams(window.location.search);
+  const requestedPlan = urlParams.get('plan');
+  const checkoutStatus = urlParams.get('checkout'); // 'success' | 'cancelled', set by Stripe's redirect
 
   authStatePromise.then((authData) => {
     if (!authData || !authData.authenticated) {
@@ -151,6 +153,18 @@ if (intakeForm) {
     }
 
     if (intakeSection) intakeSection.style.visibility = 'visible';
+
+    // The case was already saved before redirecting to Stripe, so a successful payment
+    // needs no further action here beyond confirming it — resubmitting the form would just
+    // create a duplicate case record.
+    if (checkoutStatus === 'success') {
+      intakeForm.hidden = true;
+      intakeNote.textContent =
+        `You're all set! Payment received — welcome to ${PLAN_LABELS[requestedPlan] || 'Terra'}. ` +
+        "We'll start sending policy alerts relevant to your case shortly.";
+      trackEvent('checkout_success', { plan: requestedPlan || 'unknown' });
+      return;
+    }
 
     const nameField = document.getElementById('intakeName');
     const emailField = document.getElementById('intakeEmail');
@@ -170,6 +184,10 @@ if (intakeForm) {
         planNameEl.textContent = PLAN_LABELS[requestedPlan];
         planBanner.hidden = false;
       }
+    }
+
+    if (checkoutStatus === 'cancelled') {
+      intakeNote.textContent = 'Checkout was cancelled — your case details are already saved, so you can just try again below.';
     }
   });
 
@@ -199,14 +217,36 @@ if (intakeForm) {
         return;
       }
 
-      const planLabel = PLAN_LABELS[payload.selectedPlan];
-      intakeNote.textContent = (planLabel ? `You're signed up for ${planLabel}! ` : "You're in! ") +
-        "We'll start sending policy alerts relevant to your case to " + payload.email + ".";
       trackEvent('get_started_signup', { category: payload.category, stage: payload.stage, plan: payload.selectedPlan || 'none' });
 
-      intakeForm.reset();
-      const planBanner = document.getElementById('intakePlanBanner');
-      if (planBanner) planBanner.hidden = true;
+      // Free plan (or no plan selected): case is saved, nothing left to pay for.
+      if (payload.selectedPlan !== 'pro' && payload.selectedPlan !== 'premium') {
+        const planLabel = PLAN_LABELS[payload.selectedPlan];
+        intakeNote.textContent = (planLabel ? `You're signed up for ${planLabel}! ` : "You're in! ") +
+          "We'll start sending policy alerts relevant to your case to " + payload.email + ".";
+        intakeForm.reset();
+        const planBanner = document.getElementById('intakePlanBanner');
+        if (planBanner) planBanner.hidden = true;
+        return;
+      }
+
+      // Paid plan: the case is saved, now send them to Stripe to actually pay for it.
+      intakeNote.textContent = 'Redirecting you to checkout…';
+      try {
+        const checkoutRes = await fetch('/api/billing/create-checkout', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ plan: payload.selectedPlan }),
+        });
+        const checkoutData = await checkoutRes.json().catch(() => ({}));
+        if (checkoutRes.ok && checkoutData.url) {
+          window.location.href = checkoutData.url;
+          return;
+        }
+        intakeNote.textContent = checkoutData.error || "Your case was saved, but checkout couldn't start — please try again.";
+      } catch (checkoutErr) {
+        intakeNote.textContent = "Your case was saved, but I couldn't reach checkout — please try again.";
+      }
     } catch (err) {
       intakeNote.textContent = "Sorry, I couldn't reach the server. Please check your connection and try again.";
     } finally {
