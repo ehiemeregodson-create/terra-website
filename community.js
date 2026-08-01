@@ -87,7 +87,7 @@ async function handleUpvoteClick(btn) {
 
   btn.disabled = true;
   try {
-    const res = await fetch('/api/discussion-upvote', {
+    const res = await fetch('/api/discussion/upvote', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ id: postId }),
@@ -114,7 +114,7 @@ async function handleUpvoteClick(btn) {
 
 async function submitPost({ postType, parentId, name, text }) {
   try {
-    const res = await fetch('/api/discussion-post', {
+    const res = await fetch('/api/discussion/post', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ postType, parentId: parentId || '', name, text }),
@@ -253,7 +253,7 @@ function renderDiscussion(posts) {
 async function loadDiscussion() {
   const listEl = document.getElementById('discussionList');
   try {
-    const res = await fetch('/api/discussion-list');
+    const res = await fetch('/api/discussion/list');
     const data = await res.json();
     renderDiscussion(data.posts || []);
   } catch (err) {

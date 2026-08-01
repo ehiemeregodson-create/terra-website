@@ -58,7 +58,7 @@ function showAuthenticated(user) {
     : 'You have an active session.';
 }
 
-fetch('/api/auth-me')
+fetch('/api/auth/me')
   .then((res) => res.json())
   .then((data) => {
     if (data && data.authenticated && data.user) {
@@ -83,7 +83,7 @@ document.getElementById('goToGetStarted').addEventListener('click', () => {
 });
 
 document.getElementById('accountLogoutBtn').addEventListener('click', async () => {
-  await fetch('/api/auth-logout', { method: 'POST' }).catch(() => {});
+  await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
   window.location.href = 'index.html';
 });
 
@@ -99,7 +99,7 @@ document.getElementById('deleteAccountBtn').addEventListener('click', async () =
   note.textContent = 'Deleting your account…';
 
   try {
-    const res = await fetch('/api/auth-delete-account', { method: 'POST' });
+    const res = await fetch('/api/auth/delete-account', { method: 'POST' });
     const data = await res.json().catch(() => ({}));
     if (!res.ok || !data.success) {
       note.textContent = data.error || 'Something went wrong — please try again.';
@@ -136,7 +136,7 @@ signupPanel.addEventListener('submit', async (e) => {
   signupNote.textContent = 'Creating your account…';
 
   try {
-    const res = await fetch('/api/auth-signup', {
+    const res = await fetch('/api/auth/signup', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
@@ -176,7 +176,7 @@ loginPanel.addEventListener('submit', async (e) => {
   loginNote.textContent = 'Logging in…';
 
   try {
-    const res = await fetch('/api/auth-login', {
+    const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ email: emailInput.value.trim(), password: passwordInput.value }),
@@ -221,7 +221,7 @@ forgotPanel.addEventListener('submit', async (e) => {
   forgotNote.textContent = 'Sending…';
 
   try {
-    await fetch('/api/auth-forgot-password', {
+    await fetch('/api/auth/forgot-password', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ email: emailInput.value.trim() }),

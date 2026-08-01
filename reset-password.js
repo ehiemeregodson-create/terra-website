@@ -34,7 +34,7 @@ if (!accessToken || linkType !== 'recovery') {
     resetNote.textContent = 'Updating your password…';
 
     try {
-      const res = await fetch('/api/auth-reset-password', {
+      const res = await fetch('/api/auth/reset-password', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ accessToken, refreshToken, password: passwordInput.value }),

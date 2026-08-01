@@ -28,7 +28,7 @@ async function checkAuthState() {
   if (!loginLink) return null;
 
   try {
-    const res = await fetch('/api/auth-me');
+    const res = await fetch('/api/auth/me');
     const data = await res.json();
     if (data.authenticated) {
       loginLink.textContent = 'Log out';
@@ -36,7 +36,7 @@ async function checkAuthState() {
       loginLink.setAttribute('href', '#');
       loginLink.addEventListener('click', async (e) => {
         e.preventDefault();
-        await fetch('/api/auth-logout', { method: 'POST' }).catch(() => {});
+        await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
         window.location.href = 'index.html';
       });
     }
