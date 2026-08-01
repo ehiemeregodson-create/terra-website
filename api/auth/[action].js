@@ -9,6 +9,7 @@ const {
   handleForgotPassword,
   handleResetPassword,
   handleDeleteAccount,
+  handleTestError,
 } = require('../../lib/authHandlers');
 
 const ROUTES = {
@@ -19,6 +20,7 @@ const ROUTES = {
   'forgot-password': handleForgotPassword,
   'reset-password': handleResetPassword,
   'delete-account': handleDeleteAccount,
+  'test-error': handleTestError, // TEMPORARY — remove alongside handleTestError once Sentry is verified
 };
 
 module.exports = async (req, res) => {
