@@ -82,7 +82,7 @@ const authStatePromise = checkAuthState();
 const PLAN_LABELS = {
   free: 'the Free plan',
   pro: 'Terra Pro ($49/month)',
-  premium: 'Premium ($299+)',
+  premium: 'Terra Premium ($299 one-time)',
 };
 
 // The tier is carried across to get-started.html via a ?plan= query param on the link's
