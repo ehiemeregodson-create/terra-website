@@ -156,12 +156,17 @@ if (intakeForm) {
 
     // The case was already saved before redirecting to Stripe, so a successful payment
     // needs no further action here beyond confirming it — resubmitting the form would just
-    // create a duplicate case record.
+    // create a duplicate case record. Uses a note outside the form (not intakeNote, which is
+    // a child of intakeForm and would be hidden along with it).
     if (checkoutStatus === 'success') {
       intakeForm.hidden = true;
-      intakeNote.textContent =
-        `You're all set! Payment received — welcome to ${PLAN_LABELS[requestedPlan] || 'Terra'}. ` +
-        "We'll start sending policy alerts relevant to your case shortly.";
+      const checkoutNote = document.getElementById('checkoutNote');
+      if (checkoutNote) {
+        checkoutNote.hidden = false;
+        checkoutNote.textContent =
+          `You're all set! Payment received — welcome to ${PLAN_LABELS[requestedPlan] || 'Terra'}. ` +
+          "We'll start sending policy alerts relevant to your case shortly.";
+      }
       trackEvent('checkout_success', { plan: requestedPlan || 'unknown' });
       return;
     }
