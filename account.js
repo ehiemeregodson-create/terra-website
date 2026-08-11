@@ -123,12 +123,19 @@ signupPanel.addEventListener('submit', async (e) => {
   const nameInput = document.getElementById('signupName');
   const emailInput = document.getElementById('signupEmail');
   const passwordInput = document.getElementById('signupPassword');
+  const ageInput = document.getElementById('signupAgeConfirm');
   const btn = signupPanel.querySelector('button');
 
   if (!PASSWORD_PATTERN.test(passwordInput.value)) {
     signupNote.textContent =
       'Password must be more than 8 characters and include an uppercase letter, a lowercase letter, and a number.';
     passwordInput.focus();
+    return;
+  }
+
+  if (!ageInput.checked) {
+    signupNote.textContent = 'You must confirm you are 15 years of age or older to create an account.';
+    ageInput.focus();
     return;
   }
 
@@ -143,6 +150,7 @@ signupPanel.addEventListener('submit', async (e) => {
         fullName: nameInput.value.trim(),
         email: emailInput.value.trim(),
         password: passwordInput.value,
+        ageConfirmed: ageInput.checked,
       }),
     });
     const data = await res.json().catch(() => ({}));
