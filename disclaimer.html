@@ -23,17 +23,23 @@
     </a>
     <div class="mobile-panel" id="mobilePanel">
       <nav class="nav-links" id="navLinks">
-        <a href="index.html#features">Features</a>
-        <a href="index.html#how-it-works">How it works</a>
-        <a href="index.html#premium">Premium</a>
-        <a href="index.html#pricing">Pricing</a>
-        <a href="index.html#faq">FAQ</a>
-        <a href="community.html">Community</a>
-        <a href="jobs.html">Jobs</a>
+        <a href="index.html#features" data-i18n="nav.features">Features</a>
+        <a href="index.html#how-it-works" data-i18n="nav.howItWorks">How it works</a>
+        <a href="index.html#premium" data-i18n="nav.premium">Premium</a>
+        <a href="index.html#pricing" data-i18n="nav.pricing">Pricing</a>
+        <a href="index.html#faq" data-i18n="nav.faq">FAQ</a>
+        <a href="community.html" data-i18n="nav.community">Community</a>
+        <a href="jobs.html" data-i18n="nav.jobs">Jobs</a>
       </nav>
       <div class="header-actions">
-        <a href="account.html" class="btn btn-ghost">Log in</a>
-        <a href="get-started.html" class="btn btn-primary">Get started</a>
+        <select class="lang-switcher" id="langSwitcher" aria-label="Language">
+          <option value="en">EN</option>
+          <option value="es">ES</option>
+          <option value="fr">FR</option>
+          <option value="zh">中文</option>
+        </select>
+        <a href="account.html" class="btn btn-ghost" data-i18n="header.login">Log in</a>
+        <a href="get-started.html" class="btn btn-primary" data-i18n="header.getStarted">Get started</a>
       </div>
     </div>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
@@ -45,30 +51,30 @@
 <main>
   <section class="legal-section">
     <div class="container legal-content">
-      <p class="eyebrow">Legal</p>
-      <h1>Disclaimer</h1>
-      <p class="legal-updated">Last updated: July 30, 2026</p>
+      <p class="eyebrow" data-i18n="legal.eyebrow">Legal</p>
+      <h1 data-i18n="disclaimer.h1">Disclaimer</h1>
+      <p class="legal-updated" data-i18n="disclaimer.updated">Last updated: July 30, 2026</p>
 
-      <h2>Not a law firm, not legal advice</h2>
-      <p>Terra is a software platform, not a law firm. Nothing on Terra — including policy alerts, predictive timelines, community answers, or responses from Jay, our AI assistant — is legal advice, and using Terra does not create an attorney-client relationship between you and Terra or anyone affiliated with it.</p>
+      <h2 data-i18n="disclaimer.h2.notFirm">Not a law firm, not legal advice</h2>
+      <p data-i18n="disclaimer.p.notFirm">Terra is a software platform, not a law firm. Nothing on Terra — including policy alerts, predictive timelines, community answers, or responses from Jay, our AI assistant — is legal advice, and using Terra does not create an attorney-client relationship between you and Terra or anyone affiliated with it.</p>
 
-      <h2>About Jay, our AI assistant</h2>
-      <p>Jay is powered by a large language model and can make mistakes, including about specific rules, deadlines, or eligibility criteria. Jay is meant to help you understand general immigration concepts and how Terra works — not to tell you what to do in your specific legal situation. Always verify anything case-critical against official government sources, and for anything high-stakes, talk to a licensed immigration attorney.</p>
+      <h2 data-i18n="disclaimer.h2.jay">About Jay, our AI assistant</h2>
+      <p data-i18n="disclaimer.p.jay">Jay is powered by a large language model and can make mistakes, including about specific rules, deadlines, or eligibility criteria. Jay is meant to help you understand general immigration concepts and how Terra works — not to tell you what to do in your specific legal situation. Always verify anything case-critical against official government sources, and for anything high-stakes, talk to a licensed immigration attorney.</p>
 
-      <h2>Predictive timelines</h2>
-      <p>Timeline estimates and outcome predictions are based on patterns in historical, publicly available data. They are informational estimates, not guarantees. Actual processing times and outcomes depend on your specific case, the relevant government agency, and factors outside Terra's knowledge or control.</p>
+      <h2 data-i18n="disclaimer.h2.timelines">Predictive timelines</h2>
+      <p data-i18n="disclaimer.p.timelines">Timeline estimates and outcome predictions are based on patterns in historical, publicly available data. They are informational estimates, not guarantees. Actual processing times and outcomes depend on your specific case, the relevant government agency, and factors outside Terra's knowledge or control.</p>
 
-      <h2>Community content</h2>
-      <p>Answers posted by other community members, or generated automatically by Jay when a question goes unanswered, reflect the views of individual users or an AI system — not professional legal advice, and not necessarily accurate for your situation.</p>
+      <h2 data-i18n="disclaimer.h2.community">Community content</h2>
+      <p data-i18n="disclaimer.p.community">Answers posted by other community members, or generated automatically by Jay when a question goes unanswered, reflect the views of individual users or an AI system — not professional legal advice, and not necessarily accurate for your situation.</p>
 
-      <h2>Premium attorney connections</h2>
-      <p>On Terra Premium, we can introduce you to a licensed immigration attorney. That attorney relationship, and any advice given within it, is between you and the attorney directly — governed by their own professional obligations, not by Terra.</p>
+      <h2 data-i18n="disclaimer.h2.premium">Premium attorney connections</h2>
+      <p data-i18n="disclaimer.p.premium">On Terra Premium, we can introduce you to a licensed immigration attorney. That attorney relationship, and any advice given within it, is between you and the attorney directly — governed by their own professional obligations, not by Terra.</p>
 
-      <h2>When in doubt</h2>
-      <p>If a decision genuinely matters to your case — a filing, a deadline, a response to a government notice — verify it with an official source or a licensed attorney before acting on it.</p>
+      <h2 data-i18n="disclaimer.h2.doubt">When in doubt</h2>
+      <p data-i18n="disclaimer.p.doubt">If a decision genuinely matters to your case — a filing, a deadline, a response to a government notice — verify it with an official source or a licensed attorney before acting on it.</p>
 
-      <h2>Contact</h2>
-      <p>Questions about this disclaimer? Email <a href="mailto:legal@terra.example">legal@terra.example</a>.</p>
+      <h2 data-i18n="legal.contact">Contact</h2>
+      <p data-i18n-html="disclaimer.p.contact">Questions about this disclaimer? Email <a href="mailto:legal@terra.example">legal@terra.example</a>.</p>
     </div>
   </section>
 </main>
@@ -84,31 +90,31 @@
         </span>
         Terra
       </a>
-      <p>Guiding immigrants through every step of their case, from first filing to final decision.</p>
+      <p data-i18n="footer.desc">Guiding immigrants through every step of their case, from first filing to final decision.</p>
     </div>
     <div class="footer-links">
       <div>
-        <h4>Product</h4>
-        <a href="index.html#features">Features</a>
-        <a href="index.html#premium">Premium</a>
-        <a href="index.html#pricing">Pricing</a>
+        <h4 data-i18n="footer.product">Product</h4>
+        <a href="index.html#features" data-i18n="nav.features">Features</a>
+        <a href="index.html#premium" data-i18n="nav.premium">Premium</a>
+        <a href="index.html#pricing" data-i18n="nav.pricing">Pricing</a>
       </div>
       <div>
-        <h4>Company</h4>
-        <a href="#">About</a>
-        <a href="#">Careers</a>
-        <a href="#">Contact</a>
+        <h4 data-i18n="footer.company">Company</h4>
+        <a href="#" data-i18n="footer.about">About</a>
+        <a href="#" data-i18n="footer.careers">Careers</a>
+        <a href="#" data-i18n="footer.contact">Contact</a>
       </div>
       <div>
-        <h4>Legal</h4>
-        <a href="privacy.html">Privacy</a>
-        <a href="terms.html">Terms</a>
-        <a href="disclaimer.html" aria-current="page">Disclaimer</a>
+        <h4 data-i18n="footer.legal">Legal</h4>
+        <a href="privacy.html" data-i18n="footer.privacy">Privacy</a>
+        <a href="terms.html" data-i18n="footer.terms">Terms</a>
+        <a href="disclaimer.html" aria-current="page" data-i18n="footer.disclaimer">Disclaimer</a>
       </div>
     </div>
   </div>
   <div class="container footer-bottom">
-    <p>© 2026 Terra. Terra is not a law firm and does not provide legal advice.</p>
+    <p data-i18n="footer.copyright">© 2026 Terra. Terra is not a law firm and does not provide legal advice.</p>
   </div>
 </footer>
 
@@ -123,7 +129,7 @@
     <div class="chat-header" id="chatHeader">
       <div>
         <strong>Jay</strong>
-        <span>Ask about your case or how Terra works</span>
+        <span data-i18n="chat.headerSub">Ask about your case or how Terra works</span>
       </div>
       <div class="chat-header-actions">
         <button class="chat-icon-btn" id="chatMinimize" aria-label="Minimize chat" title="Minimize">
@@ -133,17 +139,18 @@
       </div>
     </div>
     <div class="chat-messages" id="chatMessages">
-      <div class="chat-msg chat-msg-bot">
+      <div class="chat-msg chat-msg-bot" data-i18n="chat.greeting">
         Hi! I'm Jay, Terra's assistant. Ask me about immigration processes and policy, or how Terra's features and pricing work. I'm not a lawyer and this isn't legal advice — for anything case-critical, Premium members can connect directly with a licensed attorney.
       </div>
     </div>
     <form class="chat-input-row" id="chatForm">
-      <input type="text" id="chatInput" placeholder="Ask a question…" autocomplete="off" maxlength="600" required>
-      <button type="submit" class="btn btn-primary">Send</button>
+      <input type="text" id="chatInput" placeholder="Ask a question…" autocomplete="off" maxlength="600" required data-i18n-placeholder="chat.inputPlaceholder">
+      <button type="submit" class="btn btn-primary" data-i18n="chat.send">Send</button>
     </form>
   </div>
 </div>
 
+<script src="translations.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

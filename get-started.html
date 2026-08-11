@@ -30,17 +30,23 @@
     </a>
     <div class="mobile-panel" id="mobilePanel">
       <nav class="nav-links" id="navLinks">
-        <a href="index.html#features">Features</a>
-        <a href="index.html#how-it-works">How it works</a>
-        <a href="index.html#premium">Premium</a>
-        <a href="index.html#pricing">Pricing</a>
-        <a href="index.html#faq">FAQ</a>
-        <a href="community.html">Community</a>
-        <a href="jobs.html">Jobs</a>
+        <a href="index.html#features" data-i18n="nav.features">Features</a>
+        <a href="index.html#how-it-works" data-i18n="nav.howItWorks">How it works</a>
+        <a href="index.html#premium" data-i18n="nav.premium">Premium</a>
+        <a href="index.html#pricing" data-i18n="nav.pricing">Pricing</a>
+        <a href="index.html#faq" data-i18n="nav.faq">FAQ</a>
+        <a href="community.html" data-i18n="nav.community">Community</a>
+        <a href="jobs.html" data-i18n="nav.jobs">Jobs</a>
       </nav>
       <div class="header-actions">
-        <a href="account.html" class="btn btn-ghost">Log in</a>
-        <a href="get-started.html" class="btn btn-primary" aria-current="page">Get started</a>
+        <select class="lang-switcher" id="langSwitcher" aria-label="Language">
+          <option value="en">EN</option>
+          <option value="es">ES</option>
+          <option value="fr">FR</option>
+          <option value="zh">中文</option>
+        </select>
+        <a href="account.html" class="btn btn-ghost" data-i18n="header.login">Log in</a>
+        <a href="get-started.html" class="btn btn-primary" aria-current="page" data-i18n="header.getStarted">Get started</a>
       </div>
     </div>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
@@ -54,12 +60,12 @@
   <section class="intake" id="start-form">
     <div class="container">
       <div class="section-head">
-        <p class="eyebrow">Get started</p>
-        <h2>Tell us about your case</h2>
-        <p class="section-sub">A few quick details so Terra can start sending you policy interpretation and alerts relevant to your specific situation.</p>
+        <p class="eyebrow" data-i18n="intake.eyebrow">Get started</p>
+        <h2 data-i18n="intake.title">Tell us about your case</h2>
+        <p class="section-sub" data-i18n="intake.sub">A few quick details so Terra can start sending you policy interpretation and alerts relevant to your specific situation.</p>
       </div>
       <div class="intake-plan-banner" id="intakePlanBanner" hidden>
-        <span>Signing up for</span>
+        <span data-i18n="intake.planBannerLabel">Signing up for</span>
         <strong id="intakePlanName"></strong>
       </div>
       <p class="cta-note" id="checkoutNote" hidden></p>
@@ -67,97 +73,97 @@
         <input type="hidden" id="intakeSelectedPlan" name="selectedPlan" value="">
         <div class="intake-grid">
           <div class="intake-field">
-            <label for="intakeName">Full name</label>
+            <label for="intakeName" data-i18n="intake.nameLabel">Full name</label>
             <input type="text" id="intakeName" name="name" required autocomplete="name">
           </div>
           <div class="intake-field">
-            <label for="intakeEmail">Email</label>
+            <label for="intakeEmail" data-i18n="intake.emailLabel">Email</label>
             <input type="email" id="intakeEmail" name="email" required autocomplete="email">
           </div>
           <div class="intake-field">
-            <label for="intakeCountry">Country you're applying from</label>
+            <label for="intakeCountry" data-i18n="intake.countryLabel">Country you're applying from</label>
             <input type="text" id="intakeCountry" name="country" required autocomplete="country-name">
           </div>
           <div class="intake-field">
-            <label for="intakeDestination">Country you're applying to</label>
+            <label for="intakeDestination" data-i18n="intake.destinationLabel">Country you're applying to</label>
             <input type="text" id="intakeDestination" name="destinationCountry" required>
           </div>
           <div class="intake-field">
-            <label for="intakeCategory">Purpose of your immigration case</label>
+            <label for="intakeCategory" data-i18n="intake.categoryLabel">Purpose of your immigration case</label>
             <select id="intakeCategory" name="category" required>
-              <option value="" disabled selected>Select one</option>
-              <option>Employment / work visa</option>
-              <option>Family reunification</option>
-              <option>Study (student visa)</option>
-              <option>Asylum / refugee protection</option>
-              <option>Permanent residency / settlement</option>
-              <option>Investment / business</option>
-              <option>Citizenship / naturalization</option>
-              <option>Other</option>
+              <option value="" disabled selected data-i18n="intake.selectOne">Select one</option>
+              <option data-i18n="intake.category.employment">Employment / work visa</option>
+              <option data-i18n="intake.category.family">Family reunification</option>
+              <option data-i18n="intake.category.study">Study (student visa)</option>
+              <option data-i18n="intake.category.asylum">Asylum / refugee protection</option>
+              <option data-i18n="intake.category.residency">Permanent residency / settlement</option>
+              <option data-i18n="intake.category.investment">Investment / business</option>
+              <option data-i18n="intake.category.citizenship">Citizenship / naturalization</option>
+              <option data-i18n="intake.category.other">Other</option>
             </select>
           </div>
           <div class="intake-field">
-            <label for="intakeStage">Current stage</label>
+            <label for="intakeStage" data-i18n="intake.stageLabel">Current stage</label>
             <select id="intakeStage" name="stage" required>
-              <option value="" disabled selected>Select one</option>
-              <option>Haven't filed yet</option>
-              <option>Filed — awaiting decision</option>
-              <option>Asked for more evidence/documents</option>
-              <option>Interview scheduled</option>
-              <option>Approved</option>
-              <option>Denied / appealing</option>
-              <option>Not sure</option>
+              <option value="" disabled selected data-i18n="intake.selectOne">Select one</option>
+              <option data-i18n="intake.stage.notFiled">Haven't filed yet</option>
+              <option data-i18n="intake.stage.filed">Filed — awaiting decision</option>
+              <option data-i18n="intake.stage.evidence">Asked for more evidence/documents</option>
+              <option data-i18n="intake.stage.interview">Interview scheduled</option>
+              <option data-i18n="intake.stage.approved">Approved</option>
+              <option data-i18n="intake.stage.denied">Denied / appealing</option>
+              <option data-i18n="intake.stage.notSure">Not sure</option>
             </select>
           </div>
           <div class="intake-field">
-            <label for="intakeSponsor">Do you have a sponsor?</label>
+            <label for="intakeSponsor" data-i18n="intake.sponsorLabel">Do you have a sponsor?</label>
             <select id="intakeSponsor" name="sponsorStatus" required>
-              <option value="" disabled selected>Select one</option>
-              <option>Employer-sponsored</option>
-              <option>Family-sponsored</option>
-              <option>Self-filing (no sponsor)</option>
-              <option>Not sure</option>
+              <option value="" disabled selected data-i18n="intake.selectOne">Select one</option>
+              <option data-i18n="intake.sponsor.employer">Employer-sponsored</option>
+              <option data-i18n="intake.sponsor.family">Family-sponsored</option>
+              <option data-i18n="intake.sponsor.self">Self-filing (no sponsor)</option>
+              <option data-i18n="intake.sponsor.notSure">Not sure</option>
             </select>
           </div>
           <div class="intake-field">
-            <label for="intakeCurrentStatus">Your current status in the destination country</label>
+            <label for="intakeCurrentStatus" data-i18n="intake.statusLabel">Your current status in the destination country</label>
             <select id="intakeCurrentStatus" name="currentStatus" required>
-              <option value="" disabled selected>Select one</option>
-              <option>Not yet in the country</option>
-              <option>Visitor / tourist</option>
-              <option>Student</option>
-              <option>Worker (visa or permit holder)</option>
-              <option>Undocumented / no legal status</option>
-              <option>Permanent resident</option>
-              <option>Not sure</option>
+              <option value="" disabled selected data-i18n="intake.selectOne">Select one</option>
+              <option data-i18n="intake.status.notYet">Not yet in the country</option>
+              <option data-i18n="intake.status.visitor">Visitor / tourist</option>
+              <option data-i18n="intake.status.student">Student</option>
+              <option data-i18n="intake.status.worker">Worker (visa or permit holder)</option>
+              <option data-i18n="intake.status.undocumented">Undocumented / no legal status</option>
+              <option data-i18n="intake.status.resident">Permanent resident</option>
+              <option data-i18n="intake.status.notSure">Not sure</option>
             </select>
           </div>
           <div class="intake-field">
-            <label for="intakeLegalRep">Do you have legal representation?</label>
+            <label for="intakeLegalRep" data-i18n="intake.legalRepLabel">Do you have legal representation?</label>
             <select id="intakeLegalRep" name="legalRepresentation" required>
-              <option value="" disabled selected>Select one</option>
-              <option>Yes, I have a lawyer</option>
-              <option>No, self-filing</option>
-              <option>Looking for one</option>
+              <option value="" disabled selected data-i18n="intake.selectOne">Select one</option>
+              <option data-i18n="intake.legalRep.yes">Yes, I have a lawyer</option>
+              <option data-i18n="intake.legalRep.no">No, self-filing</option>
+              <option data-i18n="intake.legalRep.looking">Looking for one</option>
             </select>
           </div>
           <div class="intake-field">
-            <label for="intakeUrgency">Is there a deadline driving this case?</label>
+            <label for="intakeUrgency" data-i18n="intake.urgencyLabel">Is there a deadline driving this case?</label>
             <select id="intakeUrgency" name="urgency" required>
-              <option value="" disabled selected>Select one</option>
-              <option>No specific deadline</option>
-              <option>Within 3 months</option>
-              <option>3–12 months</option>
-              <option>Over a year</option>
-              <option>Not sure</option>
+              <option value="" disabled selected data-i18n="intake.selectOne">Select one</option>
+              <option data-i18n="intake.urgency.none">No specific deadline</option>
+              <option data-i18n="intake.urgency.3months">Within 3 months</option>
+              <option data-i18n="intake.urgency.3to12">3–12 months</option>
+              <option data-i18n="intake.urgency.over1year">Over a year</option>
+              <option data-i18n="intake.urgency.notSure">Not sure</option>
             </select>
           </div>
         </div>
         <div class="intake-field intake-field-full">
-          <label for="intakeNotes">Anything else we should know? (optional)</label>
+          <label for="intakeNotes" data-i18n="intake.notesLabel">Anything else we should know? (optional)</label>
           <textarea id="intakeNotes" name="notes" rows="3"></textarea>
         </div>
-        <button type="submit" class="btn btn-primary btn-lg">Get started</button>
+        <button type="submit" class="btn btn-primary btn-lg" data-i18n="intake.submit">Get started</button>
         <p class="cta-note" id="intakeNote"></p>
       </form>
     </div>
@@ -176,31 +182,31 @@
         </span>
         Terra
       </a>
-      <p>Guiding immigrants through every step of their case, from first filing to final decision.</p>
+      <p data-i18n="footer.desc">Guiding immigrants through every step of their case, from first filing to final decision.</p>
     </div>
     <div class="footer-links">
       <div>
-        <h4>Product</h4>
-        <a href="index.html#features">Features</a>
-        <a href="index.html#premium">Premium</a>
-        <a href="index.html#pricing">Pricing</a>
+        <h4 data-i18n="footer.product">Product</h4>
+        <a href="index.html#features" data-i18n="nav.features">Features</a>
+        <a href="index.html#premium" data-i18n="nav.premium">Premium</a>
+        <a href="index.html#pricing" data-i18n="nav.pricing">Pricing</a>
       </div>
       <div>
-        <h4>Company</h4>
-        <a href="#">About</a>
-        <a href="#">Careers</a>
-        <a href="#">Contact</a>
+        <h4 data-i18n="footer.company">Company</h4>
+        <a href="#" data-i18n="footer.about">About</a>
+        <a href="#" data-i18n="footer.careers">Careers</a>
+        <a href="#" data-i18n="footer.contact">Contact</a>
       </div>
       <div>
-        <h4>Legal</h4>
-        <a href="privacy.html">Privacy</a>
-        <a href="terms.html">Terms</a>
-        <a href="disclaimer.html">Disclaimer</a>
+        <h4 data-i18n="footer.legal">Legal</h4>
+        <a href="privacy.html" data-i18n="footer.privacy">Privacy</a>
+        <a href="terms.html" data-i18n="footer.terms">Terms</a>
+        <a href="disclaimer.html" data-i18n="footer.disclaimer">Disclaimer</a>
       </div>
     </div>
   </div>
   <div class="container footer-bottom">
-    <p>© 2026 Terra. Terra is not a law firm and does not provide legal advice.</p>
+    <p data-i18n="footer.copyright">© 2026 Terra. Terra is not a law firm and does not provide legal advice.</p>
   </div>
 </footer>
 
@@ -215,7 +221,7 @@
     <div class="chat-header" id="chatHeader">
       <div>
         <strong>Jay</strong>
-        <span>Ask about your case or how Terra works</span>
+        <span data-i18n="chat.headerSub">Ask about your case or how Terra works</span>
       </div>
       <div class="chat-header-actions">
         <button class="chat-icon-btn" id="chatMinimize" aria-label="Minimize chat" title="Minimize">
@@ -225,17 +231,18 @@
       </div>
     </div>
     <div class="chat-messages" id="chatMessages">
-      <div class="chat-msg chat-msg-bot">
+      <div class="chat-msg chat-msg-bot" data-i18n="chat.greeting">
         Hi! I'm Jay, Terra's assistant. Ask me about immigration processes and policy, or how Terra's features and pricing work. I'm not a lawyer and this isn't legal advice — for anything case-critical, Premium members can connect directly with a licensed attorney.
       </div>
     </div>
     <form class="chat-input-row" id="chatForm">
-      <input type="text" id="chatInput" placeholder="Ask a question…" autocomplete="off" maxlength="600" required>
-      <button type="submit" class="btn btn-primary">Send</button>
+      <input type="text" id="chatInput" placeholder="Ask a question…" autocomplete="off" maxlength="600" required data-i18n-placeholder="chat.inputPlaceholder">
+      <button type="submit" class="btn btn-primary" data-i18n="chat.send">Send</button>
     </form>
   </div>
 </div>
 
+<script src="translations.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

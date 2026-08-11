@@ -30,17 +30,23 @@
     </a>
     <div class="mobile-panel" id="mobilePanel">
       <nav class="nav-links" id="navLinks">
-        <a href="index.html#features">Features</a>
-        <a href="index.html#how-it-works">How it works</a>
-        <a href="index.html#premium">Premium</a>
-        <a href="index.html#pricing">Pricing</a>
-        <a href="index.html#faq">FAQ</a>
-        <a href="community.html">Community</a>
-        <a href="jobs.html" aria-current="page">Jobs</a>
+        <a href="index.html#features" data-i18n="nav.features">Features</a>
+        <a href="index.html#how-it-works" data-i18n="nav.howItWorks">How it works</a>
+        <a href="index.html#premium" data-i18n="nav.premium">Premium</a>
+        <a href="index.html#pricing" data-i18n="nav.pricing">Pricing</a>
+        <a href="index.html#faq" data-i18n="nav.faq">FAQ</a>
+        <a href="community.html" data-i18n="nav.community">Community</a>
+        <a href="jobs.html" aria-current="page" data-i18n="nav.jobs">Jobs</a>
       </nav>
       <div class="header-actions">
-        <a href="account.html" class="btn btn-ghost">Log in</a>
-        <a href="get-started.html" class="btn btn-primary">Get started</a>
+        <select class="lang-switcher" id="langSwitcher" aria-label="Language">
+          <option value="en">EN</option>
+          <option value="es">ES</option>
+          <option value="fr">FR</option>
+          <option value="zh">中文</option>
+        </select>
+        <a href="account.html" class="btn btn-ghost" data-i18n="header.login">Log in</a>
+        <a href="get-started.html" class="btn btn-primary" data-i18n="header.getStarted">Get started</a>
       </div>
     </div>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
@@ -53,9 +59,9 @@
 
   <section class="jobs-hero">
     <div class="container">
-      <p class="eyebrow">Jobs</p>
-      <h1>Live alerts and employers who sponsor</h1>
-      <p class="section-sub">A running feed of immigration deadlines and reminders, plus companies that hire and file for international talent.</p>
+      <p class="eyebrow" data-i18n="jobs.eyebrow">Jobs</p>
+      <h1 data-i18n="jobs.title">Live alerts and employers who sponsor</h1>
+      <p class="section-sub" data-i18n="jobs.sub">A running feed of immigration deadlines and reminders, plus companies that hire and file for international talent.</p>
     </div>
   </section>
 
@@ -64,7 +70,7 @@
       <div class="newsroom-card">
         <div class="newsroom-header">
           <span class="live-dot" aria-hidden="true"></span>
-          <span class="newsroom-label">Live — Immigration Alerts</span>
+          <span class="newsroom-label" data-i18n="newsroom.live">Live — Immigration Alerts</span>
           <div class="newsroom-dots" id="newsroomDots"></div>
         </div>
         <div class="newsroom-body" id="newsroomBody"></div>
@@ -75,9 +81,9 @@
   <section class="companies" id="companies">
     <div class="container">
       <div class="section-head">
-        <p class="eyebrow">Employers</p>
-        <h2>Companies known for sponsoring international talent</h2>
-        <p class="section-sub">A curated list based on publicly known visa sponsorship patterns, weighted toward the US, UK, and Canada — not a live ranked feed. Refresh the page for a different mix.</p>
+        <p class="eyebrow" data-i18n="companies.eyebrow">Employers</p>
+        <h2 data-i18n="companies.title">Companies known for sponsoring international talent</h2>
+        <p class="section-sub" data-i18n="companies.sub">A curated list based on publicly known visa sponsorship patterns, weighted toward the US, UK, and Canada — not a live ranked feed. Refresh the page for a different mix.</p>
       </div>
       <div class="company-grid" id="companyGrid"></div>
     </div>
@@ -96,31 +102,31 @@
         </span>
         Terra
       </a>
-      <p>Guiding immigrants through every step of their case, from first filing to final decision.</p>
+      <p data-i18n="footer.desc">Guiding immigrants through every step of their case, from first filing to final decision.</p>
     </div>
     <div class="footer-links">
       <div>
-        <h4>Product</h4>
-        <a href="index.html#features">Features</a>
-        <a href="index.html#premium">Premium</a>
-        <a href="index.html#pricing">Pricing</a>
+        <h4 data-i18n="footer.product">Product</h4>
+        <a href="index.html#features" data-i18n="nav.features">Features</a>
+        <a href="index.html#premium" data-i18n="nav.premium">Premium</a>
+        <a href="index.html#pricing" data-i18n="nav.pricing">Pricing</a>
       </div>
       <div>
-        <h4>Company</h4>
-        <a href="#">About</a>
-        <a href="#">Careers</a>
-        <a href="#">Contact</a>
+        <h4 data-i18n="footer.company">Company</h4>
+        <a href="#" data-i18n="footer.about">About</a>
+        <a href="#" data-i18n="footer.careers">Careers</a>
+        <a href="#" data-i18n="footer.contact">Contact</a>
       </div>
       <div>
-        <h4>Legal</h4>
-        <a href="privacy.html">Privacy</a>
-        <a href="terms.html">Terms</a>
-        <a href="disclaimer.html">Disclaimer</a>
+        <h4 data-i18n="footer.legal">Legal</h4>
+        <a href="privacy.html" data-i18n="footer.privacy">Privacy</a>
+        <a href="terms.html" data-i18n="footer.terms">Terms</a>
+        <a href="disclaimer.html" data-i18n="footer.disclaimer">Disclaimer</a>
       </div>
     </div>
   </div>
   <div class="container footer-bottom">
-    <p>© 2026 Terra. Terra is not a law firm and does not provide legal advice.</p>
+    <p data-i18n="footer.copyright">© 2026 Terra. Terra is not a law firm and does not provide legal advice.</p>
   </div>
 </footer>
 
@@ -135,7 +141,7 @@
     <div class="chat-header" id="chatHeader">
       <div>
         <strong>Jay</strong>
-        <span>Ask about your case or how Terra works</span>
+        <span data-i18n="chat.headerSub">Ask about your case or how Terra works</span>
       </div>
       <div class="chat-header-actions">
         <button class="chat-icon-btn" id="chatMinimize" aria-label="Minimize chat" title="Minimize">
@@ -145,13 +151,13 @@
       </div>
     </div>
     <div class="chat-messages" id="chatMessages">
-      <div class="chat-msg chat-msg-bot">
+      <div class="chat-msg chat-msg-bot" data-i18n="chat.greeting">
         Hi! I'm Jay, Terra's assistant. Ask me about immigration processes and policy, or how Terra's features and pricing work. I'm not a lawyer and this isn't legal advice — for anything case-critical, Premium members can connect directly with a licensed attorney.
       </div>
     </div>
     <form class="chat-input-row" id="chatForm">
-      <input type="text" id="chatInput" placeholder="Ask a question…" autocomplete="off" maxlength="600" required>
-      <button type="submit" class="btn btn-primary">Send</button>
+      <input type="text" id="chatInput" placeholder="Ask a question…" autocomplete="off" maxlength="600" required data-i18n-placeholder="chat.inputPlaceholder">
+      <button type="submit" class="btn btn-primary" data-i18n="chat.send">Send</button>
     </form>
   </div>
 </div>
@@ -159,15 +165,16 @@
 <div class="signup-overlay" id="signupOverlay" hidden>
   <div class="signup-overlay-card">
     <button class="signup-overlay-close" id="signupOverlayClose" aria-label="Close">&times;</button>
-    <h2>Don't lose your spot</h2>
-    <p>Create a free Terra account to track your case, get policy alerts, and pick up right where you left off.</p>
+    <h2 data-i18n="overlay.title">Don't lose your spot</h2>
+    <p data-i18n="overlay.desc">Create a free Terra account to track your case, get policy alerts, and pick up right where you left off.</p>
     <div class="signup-overlay-actions">
-      <a href="account.html" class="btn btn-primary btn-lg">Create free account</a>
-      <a href="account.html?mode=login" class="btn btn-ghost" id="signupOverlayLoginLink">I already have an account</a>
+      <a href="account.html" class="btn btn-primary btn-lg" data-i18n="overlay.createAccount">Create free account</a>
+      <a href="account.html?mode=login" class="btn btn-ghost" id="signupOverlayLoginLink" data-i18n="overlay.haveAccount">I already have an account</a>
     </div>
   </div>
 </div>
 
+<script src="translations.js"></script>
 <script src="script.js"></script>
 <script src="jobs.js"></script>
 </body>

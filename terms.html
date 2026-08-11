@@ -23,17 +23,23 @@
     </a>
     <div class="mobile-panel" id="mobilePanel">
       <nav class="nav-links" id="navLinks">
-        <a href="index.html#features">Features</a>
-        <a href="index.html#how-it-works">How it works</a>
-        <a href="index.html#premium">Premium</a>
-        <a href="index.html#pricing">Pricing</a>
-        <a href="index.html#faq">FAQ</a>
-        <a href="community.html">Community</a>
-        <a href="jobs.html">Jobs</a>
+        <a href="index.html#features" data-i18n="nav.features">Features</a>
+        <a href="index.html#how-it-works" data-i18n="nav.howItWorks">How it works</a>
+        <a href="index.html#premium" data-i18n="nav.premium">Premium</a>
+        <a href="index.html#pricing" data-i18n="nav.pricing">Pricing</a>
+        <a href="index.html#faq" data-i18n="nav.faq">FAQ</a>
+        <a href="community.html" data-i18n="nav.community">Community</a>
+        <a href="jobs.html" data-i18n="nav.jobs">Jobs</a>
       </nav>
       <div class="header-actions">
-        <a href="account.html" class="btn btn-ghost">Log in</a>
-        <a href="get-started.html" class="btn btn-primary">Get started</a>
+        <select class="lang-switcher" id="langSwitcher" aria-label="Language">
+          <option value="en">EN</option>
+          <option value="es">ES</option>
+          <option value="fr">FR</option>
+          <option value="zh">中文</option>
+        </select>
+        <a href="account.html" class="btn btn-ghost" data-i18n="header.login">Log in</a>
+        <a href="get-started.html" class="btn btn-primary" data-i18n="header.getStarted">Get started</a>
       </div>
     </div>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
@@ -45,38 +51,38 @@
 <main>
   <section class="legal-section">
     <div class="container legal-content">
-      <p class="eyebrow">Legal</p>
-      <h1>Terms of Service</h1>
-      <p class="legal-updated">Last updated: July 30, 2026</p>
+      <p class="eyebrow" data-i18n="legal.eyebrow">Legal</p>
+      <h1 data-i18n="terms.h1">Terms of Service</h1>
+      <p class="legal-updated" data-i18n="terms.updated">Last updated: July 30, 2026</p>
 
-      <p>These terms govern your use of Terra. By creating an account or using the site, you agree to them.</p>
+      <p data-i18n="terms.intro">These terms govern your use of Terra. By creating an account or using the site, you agree to them.</p>
 
-      <h2>What Terra is</h2>
-      <p>Terra is a software platform that helps people navigate the immigration process — policy interpretation, case tracking, predictive timelines, career resources, and interview prep. <strong>Terra is not a law firm and does not provide legal advice.</strong> Nothing on Terra, including responses from Jay (our AI assistant), creates an attorney-client relationship. See our <a href="disclaimer.html">Disclaimer</a> for details.</p>
+      <h2 data-i18n="terms.h2.what">What Terra is</h2>
+      <p data-i18n-html="terms.p.what">Terra is a software platform that helps people navigate the immigration process — policy interpretation, case tracking, predictive timelines, career resources, and interview prep. <strong>Terra is not a law firm and does not provide legal advice.</strong> Nothing on Terra, including responses from Jay (our AI assistant), creates an attorney-client relationship. See our <a href="disclaimer.html">Disclaimer</a> for details.</p>
 
-      <h2>Accounts</h2>
-      <p>You need an account to use Terra's case features. You're responsible for keeping your login credentials secure and for anything that happens under your account. You must provide accurate information when creating an account and using the Get Started intake.</p>
+      <h2 data-i18n="terms.h2.accounts">Accounts</h2>
+      <p data-i18n="terms.p.accounts">You need an account to use Terra's case features. You're responsible for keeping your login credentials secure and for anything that happens under your account. You must provide accurate information when creating an account and using the Get Started intake.</p>
 
-      <h2>Plans and billing</h2>
-      <p>Terra offers a Free tier and paid Terra Pro and Premium tiers. Paid tiers are billed on a recurring basis until cancelled. You can cancel at any time; cancellation takes effect at the end of your current billing period. Prices are shown on our <a href="index.html#pricing">pricing page</a> and may change with notice.</p>
+      <h2 data-i18n="terms.h2.billing">Plans and billing</h2>
+      <p data-i18n-html="terms.p.billing">Terra offers a Free tier and paid Terra Pro and Premium tiers. Paid tiers are billed on a recurring basis until cancelled. You can cancel at any time; cancellation takes effect at the end of your current billing period. Prices are shown on our <a href="index.html#pricing">pricing page</a> and may change with notice.</p>
 
-      <h2>Acceptable use</h2>
-      <p>Don't use Terra to post content that is harassing, hateful, fraudulent, or unrelated spam, to attempt to access other users' accounts or data, or to interfere with the operation of the site. Community posts are moderated, including by automated tools, and we may remove content or suspend accounts that violate these terms.</p>
+      <h2 data-i18n="terms.h2.use">Acceptable use</h2>
+      <p data-i18n="terms.p.use">Don't use Terra to post content that is harassing, hateful, fraudulent, or unrelated spam, to attempt to access other users' accounts or data, or to interfere with the operation of the site. Community posts are moderated, including by automated tools, and we may remove content or suspend accounts that violate these terms.</p>
 
-      <h2>Your content</h2>
-      <p>You retain ownership of what you submit to Terra — case details, notes, and community posts. You grant us the license needed to store, process, and (for public community posts) display that content in order to operate the service.</p>
+      <h2 data-i18n="terms.h2.content">Your content</h2>
+      <p data-i18n="terms.p.content">You retain ownership of what you submit to Terra — case details, notes, and community posts. You grant us the license needed to store, process, and (for public community posts) display that content in order to operate the service.</p>
 
-      <h2>Disclaimers and limitation of liability</h2>
-      <p>Terra is provided "as is." Immigration outcomes depend on many factors outside our control, including government processing times and individual case facts — we don't guarantee any particular result, timeline, or outcome. To the extent permitted by law, Terra is not liable for indirect, incidental, or consequential damages arising from your use of the service.</p>
+      <h2 data-i18n="terms.h2.liability">Disclaimers and limitation of liability</h2>
+      <p data-i18n="terms.p.liability">Terra is provided "as is." Immigration outcomes depend on many factors outside our control, including government processing times and individual case facts — we don't guarantee any particular result, timeline, or outcome. To the extent permitted by law, Terra is not liable for indirect, incidental, or consequential damages arising from your use of the service.</p>
 
-      <h2>Termination</h2>
-      <p>You can delete your account at any time from your <a href="account.html">account page</a>. We may suspend or terminate accounts that violate these terms.</p>
+      <h2 data-i18n="terms.h2.termination">Termination</h2>
+      <p data-i18n-html="terms.p.termination">You can delete your account at any time from your <a href="account.html">account page</a>. We may suspend or terminate accounts that violate these terms.</p>
 
-      <h2>Changes to these terms</h2>
-      <p>We may update these terms from time to time. Material changes will be reflected by an updated date above.</p>
+      <h2 data-i18n="terms.h2.changes">Changes to these terms</h2>
+      <p data-i18n="terms.p.changes">We may update these terms from time to time. Material changes will be reflected by an updated date above.</p>
 
-      <h2>Contact</h2>
-      <p>Questions about these terms? Email <a href="mailto:legal@terra.example">legal@terra.example</a>.</p>
+      <h2 data-i18n="legal.contact">Contact</h2>
+      <p data-i18n-html="terms.p.contact">Questions about these terms? Email <a href="mailto:legal@terra.example">legal@terra.example</a>.</p>
     </div>
   </section>
 </main>
@@ -92,31 +98,31 @@
         </span>
         Terra
       </a>
-      <p>Guiding immigrants through every step of their case, from first filing to final decision.</p>
+      <p data-i18n="footer.desc">Guiding immigrants through every step of their case, from first filing to final decision.</p>
     </div>
     <div class="footer-links">
       <div>
-        <h4>Product</h4>
-        <a href="index.html#features">Features</a>
-        <a href="index.html#premium">Premium</a>
-        <a href="index.html#pricing">Pricing</a>
+        <h4 data-i18n="footer.product">Product</h4>
+        <a href="index.html#features" data-i18n="nav.features">Features</a>
+        <a href="index.html#premium" data-i18n="nav.premium">Premium</a>
+        <a href="index.html#pricing" data-i18n="nav.pricing">Pricing</a>
       </div>
       <div>
-        <h4>Company</h4>
-        <a href="#">About</a>
-        <a href="#">Careers</a>
-        <a href="#">Contact</a>
+        <h4 data-i18n="footer.company">Company</h4>
+        <a href="#" data-i18n="footer.about">About</a>
+        <a href="#" data-i18n="footer.careers">Careers</a>
+        <a href="#" data-i18n="footer.contact">Contact</a>
       </div>
       <div>
-        <h4>Legal</h4>
-        <a href="privacy.html">Privacy</a>
-        <a href="terms.html" aria-current="page">Terms</a>
-        <a href="disclaimer.html">Disclaimer</a>
+        <h4 data-i18n="footer.legal">Legal</h4>
+        <a href="privacy.html" data-i18n="footer.privacy">Privacy</a>
+        <a href="terms.html" aria-current="page" data-i18n="footer.terms">Terms</a>
+        <a href="disclaimer.html" data-i18n="footer.disclaimer">Disclaimer</a>
       </div>
     </div>
   </div>
   <div class="container footer-bottom">
-    <p>© 2026 Terra. Terra is not a law firm and does not provide legal advice.</p>
+    <p data-i18n="footer.copyright">© 2026 Terra. Terra is not a law firm and does not provide legal advice.</p>
   </div>
 </footer>
 
@@ -131,7 +137,7 @@
     <div class="chat-header" id="chatHeader">
       <div>
         <strong>Jay</strong>
-        <span>Ask about your case or how Terra works</span>
+        <span data-i18n="chat.headerSub">Ask about your case or how Terra works</span>
       </div>
       <div class="chat-header-actions">
         <button class="chat-icon-btn" id="chatMinimize" aria-label="Minimize chat" title="Minimize">
@@ -141,17 +147,18 @@
       </div>
     </div>
     <div class="chat-messages" id="chatMessages">
-      <div class="chat-msg chat-msg-bot">
+      <div class="chat-msg chat-msg-bot" data-i18n="chat.greeting">
         Hi! I'm Jay, Terra's assistant. Ask me about immigration processes and policy, or how Terra's features and pricing work. I'm not a lawyer and this isn't legal advice — for anything case-critical, Premium members can connect directly with a licensed attorney.
       </div>
     </div>
     <form class="chat-input-row" id="chatForm">
-      <input type="text" id="chatInput" placeholder="Ask a question…" autocomplete="off" maxlength="600" required>
-      <button type="submit" class="btn btn-primary">Send</button>
+      <input type="text" id="chatInput" placeholder="Ask a question…" autocomplete="off" maxlength="600" required data-i18n-placeholder="chat.inputPlaceholder">
+      <button type="submit" class="btn btn-primary" data-i18n="chat.send">Send</button>
     </form>
   </div>
 </div>
 
+<script src="translations.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

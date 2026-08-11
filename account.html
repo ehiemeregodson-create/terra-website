@@ -30,17 +30,23 @@
     </a>
     <div class="mobile-panel" id="mobilePanel">
       <nav class="nav-links" id="navLinks">
-        <a href="index.html#features">Features</a>
-        <a href="index.html#how-it-works">How it works</a>
-        <a href="index.html#premium">Premium</a>
-        <a href="index.html#pricing">Pricing</a>
-        <a href="index.html#faq">FAQ</a>
-        <a href="community.html">Community</a>
-        <a href="jobs.html">Jobs</a>
+        <a href="index.html#features" data-i18n="nav.features">Features</a>
+        <a href="index.html#how-it-works" data-i18n="nav.howItWorks">How it works</a>
+        <a href="index.html#premium" data-i18n="nav.premium">Premium</a>
+        <a href="index.html#pricing" data-i18n="nav.pricing">Pricing</a>
+        <a href="index.html#faq" data-i18n="nav.faq">FAQ</a>
+        <a href="community.html" data-i18n="nav.community">Community</a>
+        <a href="jobs.html" data-i18n="nav.jobs">Jobs</a>
       </nav>
       <div class="header-actions">
-        <a href="account.html" class="btn btn-ghost" aria-current="page">Log in</a>
-        <a href="get-started.html" class="btn btn-primary">Get started</a>
+        <select class="lang-switcher" id="langSwitcher" aria-label="Language">
+          <option value="en">EN</option>
+          <option value="es">ES</option>
+          <option value="fr">FR</option>
+          <option value="zh">中文</option>
+        </select>
+        <a href="account.html" class="btn btn-ghost" aria-current="page" data-i18n="header.login">Log in</a>
+        <a href="get-started.html" class="btn btn-primary" data-i18n="header.getStarted">Get started</a>
       </div>
     </div>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
@@ -54,71 +60,71 @@
     <div class="container">
       <div class="account-card">
         <div class="account-tabs" role="tablist">
-          <button type="button" class="account-tab active" id="tabSignup" role="tab" aria-selected="true">Sign up</button>
-          <button type="button" class="account-tab" id="tabLogin" role="tab" aria-selected="false">Log in</button>
+          <button type="button" class="account-tab active" id="tabSignup" role="tab" aria-selected="true" data-i18n="account.signupTab">Sign up</button>
+          <button type="button" class="account-tab" id="tabLogin" role="tab" aria-selected="false" data-i18n="header.login">Log in</button>
         </div>
 
         <form id="signupPanel" class="account-form">
-          <h1>Create your free account</h1>
-          <p class="section-sub">You'll need an account to start a case with Terra — Free, Pro, or Premium.</p>
+          <h1 data-i18n="account.signupTitle">Create your free account</h1>
+          <p class="section-sub" data-i18n="account.signupSub">You'll need an account to start a case with Terra — Free, Pro, or Premium.</p>
 
           <div class="intake-field">
-            <label for="signupName">Full name</label>
+            <label for="signupName" data-i18n="intake.nameLabel">Full name</label>
             <input type="text" id="signupName" name="fullName" required autocomplete="name">
           </div>
           <div class="intake-field">
-            <label for="signupEmail">Email</label>
+            <label for="signupEmail" data-i18n="intake.emailLabel">Email</label>
             <input type="email" id="signupEmail" name="email" required autocomplete="email">
           </div>
           <div class="intake-field">
-            <label for="signupPassword">Password</label>
+            <label for="signupPassword" data-i18n="account.passwordLabel">Password</label>
             <input type="password" id="signupPassword" name="password" required autocomplete="new-password" minlength="9">
-            <p class="password-hint">More than 8 characters, with an uppercase letter, a lowercase letter, and a number (e.g. <code>Terra2Journey</code>).</p>
+            <p class="password-hint" data-i18n-html="account.passwordHint">More than 8 characters, with an uppercase letter, a lowercase letter, and a number (e.g. <code>Terra2Journey</code>).</p>
           </div>
           <label class="age-check">
             <input type="checkbox" id="signupAgeConfirm" required>
-            <span>I confirm I am 15 years of age or older.</span>
+            <span data-i18n="account.ageConfirm">I confirm I am 15 years of age or older.</span>
           </label>
-          <button type="submit" class="btn btn-primary btn-lg btn-block">Create account</button>
+          <button type="submit" class="btn btn-primary btn-lg btn-block" data-i18n="account.createAccountBtn">Create account</button>
           <p class="cta-note" id="signupNote"></p>
         </form>
 
         <form id="loginPanel" class="account-form" hidden>
-          <h1>Welcome back</h1>
-          <p class="section-sub">Log in to pick up where you left off.</p>
+          <h1 data-i18n="account.loginTitle">Welcome back</h1>
+          <p class="section-sub" data-i18n="account.loginSub">Log in to pick up where you left off.</p>
 
           <div class="intake-field">
-            <label for="loginEmail">Email</label>
+            <label for="loginEmail" data-i18n="intake.emailLabel">Email</label>
             <input type="email" id="loginEmail" name="email" required autocomplete="email">
           </div>
           <div class="intake-field">
-            <label for="loginPassword">Password</label>
+            <label for="loginPassword" data-i18n="account.passwordLabel">Password</label>
             <input type="password" id="loginPassword" name="password" required autocomplete="current-password">
           </div>
-          <button type="submit" class="btn btn-primary btn-lg btn-block">Log in</button>
+          <button type="submit" class="btn btn-primary btn-lg btn-block" data-i18n="header.login">Log in</button>
           <p class="cta-note" id="loginNote"></p>
-          <button type="button" class="link-btn" id="forgotPasswordLink">Forgot password?</button>
+          <button type="button" class="link-btn" id="forgotPasswordLink" data-i18n="account.forgotPasswordLink">Forgot password?</button>
         </form>
 
         <form id="forgotPanel" class="account-form" hidden>
-          <h1>Reset your password</h1>
-          <p class="section-sub">Enter your account email and we'll send you a link to set a new password.</p>
+          <h1 data-i18n="account.forgotTitle">Reset your password</h1>
+          <p class="section-sub" data-i18n="account.forgotSub">Enter your account email and we'll send you a link to set a new password.</p>
 
           <div class="intake-field">
-            <label for="forgotEmail">Email</label>
+            <label for="forgotEmail" data-i18n="intake.emailLabel">Email</label>
             <input type="email" id="forgotEmail" name="email" required autocomplete="email">
           </div>
-          <button type="submit" class="btn btn-primary btn-lg btn-block">Send reset link</button>
+          <button type="submit" class="btn btn-primary btn-lg btn-block" data-i18n="account.sendResetBtn">Send reset link</button>
           <p class="cta-note" id="forgotNote"></p>
-          <button type="button" class="link-btn" id="backToLoginLink">Back to log in</button>
+          <button type="button" class="link-btn" id="backToLoginLink" data-i18n="account.backToLogin">Back to log in</button>
         </form>
 
         <div id="accountAuthenticated" class="account-form" hidden>
-          <h1>You're logged in</h1>
+          <h1 data-i18n="account.loggedInTitle">You're logged in</h1>
           <p class="section-sub" id="authenticatedEmail"></p>
-          <button type="button" class="btn btn-primary btn-lg btn-block" id="goToGetStarted">Go to Get Started</button>
-          <button type="button" class="btn btn-ghost btn-lg btn-block" id="accountLogoutBtn">Log out</button>
-          <button type="button" class="link-btn link-btn-danger" id="deleteAccountBtn">Delete my account</button>
+          <button type="button" class="btn btn-primary btn-lg btn-block" id="goToGetStarted" data-i18n="account.goToGetStarted">Go to Get Started</button>
+          <button type="button" class="btn btn-ghost btn-lg btn-block" id="accountLogoutBtn" data-i18n="account.logoutBtn">Log out</button>
+          <button type="button" class="link-btn link-btn-danger" id="deleteAccountBtn" data-i18n="account.deleteAccountBtn">Delete my account</button>
           <p class="cta-note" id="accountNote"></p>
         </div>
       </div>
@@ -137,34 +143,35 @@
         </span>
         Terra
       </a>
-      <p>Guiding immigrants through every step of their case, from first filing to final decision.</p>
+      <p data-i18n="footer.desc">Guiding immigrants through every step of their case, from first filing to final decision.</p>
     </div>
     <div class="footer-links">
       <div>
-        <h4>Product</h4>
-        <a href="index.html#features">Features</a>
-        <a href="index.html#premium">Premium</a>
-        <a href="index.html#pricing">Pricing</a>
+        <h4 data-i18n="footer.product">Product</h4>
+        <a href="index.html#features" data-i18n="nav.features">Features</a>
+        <a href="index.html#premium" data-i18n="nav.premium">Premium</a>
+        <a href="index.html#pricing" data-i18n="nav.pricing">Pricing</a>
       </div>
       <div>
-        <h4>Company</h4>
-        <a href="#">About</a>
-        <a href="#">Careers</a>
-        <a href="#">Contact</a>
+        <h4 data-i18n="footer.company">Company</h4>
+        <a href="#" data-i18n="footer.about">About</a>
+        <a href="#" data-i18n="footer.careers">Careers</a>
+        <a href="#" data-i18n="footer.contact">Contact</a>
       </div>
       <div>
-        <h4>Legal</h4>
-        <a href="privacy.html">Privacy</a>
-        <a href="terms.html">Terms</a>
-        <a href="disclaimer.html">Disclaimer</a>
+        <h4 data-i18n="footer.legal">Legal</h4>
+        <a href="privacy.html" data-i18n="footer.privacy">Privacy</a>
+        <a href="terms.html" data-i18n="footer.terms">Terms</a>
+        <a href="disclaimer.html" data-i18n="footer.disclaimer">Disclaimer</a>
       </div>
     </div>
   </div>
   <div class="container footer-bottom">
-    <p>© 2026 Terra. Terra is not a law firm and does not provide legal advice.</p>
+    <p data-i18n="footer.copyright">© 2026 Terra. Terra is not a law firm and does not provide legal advice.</p>
   </div>
 </footer>
 
+<script src="translations.js"></script>
 <script src="script.js"></script>
 <script src="account.js"></script>
 </body>

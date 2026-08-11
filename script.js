@@ -31,6 +31,16 @@ function applyTranslations(lang) {
     const key = el.getAttribute('data-i18n-placeholder');
     el.setAttribute('placeholder', (dict && dict[key]) || el.dataset.i18nPlaceholderOriginal);
   });
+
+  // HTML variant — only for elements whose English text has nested markup (a <strong> or an
+  // inline <a> link) that a plain textContent swap would destroy. Safe to use innerHTML here
+  // specifically because every string in translations.js is authored by hand, never derived
+  // from user input, so there's no injection surface.
+  document.querySelectorAll('[data-i18n-html]').forEach((el) => {
+    if (el.dataset.i18nHtmlOriginal === undefined) el.dataset.i18nHtmlOriginal = el.innerHTML;
+    const key = el.getAttribute('data-i18n-html');
+    el.innerHTML = (dict && dict[key]) || el.dataset.i18nHtmlOriginal;
+  });
 }
 
 function initI18n() {

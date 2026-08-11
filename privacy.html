@@ -23,17 +23,23 @@
     </a>
     <div class="mobile-panel" id="mobilePanel">
       <nav class="nav-links" id="navLinks">
-        <a href="index.html#features">Features</a>
-        <a href="index.html#how-it-works">How it works</a>
-        <a href="index.html#premium">Premium</a>
-        <a href="index.html#pricing">Pricing</a>
-        <a href="index.html#faq">FAQ</a>
-        <a href="community.html">Community</a>
-        <a href="jobs.html">Jobs</a>
+        <a href="index.html#features" data-i18n="nav.features">Features</a>
+        <a href="index.html#how-it-works" data-i18n="nav.howItWorks">How it works</a>
+        <a href="index.html#premium" data-i18n="nav.premium">Premium</a>
+        <a href="index.html#pricing" data-i18n="nav.pricing">Pricing</a>
+        <a href="index.html#faq" data-i18n="nav.faq">FAQ</a>
+        <a href="community.html" data-i18n="nav.community">Community</a>
+        <a href="jobs.html" data-i18n="nav.jobs">Jobs</a>
       </nav>
       <div class="header-actions">
-        <a href="account.html" class="btn btn-ghost">Log in</a>
-        <a href="get-started.html" class="btn btn-primary">Get started</a>
+        <select class="lang-switcher" id="langSwitcher" aria-label="Language">
+          <option value="en">EN</option>
+          <option value="es">ES</option>
+          <option value="fr">FR</option>
+          <option value="zh">中文</option>
+        </select>
+        <a href="account.html" class="btn btn-ghost" data-i18n="header.login">Log in</a>
+        <a href="get-started.html" class="btn btn-primary" data-i18n="header.getStarted">Get started</a>
       </div>
     </div>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
@@ -45,55 +51,55 @@
 <main>
   <section class="legal-section">
     <div class="container legal-content">
-      <p class="eyebrow">Legal</p>
-      <h1>Privacy Policy</h1>
-      <p class="legal-updated">Last updated: July 30, 2026</p>
+      <p class="eyebrow" data-i18n="legal.eyebrow">Legal</p>
+      <h1 data-i18n="privacy.h1">Privacy Policy</h1>
+      <p class="legal-updated" data-i18n="privacy.updated">Last updated: July 30, 2026</p>
 
-      <p>Terra helps immigrants navigate their case, and doing that well means asking for information that can be genuinely sensitive — including, in some cases, whether someone currently has legal status at all. We take that seriously. This policy explains what we collect, why, who else touches it, and the control you have over it.</p>
+      <p data-i18n="privacy.intro">Terra helps immigrants navigate their case, and doing that well means asking for information that can be genuinely sensitive — including, in some cases, whether someone currently has legal status at all. We take that seriously. This policy explains what we collect, why, who else touches it, and the control you have over it.</p>
 
-      <h2>What we collect</h2>
+      <h2 data-i18n="privacy.h2.collect">What we collect</h2>
       <ul>
-        <li><strong>Account information:</strong> your name, email address, and a securely hashed password when you create a Terra account.</li>
-        <li><strong>Case information:</strong> what you share through the Get Started form — country of origin and destination, immigration category, case stage, sponsorship status, current status, legal representation, deadlines, and any notes you add.</li>
-        <li><strong>Community content:</strong> questions and answers you post publicly on the Community board.</li>
-        <li><strong>Chat messages:</strong> conversations with Jay, Terra's AI assistant.</li>
-        <li><strong>Usage data:</strong> basic, aggregated analytics about how the site is used (pages visited, general interactions) — this does not include the content of what you type.</li>
+        <li data-i18n-html="privacy.li.account"><strong>Account information:</strong> your name, email address, and a securely hashed password when you create a Terra account.</li>
+        <li data-i18n-html="privacy.li.case"><strong>Case information:</strong> what you share through the Get Started form — country of origin and destination, immigration category, case stage, sponsorship status, current status, legal representation, deadlines, and any notes you add.</li>
+        <li data-i18n-html="privacy.li.community"><strong>Community content:</strong> questions and answers you post publicly on the Community board.</li>
+        <li data-i18n-html="privacy.li.chat"><strong>Chat messages:</strong> conversations with Jay, Terra's AI assistant.</li>
+        <li data-i18n-html="privacy.li.usage"><strong>Usage data:</strong> basic, aggregated analytics about how the site is used (pages visited, general interactions) — this does not include the content of what you type.</li>
       </ul>
 
-      <h2>How we use it</h2>
-      <p>We use your information to operate your account, send you the policy alerts and case guidance you sign up for, respond to your questions (via Jay or, on Premium, a licensed attorney), moderate community content, and improve the product. We do not sell your personal information.</p>
+      <h2 data-i18n="privacy.h2.use">How we use it</h2>
+      <p data-i18n="privacy.p.use">We use your information to operate your account, send you the policy alerts and case guidance you sign up for, respond to your questions (via Jay or, on Premium, a licensed attorney), moderate community content, and improve the product. We do not sell your personal information.</p>
 
-      <h2>Who processes it</h2>
-      <p>We rely on a small number of service providers to run Terra, each bound to only use your data to provide their service to us:</p>
+      <h2 data-i18n="privacy.h2.who">Who processes it</h2>
+      <p data-i18n="privacy.p.who">We rely on a small number of service providers to run Terra, each bound to only use your data to provide their service to us:</p>
       <ul>
-        <li><strong>Supabase</strong> — stores your account and case data, and handles authentication.</li>
-        <li><strong>Google (Gemini API)</strong> — processes chat messages and community posts to generate responses and check content against our community guidelines.</li>
-        <li><strong>Vercel</strong> — hosts the site and provides aggregated, anonymized usage analytics.</li>
-        <li><strong>Resend</strong> — delivers transactional emails, such as case confirmations and password reset links.</li>
+        <li data-i18n-html="privacy.li.supabase"><strong>Supabase</strong> — stores your account and case data, and handles authentication.</li>
+        <li data-i18n-html="privacy.li.gemini"><strong>Google (Gemini API)</strong> — processes chat messages and community posts to generate responses and check content against our community guidelines.</li>
+        <li data-i18n-html="privacy.li.vercel"><strong>Vercel</strong> — hosts the site and provides aggregated, anonymized usage analytics.</li>
+        <li data-i18n-html="privacy.li.resend"><strong>Resend</strong> — delivers transactional emails, such as case confirmations and password reset links.</li>
       </ul>
-      <p>We do not share your case details with employers, government agencies, or any other third party unless you explicitly direct us to (for example, connecting with an attorney on Premium) or we're legally required to.</p>
+      <p data-i18n="privacy.p.share">We do not share your case details with employers, government agencies, or any other third party unless you explicitly direct us to (for example, connecting with an attorney on Premium) or we're legally required to.</p>
 
-      <h2>Cookies</h2>
-      <p>Terra uses a single essential cookie to keep you logged in. It's marked HttpOnly and Secure, meaning it can't be read by page scripts and is only ever sent over an encrypted connection. We don't use advertising or cross-site tracking cookies.</p>
+      <h2 data-i18n="privacy.h2.cookies">Cookies</h2>
+      <p data-i18n="privacy.p.cookies">Terra uses a single essential cookie to keep you logged in. It's marked HttpOnly and Secure, meaning it can't be read by page scripts and is only ever sent over an encrypted connection. We don't use advertising or cross-site tracking cookies.</p>
 
-      <h2>Your controls</h2>
+      <h2 data-i18n="privacy.h2.controls">Your controls</h2>
       <ul>
-        <li>You can update or remove your case notes at any time by contacting us.</li>
-        <li>You can delete your account and associated case data yourself, at any time, from your <a href="account.html">account page</a> — this is permanent and cannot be undone.</li>
-        <li>You can ask us what data we hold about you by contacting <a href="mailto:privacy@terra.example">privacy@terra.example</a>.</li>
+        <li data-i18n="privacy.li.controls1">You can update or remove your case notes at any time by contacting us.</li>
+        <li data-i18n-html="privacy.li.controls2">You can delete your account and associated case data yourself, at any time, from your <a href="account.html">account page</a> — this is permanent and cannot be undone.</li>
+        <li data-i18n-html="privacy.li.controls3">You can ask us what data we hold about you by contacting <a href="mailto:privacy@terra.example">privacy@terra.example</a>.</li>
       </ul>
 
-      <h2>Retention</h2>
-      <p>We keep your data for as long as your account is active, or as needed to provide the service. If you delete your account, your case data is permanently removed; a small amount of information may be retained where required by law or to prevent fraud.</p>
+      <h2 data-i18n="privacy.h2.retention">Retention</h2>
+      <p data-i18n="privacy.p.retention">We keep your data for as long as your account is active, or as needed to provide the service. If you delete your account, your case data is permanently removed; a small amount of information may be retained where required by law or to prevent fraud.</p>
 
-      <h2>Security</h2>
-      <p>Case data is stored with row-level access controls so it's only ever reachable through your authenticated session or our backend — never directly from the browser. Passwords are never stored in plain text.</p>
+      <h2 data-i18n="privacy.h2.security">Security</h2>
+      <p data-i18n="privacy.p.security">Case data is stored with row-level access controls so it's only ever reachable through your authenticated session or our backend — never directly from the browser. Passwords are never stored in plain text.</p>
 
-      <h2>Changes to this policy</h2>
-      <p>If we make material changes to this policy, we'll update the date above and, where appropriate, notify you directly.</p>
+      <h2 data-i18n="privacy.h2.changes">Changes to this policy</h2>
+      <p data-i18n="privacy.p.changes">If we make material changes to this policy, we'll update the date above and, where appropriate, notify you directly.</p>
 
-      <h2>Contact</h2>
-      <p>Questions about this policy or your data? Email <a href="mailto:privacy@terra.example">privacy@terra.example</a>.</p>
+      <h2 data-i18n="legal.contact">Contact</h2>
+      <p data-i18n-html="privacy.p.contact">Questions about this policy or your data? Email <a href="mailto:privacy@terra.example">privacy@terra.example</a>.</p>
     </div>
   </section>
 </main>
@@ -109,31 +115,31 @@
         </span>
         Terra
       </a>
-      <p>Guiding immigrants through every step of their case, from first filing to final decision.</p>
+      <p data-i18n="footer.desc">Guiding immigrants through every step of their case, from first filing to final decision.</p>
     </div>
     <div class="footer-links">
       <div>
-        <h4>Product</h4>
-        <a href="index.html#features">Features</a>
-        <a href="index.html#premium">Premium</a>
-        <a href="index.html#pricing">Pricing</a>
+        <h4 data-i18n="footer.product">Product</h4>
+        <a href="index.html#features" data-i18n="nav.features">Features</a>
+        <a href="index.html#premium" data-i18n="nav.premium">Premium</a>
+        <a href="index.html#pricing" data-i18n="nav.pricing">Pricing</a>
       </div>
       <div>
-        <h4>Company</h4>
-        <a href="#">About</a>
-        <a href="#">Careers</a>
-        <a href="#">Contact</a>
+        <h4 data-i18n="footer.company">Company</h4>
+        <a href="#" data-i18n="footer.about">About</a>
+        <a href="#" data-i18n="footer.careers">Careers</a>
+        <a href="#" data-i18n="footer.contact">Contact</a>
       </div>
       <div>
-        <h4>Legal</h4>
-        <a href="privacy.html" aria-current="page">Privacy</a>
-        <a href="terms.html">Terms</a>
-        <a href="disclaimer.html">Disclaimer</a>
+        <h4 data-i18n="footer.legal">Legal</h4>
+        <a href="privacy.html" aria-current="page" data-i18n="footer.privacy">Privacy</a>
+        <a href="terms.html" data-i18n="footer.terms">Terms</a>
+        <a href="disclaimer.html" data-i18n="footer.disclaimer">Disclaimer</a>
       </div>
     </div>
   </div>
   <div class="container footer-bottom">
-    <p>© 2026 Terra. Terra is not a law firm and does not provide legal advice.</p>
+    <p data-i18n="footer.copyright">© 2026 Terra. Terra is not a law firm and does not provide legal advice.</p>
   </div>
 </footer>
 
@@ -148,7 +154,7 @@
     <div class="chat-header" id="chatHeader">
       <div>
         <strong>Jay</strong>
-        <span>Ask about your case or how Terra works</span>
+        <span data-i18n="chat.headerSub">Ask about your case or how Terra works</span>
       </div>
       <div class="chat-header-actions">
         <button class="chat-icon-btn" id="chatMinimize" aria-label="Minimize chat" title="Minimize">
@@ -158,17 +164,18 @@
       </div>
     </div>
     <div class="chat-messages" id="chatMessages">
-      <div class="chat-msg chat-msg-bot">
+      <div class="chat-msg chat-msg-bot" data-i18n="chat.greeting">
         Hi! I'm Jay, Terra's assistant. Ask me about immigration processes and policy, or how Terra's features and pricing work. I'm not a lawyer and this isn't legal advice — for anything case-critical, Premium members can connect directly with a licensed attorney.
       </div>
     </div>
     <form class="chat-input-row" id="chatForm">
-      <input type="text" id="chatInput" placeholder="Ask a question…" autocomplete="off" maxlength="600" required>
-      <button type="submit" class="btn btn-primary">Send</button>
+      <input type="text" id="chatInput" placeholder="Ask a question…" autocomplete="off" maxlength="600" required data-i18n-placeholder="chat.inputPlaceholder">
+      <button type="submit" class="btn btn-primary" data-i18n="chat.send">Send</button>
     </form>
   </div>
 </div>
 
+<script src="translations.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
