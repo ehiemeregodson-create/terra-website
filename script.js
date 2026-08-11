@@ -64,6 +64,51 @@ function initI18n() {
 }
 initI18n();
 
+/* ---------- Destinations flag ticker ---------- */
+// A fixed 2-copy + translateX(-50%) marquee only loops seamlessly when the screen is
+// narrower than one copy of the flag list — on any normal desktop width it ran out of
+// flags and visibly jumped. This measures the actual rendered width of one copy, clones it
+// as many times as needed to always overflow the visible strip (recalculated on resize), and
+// animates by that exact pixel width so the loop is seamless at any screen size.
+function initDestinationsScroll() {
+  const strip = document.querySelector('.destinations-strip');
+  const track = document.getElementById('destinationsTrack');
+  const original = track ? track.querySelector('.destinations-flags') : null;
+  if (!strip || !track || !original) return;
+
+  const PIXELS_PER_SECOND = 40;
+
+  function rebuild() {
+    track.querySelectorAll('.destinations-flags').forEach((el, i) => {
+      if (i > 0) el.remove();
+    });
+
+    const setWidth = original.getBoundingClientRect().width;
+    if (!setWidth) return;
+
+    const viewportWidth = strip.getBoundingClientRect().width;
+    const copiesNeeded = Math.max(2, Math.ceil(viewportWidth / setWidth) + 2);
+
+    for (let i = 1; i < copiesNeeded; i++) {
+      const clone = original.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      track.appendChild(clone);
+    }
+
+    track.style.setProperty('--destinations-scroll-distance', `-${setWidth}px`);
+    track.style.animationDuration = `${setWidth / PIXELS_PER_SECOND}s`;
+  }
+
+  rebuild();
+
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(rebuild, 250);
+  });
+}
+initDestinationsScroll();
+
 const header = document.getElementById('header');
 const navToggle = document.getElementById('navToggle');
 
