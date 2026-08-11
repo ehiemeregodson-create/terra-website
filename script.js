@@ -6,6 +6,54 @@ function trackEvent(name, data) {
   }
 }
 
+/* ---------- Translation (i18n) ---------- */
+// Pure client-side string swap against window.TERRA_TRANSLATIONS (translations.js) — no
+// external translation service or script, keeping the strict CSP (script-src 'self') intact.
+// English text lives directly in the HTML and is cached the first time a page applies a
+// non-English language, so switching back to English restores it exactly.
+
+const I18N_LANG_KEY = 'terraLang';
+
+function applyTranslations(lang) {
+  document.documentElement.lang = lang;
+  const dict = lang !== 'en' && window.TERRA_TRANSLATIONS ? window.TERRA_TRANSLATIONS[lang] : null;
+
+  document.querySelectorAll('[data-i18n]').forEach((el) => {
+    if (el.dataset.i18nOriginal === undefined) el.dataset.i18nOriginal = el.textContent;
+    const key = el.getAttribute('data-i18n');
+    el.textContent = (dict && dict[key]) || el.dataset.i18nOriginal;
+  });
+
+  document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+    if (el.dataset.i18nPlaceholderOriginal === undefined) {
+      el.dataset.i18nPlaceholderOriginal = el.getAttribute('placeholder') || '';
+    }
+    const key = el.getAttribute('data-i18n-placeholder');
+    el.setAttribute('placeholder', (dict && dict[key]) || el.dataset.i18nPlaceholderOriginal);
+  });
+}
+
+function initI18n() {
+  const switcher = document.getElementById('langSwitcher');
+  let saved = 'en';
+  try {
+    saved = localStorage.getItem(I18N_LANG_KEY) || 'en';
+  } catch (err) {}
+
+  applyTranslations(saved);
+
+  if (switcher) {
+    switcher.value = saved;
+    switcher.addEventListener('change', () => {
+      const lang = switcher.value;
+      try { localStorage.setItem(I18N_LANG_KEY, lang); } catch (err) {}
+      applyTranslations(lang);
+      trackEvent('language_changed', { lang });
+    });
+  }
+}
+initI18n();
+
 const header = document.getElementById('header');
 const navToggle = document.getElementById('navToggle');
 
