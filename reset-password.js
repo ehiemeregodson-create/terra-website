@@ -1,4 +1,4 @@
-const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{9,}$/;
+const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{9,}$/;
 
 function parseHashParams() {
   const hash = window.location.hash.startsWith('#') ? window.location.hash.slice(1) : window.location.hash;
@@ -25,7 +25,7 @@ if (!accessToken || linkType !== 'recovery') {
 
     if (!PASSWORD_PATTERN.test(passwordInput.value)) {
       resetNote.textContent =
-        'Password must be more than 8 characters and include an uppercase letter, a lowercase letter, and a symbol.';
+        'Password must be more than 8 characters and include an uppercase letter, a lowercase letter, and a number.';
       passwordInput.focus();
       return;
     }

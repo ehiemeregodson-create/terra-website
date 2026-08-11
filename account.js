@@ -1,4 +1,4 @@
-const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{9,}$/;
+const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{9,}$/;
 
 function getRedirectTarget() {
   const params = new URLSearchParams(window.location.search);
@@ -127,7 +127,7 @@ signupPanel.addEventListener('submit', async (e) => {
 
   if (!PASSWORD_PATTERN.test(passwordInput.value)) {
     signupNote.textContent =
-      'Password must be more than 8 characters and include an uppercase letter, a lowercase letter, and a symbol.';
+      'Password must be more than 8 characters and include an uppercase letter, a lowercase letter, and a number.';
     passwordInput.focus();
     return;
   }

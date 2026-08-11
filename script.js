@@ -103,6 +103,11 @@ const authStatePromise = checkAuthState();
   if (!overlay) return;
 
   const SHOWN_KEY = 'terraSignupOverlayShown';
+  // Persistent (not per-tab) — once someone tells us they already have an account, they
+  // shouldn't see this "create an account" nag again on a future visit, even before they've
+  // actually finished logging back in.
+  const HAS_ACCOUNT_KEY = 'terraHasAccount';
+
   const closeBtn = document.getElementById('signupOverlayClose');
   if (closeBtn) {
     closeBtn.addEventListener('click', () => {
@@ -110,12 +115,29 @@ const authStatePromise = checkAuthState();
     });
   }
 
+  const loginLink = document.getElementById('signupOverlayLoginLink');
+  if (loginLink) {
+    loginLink.addEventListener('click', () => {
+      try {
+        localStorage.setItem(HAS_ACCOUNT_KEY, '1');
+      } catch (err) {
+        // localStorage unavailable — worst case, the overlay may show again next visit.
+      }
+    });
+  }
+
   authStatePromise.then((data) => {
     if (data && data.authenticated) return; // don't nag people who already have an account
     if (sessionStorage.getItem(SHOWN_KEY)) return;
+    try {
+      if (localStorage.getItem(HAS_ACCOUNT_KEY)) return;
+    } catch (err) {}
 
     setTimeout(() => {
       if (sessionStorage.getItem(SHOWN_KEY)) return;
+      try {
+        if (localStorage.getItem(HAS_ACCOUNT_KEY)) return;
+      } catch (err) {}
       overlay.hidden = false;
       try {
         sessionStorage.setItem(SHOWN_KEY, '1');
