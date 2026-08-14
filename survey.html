@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Immigrant Experience & Needs Assessment — Terra</title>
+<meta name="description" content="A confidential research survey about the immigration experience — your answers directly shape what Terra builds next.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Immigrant Experience & Needs Assessment — Terra">
+<meta property="og:description" content="A confidential research survey about the immigration experience — your answers directly shape what Terra builds next.">
+<link rel="stylesheet" href="style.css">
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="28" height="28" fill="none">
+          <path d="M16 2C9 8 4 14.5 4 20a12 12 0 0024 0c0-5.5-5-12-12-18z" fill="currentColor"/>
+        </svg>
+      </span>
+      Terra
+    </a>
+  </div>
+</header>
+
+<main>
+  <section class="survey">
+    <div class="container">
+
+      <div class="survey-intro">
+        <p class="eyebrow">RESEARCH INSTRUMENT</p>
+        <h1>Immigrant Experience &amp; Needs Assessment</h1>
+        <p class="section-sub">A questionnaire to understand the lived experience, challenges, and unmet needs of people navigating immigration processes — and to guide what Terra builds next. Estimated completion time: 20–25 minutes.</p>
+
+        <div class="survey-consent">
+          <p><strong>Purpose.</strong> Terra is building tools to help immigrants navigate complex, high-stakes immigration processes. This questionnaire is designed to help us understand your experience in your own words and through structured questions — what has been hardest, what support has helped, and what a good solution would actually need to do. There are no right or wrong answers; we are interested in your honest experience.</p>
+          <p><strong>Confidentiality.</strong> Your participation is voluntary, and you may skip any question or stop at any time without consequence. Your responses are <strong>not</strong> connected to any active immigration case, application, or government agency, and will not affect any case outcome. If your name or contact information is collected (Section E, optional only), it will be stored separately from your responses and used only if you ask to be contacted.</p>
+          <p><strong>How to answer.</strong> Section C asks you to rate statements on a 5-point scale from <em>Strongly Disagree</em> to <em>Strongly Agree</em> — choose the option that best reflects how true each statement is for you. Other sections ask you to select an option or write a short answer in your own words. Answer based on your own experience, even if it differs from what you think is "typical."</p>
+        </div>
+      </div>
+
+      <form class="survey-form" id="surveyForm">
+
+        <!-- Section A: Background -->
+        <div class="survey-section">
+          <p class="eyebrow">Section A</p>
+          <h2>Respondent &amp; Case Background</h2>
+          <p class="section-sub">These questions help us understand who is answering, so we can see how experiences and needs differ across case types, regions, and stages — not to identify you personally. Every question here is optional.</p>
+
+          <div class="intake-grid">
+            <div class="intake-field">
+              <label for="a3">Which age range do you fall into?</label>
+              <select id="a3" name="a3">
+                <option value="">Prefer not to answer</option>
+                <option>Under 18</option>
+                <option>18–24</option>
+                <option>25–34</option>
+                <option>35–44</option>
+                <option>45–54</option>
+                <option>55–64</option>
+                <option>65 or older</option>
+              </select>
+            </div>
+            <div class="intake-field">
+              <label for="a4">How do you describe your gender?</label>
+              <select id="a4" name="a4">
+                <option value="">Prefer not to answer</option>
+                <option>Woman</option>
+                <option>Man</option>
+                <option>Non-binary</option>
+                <option value="Prefer to self-describe">Prefer to self-describe</option>
+                <option>Prefer not to say</option>
+              </select>
+              <input type="text" id="a4Other" name="a4_other" class="survey-other-field" placeholder="Please describe" hidden>
+            </div>
+            <div class="intake-field">
+              <label for="a5">What country are you originally from?</label>
+              <input type="text" id="a5" name="a5">
+            </div>
+            <div class="intake-field">
+              <label for="a6">What country are you currently applying to / residing in for this case?</label>
+              <input type="text" id="a6" name="a6">
+            </div>
+            <div class="intake-field">
+              <label for="a7">What best describes the purpose of your immigration case?</label>
+              <select id="a7" name="a7">
+                <option value="">Prefer not to answer</option>
+                <option>Employment / work visa</option>
+                <option>Family reunification</option>
+                <option>Study (student visa)</option>
+                <option>Asylum / refugee protection</option>
+                <option>Permanent residency / settlement</option>
+                <option>Investment / business</option>
+                <option>Citizenship / naturalization</option>
+                <option value="Other">Other</option>
+              </select>
+              <input type="text" id="a7Other" name="a7_other" class="survey-other-field" placeholder="Please describe" hidden>
+            </div>
+            <div class="intake-field">
+              <label for="a8">What stage is your case currently at?</label>
+              <select id="a8" name="a8">
+                <option value="">Prefer not to answer</option>
+                <option>Have not yet filed</option>
+                <option>Filed — awaiting decision</option>
+                <option>Responding to a request for evidence/documents</option>
+                <option>Interview scheduled or completed</option>
+                <option>Approved</option>
+                <option>Denied / appealing</option>
+                <option>Not sure</option>
+              </select>
+            </div>
+            <div class="intake-field">
+              <label for="a9">How long have you been going through this process?</label>
+              <select id="a9" name="a9">
+                <option value="">Prefer not to answer</option>
+                <option>Less than 6 months</option>
+                <option>6–12 months</option>
+                <option>1–2 years</option>
+                <option>2–5 years</option>
+                <option>More than 5 years</option>
+              </select>
+            </div>
+            <div class="intake-field">
+              <label for="a10">Do you have legal representation for your case?</label>
+              <select id="a10" name="a10">
+                <option value="">Prefer not to answer</option>
+                <option>Yes, a licensed attorney</option>
+                <option>Yes, a non-attorney consultant or assistant</option>
+                <option>No, I am representing myself</option>
+                <option>I am currently looking for representation</option>
+              </select>
+            </div>
+            <div class="intake-field">
+              <label for="a11">What language do you speak most at home?</label>
+              <input type="text" id="a11" name="a11">
+            </div>
+            <div class="intake-field">
+              <label for="a12">What device do you use most to go online?</label>
+              <select id="a12" name="a12">
+                <option value="">Prefer not to answer</option>
+                <option>Smartphone</option>
+                <option>Computer or laptop</option>
+                <option>Tablet</option>
+                <option>A shared or public computer (e.g., library)</option>
+                <option>I do not regularly go online</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section B: Open-ended -->
+        <div class="survey-section">
+          <p class="eyebrow">Section B</p>
+          <h2>In Your Own Words</h2>
+          <p class="section-sub">Please answer as openly as you'd like — there is no length requirement, and every question here is optional. These responses will be read closely and grouped into themes; specific quotes may be used (with identifying details removed) to help our team understand what to build.</p>
+
+          <div class="intake-field intake-field-full">
+            <label for="b1">What has been the single most difficult part of your immigration process so far?</label>
+            <textarea id="b1" name="b1" rows="3"></textarea>
+          </div>
+          <div class="intake-field intake-field-full">
+            <label for="b2">Describe a specific moment when you felt confused, overwhelmed, or unsure what to do next.</label>
+            <textarea id="b2" name="b2" rows="3"></textarea>
+          </div>
+          <div class="intake-field intake-field-full">
+            <label for="b3">What information do you wish you had known at the very beginning of this process?</label>
+            <textarea id="b3" name="b3" rows="3"></textarea>
+          </div>
+          <div class="intake-field intake-field-full">
+            <label for="b4">How has this process affected your daily life, work, or relationships?</label>
+            <textarea id="b4" name="b4" rows="3"></textarea>
+          </div>
+          <div class="intake-field intake-field-full">
+            <label for="b5">Who or what has helped you the most during this process? (a person, organization, website, community, etc.)</label>
+            <textarea id="b5" name="b5" rows="3"></textarea>
+          </div>
+          <div class="intake-field intake-field-full" style="margin-bottom:0;">
+            <label for="b6">If you could change one thing about how immigration processes work, what would it be?</label>
+            <textarea id="b6" name="b6" rows="3"></textarea>
+          </div>
+        </div>
+
+        <!-- Section C: Likert -->
+        <div class="survey-section">
+          <p class="eyebrow">Section C</p>
+          <h2>Your Experience — Rate Each Statement</h2>
+          <p class="section-sub">For each statement, choose the option that best reflects how true it is for you right now. Every statement is optional — skip any that don't apply. Items marked <em>(R)</em> are reverse-worded on purpose — please still answer based on how much you agree with the statement exactly as written.</p>
+          <div id="sectionC"></div>
+        </div>
+
+        <!-- Section D: Solutions -->
+        <div class="survey-section">
+          <p class="eyebrow">Section D</p>
+          <h2>Rating Potential Solutions</h2>
+          <p class="section-sub">For each idea below, rate how useful it would be to you personally, from 1 (Not useful) to 5 (Very useful). Every item here is optional.</p>
+          <div id="sectionD"></div>
+
+          <div class="intake-field intake-field-full">
+            <label for="d9">What is the ONE thing that would have made your immigration journey easier?</label>
+            <textarea id="d9" name="d9" rows="3"></textarea>
+          </div>
+          <div class="intake-field intake-field-full" style="margin-bottom:0;">
+            <label for="d10">If a tool like this existed, what would be a realistic monthly price for enhanced features, for you personally?</label>
+            <select id="d10" name="d10">
+              <option value="">Prefer not to answer</option>
+              <option>$0 — I would only use free features</option>
+              <option>$1–$25</option>
+              <option>$26–$50</option>
+              <option>$51–$100</option>
+              <option>More than $100</option>
+              <option>It would depend entirely on what's included</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Section E: Optional follow-up -->
+        <div class="survey-section">
+          <p class="eyebrow">Section E</p>
+          <h2>Optional Follow-Up</h2>
+          <p class="section-sub">Everything below is optional. Leave blank to remain fully anonymous.</p>
+          <div class="intake-field intake-field-full" style="margin-bottom:0;">
+            <label for="e1">If you are willing to be contacted for a brief follow-up interview (about 20 minutes, optional compensation may apply), please provide an email or phone number.</label>
+            <input type="text" id="e1" name="e1">
+          </div>
+        </div>
+
+        <p class="section-sub"><strong>Thank you.</strong> We know this process asks a lot of anyone already carrying a lot. Your time and honesty here directly shape what Terra builds next.</p>
+
+        <button type="submit" class="btn btn-primary btn-lg" id="surveySubmit">Submit response</button>
+        <p class="cta-note" id="surveyNote"></p>
+      </form>
+
+      <div class="survey-thankyou" id="surveyThankYou" hidden>
+        <h2>Thank you.</h2>
+        <p>Your response has been recorded. We know this process asks a lot of anyone already carrying a lot — your time and honesty here directly shape what Terra builds next.</p>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <a href="index.html" class="logo">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="24" height="24" fill="none">
+            <path d="M16 2C9 8 4 14.5 4 20a12 12 0 0024 0c0-5.5-5-12-12-18z" fill="currentColor"/>
+          </svg>
+        </span>
+        Terra
+      </a>
+      <p>Guiding immigrants through every step of their case, from first filing to final decision.</p>
+    </div>
+    <div class="footer-links">
+      <div>
+        <h4>Legal</h4>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="disclaimer.html">Disclaimer</a>
+      </div>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <p>© 2026 Terra. Terra is not a law firm and does not provide legal advice.</p>
+  </div>
+</footer>
+
+<script src="survey.js"></script>
+</body>
+</html>
