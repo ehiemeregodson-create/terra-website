@@ -79,7 +79,24 @@
 
 <main id="top">
 
-  <section class="hero">
+  <section class="dashboard" id="dashboardSection" hidden>
+    <div class="container">
+      <div class="dashboard-head">
+        <div>
+          <h1 id="dashboardWelcome" data-i18n="dashboard.welcome">Welcome back</h1>
+          <p data-i18n="dashboard.sub">Here's where each of your cases stands.</p>
+        </div>
+        <a href="get-started.html" class="btn btn-primary" data-i18n="dashboard.newCase">+ New case</a>
+      </div>
+      <div id="dashboardEmpty" class="dashboard-empty" hidden>
+        <p data-i18n="dashboard.emptyText">You haven't started a case yet.</p>
+        <a href="get-started.html" class="btn btn-primary btn-lg" data-i18n="dashboard.emptyCta">Start your first case</a>
+      </div>
+      <div id="dashboardGrid" class="case-grid" hidden></div>
+    </div>
+  </section>
+
+  <section class="hero" id="heroSection">
     <div class="container hero-inner">
       <div class="hero-copy">
         <p class="eyebrow" data-i18n="hero.eyebrow">Immigration, without the guesswork</p>

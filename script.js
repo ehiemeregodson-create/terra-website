@@ -43,6 +43,17 @@ function applyTranslations(lang) {
   });
 }
 
+// Looks up a translation for strings set dynamically from JS (not present in the HTML for
+// applyTranslations() to walk) — e.g. edit-mode form copy, status messages.
+function t(key, fallback) {
+  let lang = 'en';
+  try {
+    lang = localStorage.getItem(I18N_LANG_KEY) || 'en';
+  } catch (err) {}
+  const dict = lang !== 'en' && window.TERRA_TRANSLATIONS ? window.TERRA_TRANSLATIONS[lang] : null;
+  return (dict && dict[key]) || fallback;
+}
+
 function initI18n() {
   const switcher = document.getElementById('langSwitcher');
   let saved = 'en';
@@ -142,6 +153,11 @@ async function checkAuthState() {
         await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
         window.location.href = 'index.html';
       });
+
+      // Already signed up — the "Get started" CTA no longer applies (case creation now
+      // happens from the dashboard's "+ New case" action instead).
+      const getStartedLink = document.querySelector('.header-actions a[href="get-started.html"]');
+      if (getStartedLink) getStartedLink.style.display = 'none';
     }
     return data;
   } catch (err) {
@@ -267,8 +283,21 @@ if (intakeForm) {
   const urlParams = new URLSearchParams(window.location.search);
   const requestedPlan = urlParams.get('plan');
   const checkoutStatus = urlParams.get('checkout'); // 'success' | 'cancelled', set by Stripe's redirect
+  const editCaseId = urlParams.get('caseId'); // present when this page is editing an existing case
 
-  authStatePromise.then((authData) => {
+  const caseIdField = document.getElementById('intakeCaseId');
+  const intakeTitle = document.getElementById('intakeTitle');
+  const intakeEyebrow = document.getElementById('intakeEyebrow');
+  const intakeSub = document.getElementById('intakeSub');
+  const intakeSubmit = document.getElementById('intakeSubmit');
+
+  function goHomeAfter(delayMs) {
+    setTimeout(() => {
+      window.location.href = 'index.html';
+    }, delayMs);
+  }
+
+  authStatePromise.then(async (authData) => {
     if (!authData || !authData.authenticated) {
       const target =
         'account.html?redirect=get-started.html' +
@@ -288,11 +317,53 @@ if (intakeForm) {
       const checkoutNote = document.getElementById('checkoutNote');
       if (checkoutNote) {
         checkoutNote.hidden = false;
-        checkoutNote.textContent =
-          `You're all set! Payment received — welcome to ${PLAN_LABELS[requestedPlan] || 'Terra'}. ` +
-          "We'll start sending policy alerts relevant to your case shortly.";
+        const paidPrefix = t('intake.checkoutSuccessPrefix', "You're all set! Payment received — welcome to {plan}. ")
+          .replace('{plan}', PLAN_LABELS[requestedPlan] || 'Terra');
+        checkoutNote.textContent = paidPrefix + t('intake.dashboardRedirectSuffix', 'Taking you to your dashboard…');
       }
       trackEvent('checkout_success', { plan: requestedPlan || 'unknown' });
+      goHomeAfter(1500);
+      return;
+    }
+
+    if (editCaseId) {
+      // Edit mode: prefill every field from the existing case and switch the form to update it
+      // instead of creating a new one. There's no separate "get one case" endpoint — the list
+      // is small per user, so we just fetch it and find the match client-side.
+      if (caseIdField) caseIdField.value = editCaseId;
+      if (intakeEyebrow) intakeEyebrow.textContent = t('intake.editEyebrow', 'Edit case');
+      if (intakeTitle) intakeTitle.textContent = t('intake.editTitle', 'Update your case details');
+      if (intakeSub) intakeSub.textContent = t('intake.editSub', "Change anything that's out of date — Terra will keep tracking your case from here.");
+      if (intakeSubmit) intakeSubmit.textContent = t('intake.saveChanges', 'Save changes');
+
+      try {
+        const res = await fetch('/api/cases/list');
+        const data = await res.json().catch(() => ({}));
+        const match = data && data.cases ? data.cases.find((c) => String(c.id) === String(editCaseId)) : null;
+        if (!match) {
+          intakeNote.textContent = "Couldn't find that case — it may have been deleted.";
+          return;
+        }
+        const setVal = (id, value) => {
+          const el = document.getElementById(id);
+          if (el && value != null) el.value = value;
+        };
+        setVal('intakeFilingFor', match.filing_for);
+        setVal('intakeCaseName', match.case_name);
+        setVal('intakeName', match.name);
+        setVal('intakeEmail', match.email);
+        setVal('intakeCountry', match.country_from);
+        setVal('intakeDestination', match.country_to);
+        setVal('intakeCategory', match.category);
+        setVal('intakeStage', match.stage);
+        setVal('intakeSponsor', match.sponsor_status);
+        setVal('intakeCurrentStatus', match.current_status);
+        setVal('intakeLegalRep', match.legal_representation);
+        setVal('intakeUrgency', match.urgency);
+        setVal('intakeNotes', match.notes);
+      } catch (err) {
+        intakeNote.textContent = "Sorry, I couldn't load that case. Please check your connection and try again.";
+      }
       return;
     }
 
@@ -326,12 +397,16 @@ if (intakeForm) {
     const submitBtn = intakeForm.querySelector('button');
     const formData = new FormData(intakeForm);
     const payload = Object.fromEntries(formData.entries());
+    const isEditMode = Boolean(payload.caseId);
+    // The API's update action reads the case id as `id`; the form field is named `caseId`
+    // (clearer in the DOM/HTML), so map it over rather than renaming the input.
+    if (isEditMode) payload.id = payload.caseId;
 
     submitBtn.disabled = true;
-    intakeNote.textContent = 'Submitting…';
+    intakeNote.textContent = isEditMode ? t('intake.savingNote', 'Saving…') : t('intake.submittingNote', 'Submitting…');
 
     try {
-      const res = await fetch('/api/get-started', {
+      const res = await fetch(isEditMode ? '/api/cases/update' : '/api/cases/create', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(payload),
@@ -347,16 +422,23 @@ if (intakeForm) {
         return;
       }
 
+      if (isEditMode) {
+        trackEvent('case_updated', { category: payload.category, stage: payload.stage });
+        intakeNote.textContent = t('intake.savedRedirect', 'Saved! Taking you to your dashboard…');
+        goHomeAfter(900);
+        return;
+      }
+
       trackEvent('get_started_signup', { category: payload.category, stage: payload.stage, plan: payload.selectedPlan || 'none' });
 
       // Free plan (or no plan selected): case is saved, nothing left to pay for.
       if (payload.selectedPlan !== 'pro' && payload.selectedPlan !== 'premium') {
         const planLabel = PLAN_LABELS[payload.selectedPlan];
-        intakeNote.textContent = (planLabel ? `You're signed up for ${planLabel}! ` : "You're in! ") +
-          "We'll start sending policy alerts relevant to your case to " + payload.email + ".";
-        intakeForm.reset();
-        const planBanner = document.getElementById('intakePlanBanner');
-        if (planBanner) planBanner.hidden = true;
+        const signedUpFor = planLabel
+          ? t('intake.signedUpForPrefix', "You're signed up for {plan}! ").replace('{plan}', planLabel)
+          : t('intake.caseSavedPrefix', 'Case saved! ');
+        intakeNote.textContent = signedUpFor + t('intake.dashboardRedirectSuffix', 'Taking you to your dashboard…');
+        goHomeAfter(1200);
         return;
       }
 
@@ -381,6 +463,90 @@ if (intakeForm) {
       intakeNote.textContent = "Sorry, I couldn't reach the server. Please check your connection and try again.";
     } finally {
       submitBtn.disabled = false;
+    }
+  });
+}
+
+/* ---------- Homepage dashboard (signed-in visitors only) ---------- */
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : String(str);
+  return div.innerHTML;
+}
+
+const dashboardSection = document.getElementById('dashboardSection');
+
+if (dashboardSection) {
+  const heroSection = document.getElementById('heroSection');
+  const dashboardWelcome = document.getElementById('dashboardWelcome');
+  const dashboardEmpty = document.getElementById('dashboardEmpty');
+  const dashboardGrid = document.getElementById('dashboardGrid');
+
+  const FILING_FOR_LABELS = {
+    self: () => t('intake.filingFor.self', 'Myself'),
+    spouse: () => t('intake.filingFor.spouse', 'My spouse'),
+    child: () => t('intake.filingFor.child', 'My child'),
+    parent: () => t('intake.filingFor.parent', 'My parent'),
+    other: () => t('intake.filingFor.other', 'Someone else'),
+  };
+
+  function stageClass(stage) {
+    if (/approved/i.test(stage)) return 'status-active';
+    if (/denied|evidence/i.test(stage)) return 'status-attention';
+    return '';
+  }
+
+  authStatePromise.then(async (authData) => {
+    if (!authData || !authData.authenticated) return; // logged-out visitors see the normal marketing homepage
+
+    if (heroSection) heroSection.hidden = true;
+    dashboardSection.hidden = false;
+
+    if (dashboardWelcome) {
+      const firstName = authData.user && authData.user.fullName ? authData.user.fullName.split(' ')[0] : '';
+      const welcomeText = t('dashboard.welcome', 'Welcome back');
+      dashboardWelcome.textContent = firstName ? `${welcomeText}, ${firstName}` : welcomeText;
+    }
+
+    try {
+      const res = await fetch('/api/cases/list');
+      const data = await res.json().catch(() => ({}));
+      const cases = (data && data.cases) || [];
+
+      if (!cases.length) {
+        dashboardEmpty.hidden = false;
+        return;
+      }
+
+      const cards = cases.map((c) => {
+        const stage = c.stage || 'Not sure';
+        const filingLabelFn = FILING_FOR_LABELS[c.filing_for];
+        const filingLabel = filingLabelFn ? filingLabelFn() : 'Case';
+        const name = c.case_name || filingLabel;
+        return `
+          <a class="case-card dashboard-card" href="get-started.html?caseId=${encodeURIComponent(c.id)}">
+            <div class="case-card-top">
+              <span class="case-badge">${escapeHtml(name)}</span>
+              <span class="status-pill ${stageClass(stage)}">${escapeHtml(stage)}</span>
+            </div>
+            <div class="case-row"><span>${escapeHtml(filingLabel)}</span><span>${escapeHtml(c.category || '')}</span></div>
+            <div class="case-row"><span>${escapeHtml(c.country_from || '')} → ${escapeHtml(c.country_to || '')}</span><span></span></div>
+            <div class="case-card-edit"><span data-i18n="dashboard.edit">Edit</span></div>
+          </a>
+        `;
+      }).join('');
+
+      dashboardGrid.innerHTML = cards +
+        `<a class="case-card add-new" href="get-started.html" data-i18n="dashboard.newCase">+ New case</a>`;
+      dashboardGrid.hidden = false;
+
+      // Newly-injected markup needs the current language applied — applyTranslations() only
+      // walks the DOM once on load, before these nodes existed.
+      const savedLang = localStorage.getItem(I18N_LANG_KEY);
+      if (savedLang && savedLang !== 'en') applyTranslations(savedLang);
+    } catch (err) {
+      // Fail quietly — worst case the dashboard just doesn't populate this load.
     }
   });
 }

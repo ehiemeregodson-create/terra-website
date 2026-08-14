@@ -60,9 +60,9 @@
   <section class="intake" id="start-form">
     <div class="container">
       <div class="section-head">
-        <p class="eyebrow" data-i18n="intake.eyebrow">Get started</p>
-        <h2 data-i18n="intake.title">Tell us about your case</h2>
-        <p class="section-sub" data-i18n="intake.sub">A few quick details so Terra can start sending you policy interpretation and alerts relevant to your specific situation.</p>
+        <p class="eyebrow" id="intakeEyebrow" data-i18n="intake.eyebrow">Get started</p>
+        <h2 id="intakeTitle" data-i18n="intake.title">Tell us about your case</h2>
+        <p class="section-sub" id="intakeSub" data-i18n="intake.sub">A few quick details so Terra can start sending you policy interpretation and alerts relevant to your specific situation.</p>
       </div>
       <div class="intake-plan-banner" id="intakePlanBanner" hidden>
         <span data-i18n="intake.planBannerLabel">Signing up for</span>
@@ -71,7 +71,22 @@
       <p class="cta-note" id="checkoutNote" hidden></p>
       <form class="intake-form" id="intakeForm">
         <input type="hidden" id="intakeSelectedPlan" name="selectedPlan" value="">
+        <input type="hidden" id="intakeCaseId" name="caseId" value="">
         <div class="intake-grid">
+          <div class="intake-field">
+            <label for="intakeFilingFor" data-i18n="intake.filingForLabel">Who is this case for?</label>
+            <select id="intakeFilingFor" name="filingFor" required>
+              <option value="self" data-i18n="intake.filingFor.self">Myself</option>
+              <option value="spouse" data-i18n="intake.filingFor.spouse">My spouse</option>
+              <option value="child" data-i18n="intake.filingFor.child">My child</option>
+              <option value="parent" data-i18n="intake.filingFor.parent">My parent</option>
+              <option value="other" data-i18n="intake.filingFor.other">Someone else</option>
+            </select>
+          </div>
+          <div class="intake-field">
+            <label for="intakeCaseName" data-i18n="intake.caseNameLabel">Case nickname (optional)</label>
+            <input type="text" id="intakeCaseName" name="caseName" data-i18n-placeholder="intake.caseNamePlaceholder" placeholder="e.g. &quot;My spouse's visa&quot;">
+          </div>
           <div class="intake-field">
             <label for="intakeName" data-i18n="intake.nameLabel">Full name</label>
             <input type="text" id="intakeName" name="name" required autocomplete="name">
@@ -163,7 +178,7 @@
           <label for="intakeNotes" data-i18n="intake.notesLabel">Anything else we should know? (optional)</label>
           <textarea id="intakeNotes" name="notes" rows="3"></textarea>
         </div>
-        <button type="submit" class="btn btn-primary btn-lg" data-i18n="intake.submit">Get started</button>
+        <button type="submit" class="btn btn-primary btn-lg" id="intakeSubmit" data-i18n="intake.submit">Get started</button>
         <p class="cta-note" id="intakeNote"></p>
       </form>
     </div>

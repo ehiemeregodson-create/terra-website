@@ -79,7 +79,7 @@ fetch('/api/auth/me')
   });
 
 document.getElementById('goToGetStarted').addEventListener('click', () => {
-  window.location.href = 'get-started.html';
+  window.location.href = 'index.html';
 });
 
 document.getElementById('accountLogoutBtn').addEventListener('click', async () => {
