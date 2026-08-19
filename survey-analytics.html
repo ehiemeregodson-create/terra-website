@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Survey Analytics — Terra</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="28" height="28" fill="none">
+          <path d="M16 2C9 8 4 14.5 4 20a12 12 0 0024 0c0-5.5-5-12-12-18z" fill="currentColor"/>
+        </svg>
+      </span>
+      Terra
+    </a>
+  </div>
+</header>
+
+<main>
+  <section class="dashboard">
+    <div class="container">
+
+      <div id="stateChecking">
+        <p class="section-sub">Checking access…</p>
+      </div>
+
+      <div id="stateLoggedOut" hidden>
+        <div class="dashboard-empty">
+          <p>You need to be logged in to view this page.</p>
+          <a href="account.html?redirect=survey-analytics.html" class="btn btn-primary btn-lg">Log in</a>
+        </div>
+      </div>
+
+      <div id="stateDenied" hidden>
+        <div class="dashboard-empty">
+          <p>This page is restricted to Terra admins.</p>
+        </div>
+      </div>
+
+      <div id="stateLoading" hidden>
+        <div class="dashboard-skeleton">
+          <div class="skeleton-row">
+            <div class="skeleton-block skeleton-kpi"></div>
+            <div class="skeleton-block skeleton-kpi"></div>
+            <div class="skeleton-block skeleton-kpi"></div>
+            <div class="skeleton-block skeleton-kpi"></div>
+          </div>
+          <div class="skeleton-row">
+            <div class="skeleton-block skeleton-card"></div>
+            <div class="skeleton-block skeleton-card"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="stateContent" hidden>
+        <div class="dashboard-head">
+          <div>
+            <p class="eyebrow">Admin</p>
+            <h1>Survey Analytics</h1>
+            <p>Immigrant Experience &amp; Needs Assessment — response data, updated live from Supabase.</p>
+          </div>
+        </div>
+
+        <div class="kpi-row" id="kpiRow"></div>
+
+        <div class="dashboard-widgets">
+          <div class="widget-card widget-wide widget-primary">
+            <h3>Responses Over Time (30 days)</h3>
+            <div class="chart-container chart-container-lg"><canvas id="chartOverTime"></canvas></div>
+          </div>
+
+          <div class="widget-card widget-wide">
+            <h3>Likert Construct Averages (1–5, higher = more positive)</h3>
+            <div class="chart-container"><canvas id="chartConstructs"></canvas></div>
+          </div>
+          <div class="widget-card" id="fraudFlagCard">
+            <h3>Fraud / Exploitation Flag (C4.4)</h3>
+            <div class="widget-inner" id="fraudFlagBody"></div>
+          </div>
+
+          <div class="widget-card widget-wide">
+            <h3>Solution Usefulness Ranking (D1–D8)</h3>
+            <div class="chart-container chart-container-lg"><canvas id="chartSolutions"></canvas></div>
+          </div>
+          <div class="widget-card">
+            <h3>Willingness to Pay (D10)</h3>
+            <div class="chart-container"><canvas id="chartPricing"></canvas></div>
+          </div>
+
+          <div class="widget-card">
+            <h3>Age Range (A3)</h3>
+            <div class="chart-container"><canvas id="chartAge"></canvas></div>
+          </div>
+          <div class="widget-card">
+            <h3>Case Category (A7)</h3>
+            <div class="chart-container"><canvas id="chartCategory"></canvas></div>
+          </div>
+          <div class="widget-card">
+            <h3>Device Used (A12)</h3>
+            <div class="chart-container"><canvas id="chartDevice"></canvas></div>
+          </div>
+          <div class="widget-card">
+            <h3>Destination Country (A6)</h3>
+            <div class="chart-container"><canvas id="chartCountry"></canvas></div>
+          </div>
+
+          <div class="widget-card widget-wide">
+            <h3>Recent Open-Ended Responses</h3>
+            <div class="widget-inner">
+              <div class="feed-list feed-list-tall" id="openResponsesFeed"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<script src="chart.min.js"></script>
+<script src="survey-analytics.js"></script>
+</body>
+</html>
