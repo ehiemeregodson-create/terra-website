@@ -271,10 +271,13 @@ a { color: inherit; text-decoration: none; }
 .alert-card p { color: #eef1ee; font-size: 0.85rem; margin: 0; }
 
 /* Dashboard (signed-in homepage) */
-.dashboard { padding: 72px 0 88px; }
-.dashboard-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; margin-bottom: 32px; }
+.dashboard { padding: 56px 0 88px; }
+.dashboard-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; margin-bottom: 24px; }
+.dashboard-head .eyebrow { margin-bottom: 6px; }
 .dashboard-head h1 { font-size: clamp(1.6rem, 3vw, 2.15rem); margin-bottom: 6px; }
 .dashboard-head p { color: var(--ink-soft); margin: 0; }
+.dashboard-subhead { margin: 8px 0 16px; }
+.dashboard-subhead h2 { font-size: 1.2rem; color: var(--forest-dark); font-family: Georgia, serif; margin: 0; }
 .case-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -338,53 +341,53 @@ a { color: inherit; text-decoration: none; }
 .kpi-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
-  margin-bottom: 28px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 .kpi-tile {
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 20px 22px;
+  padding: 16px 18px;
 }
-.kpi-tile .kpi-value { font-family: Georgia, serif; font-size: 2rem; color: var(--forest-dark); line-height: 1.1; margin-bottom: 4px; }
-.kpi-tile .kpi-label { font-size: 0.82rem; color: var(--ink-soft); font-weight: 600; }
+.kpi-tile .kpi-value { font-family: Georgia, serif; font-size: 1.8rem; color: var(--forest-dark); line-height: 1.1; margin-bottom: 2px; }
+.kpi-tile .kpi-label { font-size: 0.8rem; color: var(--ink-soft); font-weight: 600; }
 
 .dashboard-widgets {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  margin-bottom: 40px;
+  gap: 14px;
+  margin-bottom: 24px;
 }
 .widget-card {
   position: relative;
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 24px;
+  padding: 18px 20px;
   box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
 }
 .widget-card.widget-wide { grid-column: span 2; }
-.widget-card h3 { font-size: 1.02rem; color: var(--forest-dark); margin-bottom: 16px; font-family: Georgia, serif; }
+.widget-card h3 { font-size: 0.98rem; color: var(--forest-dark); margin-bottom: 12px; font-family: Georgia, serif; }
 .widget-card .widget-inner { flex: 1; transition: filter 0.2s ease, opacity 0.2s ease; }
 .widget-card.is-locked .widget-inner { filter: blur(6px); opacity: 0.6; pointer-events: none; user-select: none; }
 
-.chart-container { position: relative; height: 220px; }
-.chart-container-sm { height: 140px; margin-bottom: 12px; }
+.chart-container { position: relative; height: 190px; }
+.chart-container-sm { height: 120px; margin-bottom: 10px; }
 
 .widget-empty { color: var(--ink-soft); font-size: 0.88rem; text-align: center; padding: 30px 10px; }
 
-.feed-list { display: flex; flex-direction: column; gap: 12px; max-height: 260px; overflow-y: auto; }
-.feed-item { padding: 10px 0; border-top: 1px solid var(--line); }
+.feed-list { display: flex; flex-direction: column; gap: 8px; max-height: 240px; overflow-y: auto; }
+.feed-item { padding: 8px 0; border-top: 1px solid var(--line); }
 .feed-item:first-child { border-top: none; padding-top: 0; }
 .feed-item-title { font-size: 0.9rem; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
 .feed-item-title .severity-flag { color: var(--gold-dark); }
 .feed-item-meta { font-size: 0.78rem; color: var(--ink-soft); }
 .feed-item-body { font-size: 0.85rem; color: var(--ink-soft); margin-top: 4px; }
 
-.checklist-list { display: flex; flex-direction: column; gap: 10px; }
+.checklist-list { display: flex; flex-direction: column; gap: 8px; }
 .checklist-item { display: flex; align-items: flex-start; gap: 10px; font-size: 0.88rem; color: var(--ink); cursor: pointer; }
 .checklist-item input { margin-top: 3px; accent-color: var(--forest); }
 .checklist-item.is-done { color: var(--ink-soft); text-decoration: line-through; }
@@ -401,7 +404,7 @@ a { color: inherit; text-decoration: none; }
   justify-content: center;
   gap: 8px;
   position: absolute;
-  inset: 56px 0 0 0;
+  inset: 46px 0 0 0;
   text-align: center;
   padding: 20px;
 }
