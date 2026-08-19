@@ -560,6 +560,26 @@ a { color: inherit; text-decoration: none; }
 .intake-field select:focus,
 .intake-field textarea:focus { outline: 2px solid var(--forest-light); outline-offset: 1px; }
 .intake-field textarea { resize: vertical; }
+.password-field { position: relative; }
+.password-field input { width: 100%; padding-right: 42px; }
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.password-toggle:hover { color: var(--forest); }
+.password-toggle:focus-visible { outline: 2px solid var(--forest-light); outline-offset: 1px; }
 .intake-form .cta-note { margin-top: 14px; }
 
 /* Survey (Immigrant Experience & Needs Assessment) */

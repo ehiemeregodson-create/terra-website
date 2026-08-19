@@ -75,6 +75,31 @@ function initI18n() {
 }
 initI18n();
 
+/* ---------- Show/hide password toggles ---------- */
+// Eye / eye-off icons, matching the stroke style already used for the chat widget's icons
+// (stroke="currentColor", stroke-width 2, round caps/joins) rather than introducing a new one.
+const EYE_ICON = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_OFF_ICON = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a20.6 20.6 0 015.06-6.06M9.9 4.24A10.4 10.4 0 0112 4c7 0 11 8 11 8a20.6 20.6 0 01-3.22 4.44M14.12 14.12a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+
+document.querySelectorAll('.password-toggle').forEach((btn) => {
+  const input = document.getElementById(btn.dataset.passwordToggle);
+  if (!input) return;
+
+  btn.innerHTML = EYE_ICON;
+  btn.setAttribute('aria-label', t('account.showPassword', 'Show password'));
+
+  btn.addEventListener('click', () => {
+    const willShow = input.type === 'password';
+    input.type = willShow ? 'text' : 'password';
+    btn.innerHTML = willShow ? EYE_OFF_ICON : EYE_ICON;
+    btn.setAttribute('aria-pressed', String(willShow));
+    btn.setAttribute(
+      'aria-label',
+      willShow ? t('account.hidePassword', 'Hide password') : t('account.showPassword', 'Show password')
+    );
+  });
+});
+
 /* ---------- Destinations flag ticker ---------- */
 // A fixed 2-copy + translateX(-50%) marquee only loops seamlessly when the screen is
 // narrower than one copy of the flag list — on any normal desktop width it ran out of
