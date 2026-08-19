@@ -708,7 +708,13 @@ if (dashboardSection) {
             body: JSON.stringify({ caseId: btn.dataset.requestAttorney }),
           });
           if (res.ok) {
-            btn.outerHTML = `<span class="attorney-status-pill status-attention">${escapeHtml(t('dashboard.attorney.status.requested', 'Requested'))}</span>`;
+            const row = btn.closest('.attorney-status');
+            const pill = row && row.querySelector('.attorney-status-pill');
+            if (pill) {
+              pill.textContent = t('dashboard.attorney.status.requested', 'Requested');
+              pill.classList.add('status-attention');
+            }
+            btn.remove();
           } else {
             btn.disabled = false;
           }
