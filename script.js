@@ -506,6 +506,7 @@ if (dashboardSection) {
   const heroSection = document.getElementById('heroSection');
   const dashboardWelcome = document.getElementById('dashboardWelcome');
   const dashboardEmpty = document.getElementById('dashboardEmpty');
+  const dashboardContent = document.getElementById('dashboardContent');
   const dashboardGrid = document.getElementById('dashboardGrid');
 
   const FILING_FOR_LABELS = {
@@ -522,6 +523,205 @@ if (dashboardSection) {
     return '';
   }
 
+  // Brand palette, reused across every chart so they read as one system rather than
+  // Chart.js defaults.
+  const CHART_COLORS = ['#1b4332', '#d4a24e', '#2d6a4f', '#b8853a', '#4c5a53', '#8a9a91', '#e4ddcf'];
+
+  function countBy(items, keyFn) {
+    const counts = {};
+    items.forEach((item) => {
+      const key = keyFn(item) || t('dashboard.unknown', 'Unknown');
+      counts[key] = (counts[key] || 0) + 1;
+    });
+    return counts;
+  }
+
+  function renderDonut(canvasId, counts) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx || typeof Chart === 'undefined') return;
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(counts),
+        datasets: [{ data: Object.values(counts), backgroundColor: CHART_COLORS, borderWidth: 0 }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } },
+      },
+    });
+  }
+
+  function renderBar(canvasId, counts) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx || typeof Chart === 'undefined') return;
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: Object.keys(counts),
+        datasets: [{ data: Object.values(counts), backgroundColor: '#1b4332', borderRadius: 4, maxBarThickness: 36 }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { precision: 0 } },
+          x: { ticks: { font: { size: 10 } } },
+        },
+      },
+    });
+  }
+
+  function renderKpis(cases, policyAlerts) {
+    const el = document.getElementById('kpiRow');
+    if (!el) return;
+    el.innerHTML = `
+      <div class="kpi-tile"><div class="kpi-value">${cases.length}</div><div class="kpi-label" data-i18n="dashboard.kpi.totalCases">Total cases</div></div>
+      <div class="kpi-tile"><div class="kpi-value">${policyAlerts.length}</div><div class="kpi-label" data-i18n="dashboard.kpi.activeAlerts">Active alerts</div></div>
+    `;
+  }
+
+  function renderAlertsFeed(alerts) {
+    const el = document.getElementById('alertsFeed');
+    if (!el) return;
+    if (!alerts.length) {
+      el.innerHTML = `<p class="widget-empty" data-i18n="dashboard.alerts.empty">No alerts yet — we'll notify you here when a policy change affects your case.</p>`;
+      return;
+    }
+    el.innerHTML = alerts.map((a) => `
+      <div class="feed-item">
+        <div class="feed-item-title">${a.severity === 'action_needed' ? '<span class="severity-flag">● </span>' : ''}${escapeHtml(a.title)}</div>
+        <div class="feed-item-meta">${new Date(a.published_at).toLocaleDateString()}</div>
+        <div class="feed-item-body">${escapeHtml(a.body)}</div>
+      </div>
+    `).join('');
+  }
+
+  function renderTimelineFeed(events) {
+    const el = document.getElementById('timelineFeed');
+    if (!el) return;
+    if (!events.length) {
+      el.innerHTML = `<p class="widget-empty" data-i18n="dashboard.timeline.empty">No case activity yet.</p>`;
+      return;
+    }
+    el.innerHTML = events.map((e) => `
+      <div class="feed-item">
+        <div class="feed-item-title">${escapeHtml(e.title)}</div>
+        <div class="feed-item-meta">${new Date(e.occurred_at).toLocaleDateString()}</div>
+      </div>
+    `).join('');
+  }
+
+  function renderChecklist(items) {
+    const listEl = document.getElementById('checklistList');
+    if (!listEl) return;
+
+    if (!items.length) {
+      listEl.innerHTML = `<p class="widget-empty" data-i18n="dashboard.checklist.empty">No checklist items yet.</p>`;
+      return;
+    }
+
+    listEl.innerHTML = items.map((item) => `
+      <label class="checklist-item ${item.completed ? 'is-done' : ''}">
+        <input type="checkbox" data-checklist-id="${escapeHtml(item.id)}" ${item.completed ? 'checked' : ''}>
+        <span>${escapeHtml(item.label)}</span>
+      </label>
+    `).join('');
+
+    listEl.querySelectorAll('input[data-checklist-id]').forEach((input) => {
+      input.addEventListener('change', async () => {
+        input.closest('.checklist-item').classList.toggle('is-done', input.checked);
+        try {
+          await fetch('/api/dashboard/toggle-checklist', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ itemId: input.dataset.checklistId, completed: input.checked }),
+          });
+        } catch (err) {
+          // Fail quietly — the checkbox state already reflects the user's intent visually.
+        }
+      });
+    });
+
+    const completed = items.filter((i) => i.completed).length;
+    renderDonut('chartChecklist', {
+      [t('dashboard.checklist.done', 'Done')]: completed,
+      [t('dashboard.checklist.remaining', 'Remaining')]: items.length - completed,
+    });
+  }
+
+  function renderEstimate(cases, estimates) {
+    const el = document.getElementById('estimateBody');
+    if (!el) return;
+    const matches = cases
+      .map((c) => estimates.find((e) => e.category === c.category && e.stage === c.stage))
+      .filter(Boolean);
+
+    if (!matches.length) {
+      el.innerHTML = `<p class="widget-empty" data-i18n="dashboard.estimate.empty">We're still gathering data for accurate estimates in your case category — check back soon.</p>`;
+      return;
+    }
+    el.innerHTML = matches.map((m) => `
+      <div class="feed-item">
+        <div class="feed-item-title">${escapeHtml(m.category)}</div>
+        <div class="feed-item-body">${m.min_months}–${m.max_months} ${t('dashboard.estimate.months', 'months')}${m.note ? ' — ' + escapeHtml(m.note) : ''}</div>
+      </div>
+    `).join('');
+  }
+
+  function renderAttorney(cases, connections) {
+    const el = document.getElementById('attorneyBody');
+    if (!el) return;
+
+    el.innerHTML = cases.map((c) => {
+      const conn = connections.find((x) => x.case_id === c.id);
+      const status = conn ? conn.status : 'not_requested';
+      const label = c.case_name || c.category || t('dashboard.case', 'Case');
+      const pillClass = status === 'completed' ? 'status-active' : (status === 'requested' || status === 'scheduled') ? 'status-attention' : '';
+      const statusText = t(`dashboard.attorney.status.${status}`, status);
+      const canRequest = status === 'not_requested';
+      return `
+        <div class="attorney-status">
+          <strong>${escapeHtml(label)}</strong>
+          <span class="attorney-status-pill ${pillClass}">${escapeHtml(statusText)}</span>
+          ${canRequest ? `<button type="button" class="btn btn-outline btn-sm" data-request-attorney="${escapeHtml(c.id)}" data-i18n="dashboard.attorney.request">Request a discovery call</button>` : ''}
+        </div>
+      `;
+    }).join('');
+
+    el.querySelectorAll('[data-request-attorney]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        btn.disabled = true;
+        try {
+          const res = await fetch('/api/dashboard/request-attorney-call', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ caseId: btn.dataset.requestAttorney }),
+          });
+          if (res.ok) {
+            btn.outerHTML = `<span class="attorney-status-pill status-attention">${escapeHtml(t('dashboard.attorney.status.requested', 'Requested'))}</span>`;
+          } else {
+            btn.disabled = false;
+          }
+        } catch (err) {
+          btn.disabled = false;
+        }
+      });
+    });
+  }
+
+  function applyTierLocks(plan) {
+    const rank = { free: 0, pro: 1, premium: 2 };
+    document.querySelectorAll('.widget-card[data-tier]').forEach((card) => {
+      const locked = (rank[plan] || 0) < (rank[card.dataset.tier] || 0);
+      card.classList.toggle('is-locked', locked);
+      const lockEl = card.querySelector('.widget-lock');
+      if (lockEl) lockEl.hidden = !locked;
+    });
+  }
+
   authStatePromise.then(async (authData) => {
     if (!authData || !authData.authenticated) return; // logged-out visitors see the normal marketing homepage
 
@@ -535,7 +735,7 @@ if (dashboardSection) {
     }
 
     try {
-      const res = await fetch('/api/cases/list');
+      const res = await fetch('/api/dashboard/summary');
       const data = await res.json().catch(() => ({}));
       const cases = (data && data.cases) || [];
 
@@ -543,6 +743,8 @@ if (dashboardSection) {
         dashboardEmpty.hidden = false;
         return;
       }
+
+      const { plan = 'free', caseEvents = [], checklistItems = [], timelineEstimates = [], attorneyConnections = [], policyAlerts = [] } = data;
 
       const cards = cases.map((c) => {
         const stage = c.stage || 'Not sure';
@@ -564,7 +766,18 @@ if (dashboardSection) {
 
       dashboardGrid.innerHTML = cards +
         `<a class="case-card add-new" href="get-started.html" data-i18n="dashboard.newCase">+ New case</a>`;
-      dashboardGrid.hidden = false;
+
+      renderKpis(cases, policyAlerts);
+      renderDonut('chartByStage', countBy(cases, (c) => c.stage));
+      renderBar('chartByCategory', countBy(cases, (c) => c.category));
+      renderAlertsFeed(policyAlerts);
+      renderTimelineFeed(caseEvents);
+      renderChecklist(checklistItems);
+      renderEstimate(cases, timelineEstimates);
+      renderAttorney(cases, attorneyConnections);
+      applyTierLocks(plan);
+
+      dashboardContent.hidden = false;
 
       // Newly-injected markup needs the current language applied — applyTranslations() only
       // walks the DOM once on load, before these nodes existed.

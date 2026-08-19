@@ -92,7 +92,79 @@
         <p data-i18n="dashboard.emptyText">You haven't started a case yet.</p>
         <a href="get-started.html" class="btn btn-primary btn-lg" data-i18n="dashboard.emptyCta">Start your first case</a>
       </div>
-      <div id="dashboardGrid" class="case-grid" hidden></div>
+
+      <div id="dashboardContent" hidden>
+        <div class="kpi-row" id="kpiRow"></div>
+
+        <div class="dashboard-widgets">
+          <div class="widget-card">
+            <h3 data-i18n="dashboard.widget.byStage">Cases by Stage</h3>
+            <div class="chart-container"><canvas id="chartByStage"></canvas></div>
+          </div>
+          <div class="widget-card">
+            <h3 data-i18n="dashboard.widget.byCategory">Cases by Category</h3>
+            <div class="chart-container"><canvas id="chartByCategory"></canvas></div>
+          </div>
+          <div class="widget-card widget-wide">
+            <h3 data-i18n="dashboard.widget.alerts">Policy Alerts</h3>
+            <div class="widget-inner">
+              <div class="feed-list" id="alertsFeed"></div>
+            </div>
+          </div>
+
+          <div class="widget-card" data-tier="pro">
+            <h3 data-i18n="dashboard.widget.timeline">Case Timeline</h3>
+            <div class="widget-inner">
+              <div class="feed-list" id="timelineFeed"></div>
+            </div>
+            <div class="widget-lock" hidden>
+              <svg class="lock-icon" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
+              <p data-i18n="dashboard.lock.pro">Unlock with Terra Pro</p>
+              <a href="index.html#pricing" class="btn btn-primary btn-sm" data-i18n="dashboard.lock.upgradeToPro">Upgrade to Pro</a>
+            </div>
+          </div>
+          <div class="widget-card" data-tier="pro">
+            <h3 data-i18n="dashboard.widget.checklist">Interview &amp; Application Prep</h3>
+            <div class="widget-inner">
+              <div class="chart-container chart-container-sm"><canvas id="chartChecklist"></canvas></div>
+              <div class="checklist-list" id="checklistList"></div>
+            </div>
+            <div class="widget-lock" hidden>
+              <svg class="lock-icon" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
+              <p data-i18n="dashboard.lock.pro">Unlock with Terra Pro</p>
+              <a href="index.html#pricing" class="btn btn-primary btn-sm" data-i18n="dashboard.lock.upgradeToPro">Upgrade to Pro</a>
+            </div>
+          </div>
+          <div class="widget-card" data-tier="pro">
+            <h3 data-i18n="dashboard.widget.estimate">Predicted Timeline</h3>
+            <div class="widget-inner">
+              <div id="estimateBody"></div>
+            </div>
+            <div class="widget-lock" hidden>
+              <svg class="lock-icon" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
+              <p data-i18n="dashboard.lock.pro">Unlock with Terra Pro</p>
+              <a href="index.html#pricing" class="btn btn-primary btn-sm" data-i18n="dashboard.lock.upgradeToPro">Upgrade to Pro</a>
+            </div>
+          </div>
+
+          <div class="widget-card widget-wide" data-tier="premium">
+            <h3 data-i18n="dashboard.widget.attorney">Attorney Connection</h3>
+            <div class="widget-inner">
+              <div id="attorneyBody"></div>
+            </div>
+            <div class="widget-lock" hidden>
+              <svg class="lock-icon" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
+              <p data-i18n="dashboard.lock.premium">Unlock with Terra Premium</p>
+              <a href="index.html#pricing" class="btn btn-primary btn-sm" data-i18n="dashboard.lock.upgradeToPremium">Get Premium</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-subhead">
+          <h2 data-i18n="dashboard.myCases">My Cases</h2>
+        </div>
+        <div id="dashboardGrid" class="case-grid"></div>
+      </div>
     </div>
   </section>
 
@@ -440,6 +512,7 @@
 </div>
 
 <script src="translations.js"></script>
+<script src="chart.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
