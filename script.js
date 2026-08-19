@@ -671,6 +671,13 @@ if (dashboardSection) {
     `).join('');
   }
 
+  const ATTORNEY_STATUS_LABELS = {
+    not_requested: 'Not requested',
+    requested: 'Requested',
+    scheduled: 'Scheduled',
+    completed: 'Completed',
+  };
+
   function renderAttorney(cases, connections) {
     const el = document.getElementById('attorneyBody');
     if (!el) return;
@@ -680,7 +687,7 @@ if (dashboardSection) {
       const status = conn ? conn.status : 'not_requested';
       const label = c.case_name || c.category || t('dashboard.case', 'Case');
       const pillClass = status === 'completed' ? 'status-active' : (status === 'requested' || status === 'scheduled') ? 'status-attention' : '';
-      const statusText = t(`dashboard.attorney.status.${status}`, status);
+      const statusText = t(`dashboard.attorney.status.${status}`, ATTORNEY_STATUS_LABELS[status] || status);
       const canRequest = status === 'not_requested';
       return `
         <div class="attorney-status">
