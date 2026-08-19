@@ -505,6 +505,7 @@ const dashboardSection = document.getElementById('dashboardSection');
 if (dashboardSection) {
   const heroSection = document.getElementById('heroSection');
   const dashboardWelcome = document.getElementById('dashboardWelcome');
+  const dashboardLoading = document.getElementById('dashboardLoading');
   const dashboardEmpty = document.getElementById('dashboardEmpty');
   const dashboardContent = document.getElementById('dashboardContent');
   const dashboardGrid = document.getElementById('dashboardGrid');
@@ -536,9 +537,23 @@ if (dashboardSection) {
     return counts;
   }
 
-  function renderDonut(canvasId, counts) {
+  // A screen reader can't read anything drawn to a <canvas> — Chart.js renders pixels, not
+  // DOM text. role="img" + a computed aria-label gives assistive tech the same information a
+  // sighted user gets from the chart, instead of the chart being silently invisible to them.
+  function describeCounts(labelPrefix, counts) {
+    const parts = Object.entries(counts).map(([k, v]) => `${k}: ${v}`);
+    return parts.length ? `${labelPrefix} — ${parts.join(', ')}` : labelPrefix;
+  }
+
+  function renderDonut(canvasId, counts, ariaLabel) {
     const ctx = document.getElementById(canvasId);
     if (!ctx || typeof Chart === 'undefined') return;
+    const existing = Chart.getChart(ctx);
+    if (existing) existing.destroy();
+    if (ariaLabel) {
+      ctx.setAttribute('role', 'img');
+      ctx.setAttribute('aria-label', ariaLabel);
+    }
     new Chart(ctx, {
       type: 'doughnut',
       data: {
@@ -553,9 +568,15 @@ if (dashboardSection) {
     });
   }
 
-  function renderBar(canvasId, counts) {
+  function renderBar(canvasId, counts, ariaLabel) {
     const ctx = document.getElementById(canvasId);
     if (!ctx || typeof Chart === 'undefined') return;
+    const existing = Chart.getChart(ctx);
+    if (existing) existing.destroy();
+    if (ariaLabel) {
+      ctx.setAttribute('role', 'img');
+      ctx.setAttribute('aria-label', ariaLabel);
+    }
     new Chart(ctx, {
       type: 'bar',
       data: {
@@ -632,24 +653,43 @@ if (dashboardSection) {
 
     listEl.querySelectorAll('input[data-checklist-id]').forEach((input) => {
       input.addEventListener('change', async () => {
+        // Optimistic: flip the row instantly, then reconcile the rest of the dashboard (the
+        // completion donut, in particular) once the write is confirmed — instant feedback
+        // without leaving other widgets stale.
+        const wasChecked = !input.checked;
         input.closest('.checklist-item').classList.toggle('is-done', input.checked);
         try {
-          await fetch('/api/dashboard/toggle-checklist', {
+          const res = await fetch('/api/dashboard/toggle-checklist', {
             method: 'POST',
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify({ itemId: input.dataset.checklistId, completed: input.checked }),
           });
+          if (res.ok) {
+            refreshDashboard();
+          } else {
+            input.checked = wasChecked;
+            input.closest('.checklist-item').classList.toggle('is-done', wasChecked);
+          }
         } catch (err) {
-          // Fail quietly — the checkbox state already reflects the user's intent visually.
+          input.checked = wasChecked;
+          input.closest('.checklist-item').classList.toggle('is-done', wasChecked);
         }
       });
     });
 
     const completed = items.filter((i) => i.completed).length;
-    renderDonut('chartChecklist', {
-      [t('dashboard.checklist.done', 'Done')]: completed,
-      [t('dashboard.checklist.remaining', 'Remaining')]: items.length - completed,
-    });
+    const remaining = items.length - completed;
+    renderDonut(
+      'chartChecklist',
+      {
+        [t('dashboard.checklist.done', 'Done')]: completed,
+        [t('dashboard.checklist.remaining', 'Remaining')]: remaining,
+      },
+      describeCounts(t('dashboard.widget.checklist', 'Interview & Application Prep'), {
+        [t('dashboard.checklist.done', 'Done')]: completed,
+        [t('dashboard.checklist.remaining', 'Remaining')]: remaining,
+      })
+    );
   }
 
   function renderEstimate(cases, estimates) {
@@ -708,13 +748,9 @@ if (dashboardSection) {
             body: JSON.stringify({ caseId: btn.dataset.requestAttorney }),
           });
           if (res.ok) {
-            const row = btn.closest('.attorney-status');
-            const pill = row && row.querySelector('.attorney-status-pill');
-            if (pill) {
-              pill.textContent = t('dashboard.attorney.status.requested', 'Requested');
-              pill.classList.add('status-attention');
-            }
-            btn.remove();
+            // Full refresh rather than a manual DOM patch — keeps this widget, the KPI row,
+            // and everything else in sync with the server in one code path instead of two.
+            refreshDashboard();
           } else {
             btn.disabled = false;
           }
@@ -735,27 +771,23 @@ if (dashboardSection) {
     });
   }
 
-  authStatePromise.then(async (authData) => {
-    if (!authData || !authData.authenticated) return; // logged-out visitors see the normal marketing homepage
-
-    if (heroSection) heroSection.hidden = true;
-    dashboardSection.hidden = false;
-
-    if (dashboardWelcome) {
-      const firstName = authData.user && authData.user.fullName ? authData.user.fullName.split(' ')[0] : '';
-      const welcomeText = t('dashboard.welcome', 'Welcome back');
-      dashboardWelcome.textContent = firstName ? `${welcomeText}, ${firstName}` : welcomeText;
-    }
-
+  // Re-run after any in-place dashboard action (checklist toggle, attorney call request) so the
+  // whole page — KPIs, charts, feeds — reflects the new server state, not just the one widget
+  // that was clicked. Also the initial-load path, called once from authStatePromise below.
+  async function refreshDashboard() {
     try {
       const res = await fetch('/api/dashboard/summary');
       const data = await res.json().catch(() => ({}));
       const cases = (data && data.cases) || [];
 
+      if (dashboardLoading) dashboardLoading.hidden = true;
+
       if (!cases.length) {
+        dashboardContent.hidden = true;
         dashboardEmpty.hidden = false;
         return;
       }
+      dashboardEmpty.hidden = true;
 
       const { plan = 'free', caseEvents = [], checklistItems = [], timelineEstimates = [], attorneyConnections = [], policyAlerts = [] } = data;
 
@@ -780,9 +812,11 @@ if (dashboardSection) {
       dashboardGrid.innerHTML = cards +
         `<a class="case-card add-new" href="get-started.html" data-i18n="dashboard.newCase">+ New case</a>`;
 
+      const stageCounts = countBy(cases, (c) => c.stage);
+      const categoryCounts = countBy(cases, (c) => c.category);
       renderKpis(cases, policyAlerts);
-      renderDonut('chartByStage', countBy(cases, (c) => c.stage));
-      renderBar('chartByCategory', countBy(cases, (c) => c.category));
+      renderDonut('chartByStage', stageCounts, describeCounts(t('dashboard.widget.byStage', 'Cases by Stage'), stageCounts));
+      renderBar('chartByCategory', categoryCounts, describeCounts(t('dashboard.widget.byCategory', 'Cases by Category'), categoryCounts));
       renderAlertsFeed(policyAlerts);
       renderTimelineFeed(caseEvents);
       renderChecklist(checklistItems);
@@ -797,8 +831,25 @@ if (dashboardSection) {
       const savedLang = localStorage.getItem(I18N_LANG_KEY);
       if (savedLang && savedLang !== 'en') applyTranslations(savedLang);
     } catch (err) {
+      if (dashboardLoading) dashboardLoading.hidden = true;
       // Fail quietly — worst case the dashboard just doesn't populate this load.
     }
+  }
+
+  authStatePromise.then(async (authData) => {
+    if (!authData || !authData.authenticated) return; // logged-out visitors see the normal marketing homepage
+
+    if (heroSection) heroSection.hidden = true;
+    dashboardSection.hidden = false;
+    if (dashboardLoading) dashboardLoading.hidden = false;
+
+    if (dashboardWelcome) {
+      const firstName = authData.user && authData.user.fullName ? authData.user.fullName.split(' ')[0] : '';
+      const welcomeText = t('dashboard.welcome', 'Welcome back');
+      dashboardWelcome.textContent = firstName ? `${welcomeText}, ${firstName}` : welcomeText;
+    }
+
+    await refreshDashboard();
   });
 }
 

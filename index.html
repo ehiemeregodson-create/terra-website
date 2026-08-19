@@ -89,6 +89,17 @@
         </div>
         <a href="get-started.html" class="btn btn-primary" data-i18n="dashboard.newCase">+ New case</a>
       </div>
+      <div id="dashboardLoading" class="dashboard-skeleton" hidden aria-hidden="true">
+        <div class="skeleton-row">
+          <div class="skeleton-block skeleton-kpi"></div>
+          <div class="skeleton-block skeleton-kpi"></div>
+        </div>
+        <div class="skeleton-row">
+          <div class="skeleton-block skeleton-card"></div>
+          <div class="skeleton-block skeleton-card"></div>
+        </div>
+      </div>
+
       <div id="dashboardEmpty" class="dashboard-empty" hidden>
         <p data-i18n="dashboard.emptyText">You haven't started a case yet.</p>
         <a href="get-started.html" class="btn btn-primary btn-lg" data-i18n="dashboard.emptyCta">Start your first case</a>
@@ -98,9 +109,9 @@
         <div class="kpi-row" id="kpiRow"></div>
 
         <div class="dashboard-widgets">
-          <div class="widget-card">
+          <div class="widget-card widget-wide widget-primary">
             <h3 data-i18n="dashboard.widget.byStage">Cases by Stage</h3>
-            <div class="chart-container"><canvas id="chartByStage"></canvas></div>
+            <div class="chart-container chart-container-lg"><canvas id="chartByStage"></canvas></div>
           </div>
           <div class="widget-card">
             <h3 data-i18n="dashboard.widget.byCategory">Cases by Category</h3>
@@ -113,7 +124,7 @@
             </div>
           </div>
 
-          <div class="widget-card" data-tier="pro">
+          <div class="widget-card widget-wide" data-tier="pro">
             <h3 data-i18n="dashboard.widget.timeline">Case Timeline</h3>
             <div class="widget-inner">
               <div class="feed-list" id="timelineFeed"></div>
