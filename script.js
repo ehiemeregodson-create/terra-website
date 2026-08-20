@@ -514,6 +514,9 @@ const dashboardSection = document.getElementById('dashboardSection');
 
 if (dashboardSection) {
   const heroSection = document.getElementById('heroSection');
+  const marketingSections = document.querySelectorAll(
+    '.logos-strip, #features, #how-it-works, #premium, #pricing, #faq, #get-started'
+  );
   const dashboardWelcome = document.getElementById('dashboardWelcome');
   const dashboardLoading = document.getElementById('dashboardLoading');
   const dashboardEmpty = document.getElementById('dashboardEmpty');
@@ -850,6 +853,7 @@ if (dashboardSection) {
     if (!authData || !authData.authenticated) return; // logged-out visitors see the normal marketing homepage
 
     if (heroSection) heroSection.hidden = true;
+    marketingSections.forEach((el) => { el.hidden = true; });
     dashboardSection.hidden = false;
     if (dashboardLoading) dashboardLoading.hidden = false;
 
