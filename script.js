@@ -145,6 +145,16 @@ function initDestinationsScroll() {
 }
 initDestinationsScroll();
 
+// SMIL <animate>/<animateMotion> in the hero illustration can't be paused via CSS animation
+// rules the way a CSS keyframe animation can — pauseAnimations() is the SVG-native equivalent.
+(function respectReducedMotionForHero() {
+  const heroScene = document.querySelector('.hero-scene');
+  if (!heroScene || typeof heroScene.pauseAnimations !== 'function') return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    heroScene.pauseAnimations();
+  }
+})();
+
 const header = document.getElementById('header');
 const navToggle = document.getElementById('navToggle');
 

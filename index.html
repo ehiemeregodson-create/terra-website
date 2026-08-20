@@ -205,33 +205,83 @@
           </div>
         </div>
       </div>
-      <div class="hero-visual" aria-hidden="true">
-        <div class="case-card">
-          <div class="case-card-top">
-            <span class="case-badge">Case #A417-992</span>
-            <span class="status-pill status-active">On track</span>
-          </div>
-          <div class="case-row">
-            <span>Form I-485 filed</span>
-            <span class="check">✓</span>
-          </div>
-          <div class="case-row">
-            <span>Biometrics scheduled</span>
-            <span class="check">✓</span>
-          </div>
-          <div class="case-row highlight">
-            <span>Interview prep unlocked</span>
-            <span class="dot"></span>
-          </div>
-          <div class="case-eta">
-            <span>Predicted decision window</span>
-            <strong>Feb – Apr 2027</strong>
-          </div>
-        </div>
-        <div class="alert-card">
-          <span class="alert-tag">Policy alert</span>
-          <p>New USCIS filing fee update affects your I-485 category — reviewed, no action needed.</p>
-        </div>
+      <div class="hero-visual hero-visual-modern" aria-hidden="true">
+        <svg class="hero-scene" viewBox="0 0 520 640" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice">
+          <defs>
+            <linearGradient id="heroSkyGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#10281f"/>
+              <stop offset="55%" stop-color="#1b4332"/>
+              <stop offset="100%" stop-color="#2d6a4f"/>
+            </linearGradient>
+            <radialGradient id="heroSunGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#faf6ee" stop-opacity="0.9"/>
+              <stop offset="45%" stop-color="#d4a24e" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#d4a24e" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="heroGroundGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#2d6a4f"/>
+              <stop offset="100%" stop-color="#10281f"/>
+            </linearGradient>
+          </defs>
+
+          <rect x="0" y="0" width="520" height="640" fill="url(#heroSkyGrad)"/>
+
+          <circle cx="380" cy="410" r="160" fill="url(#heroSunGlow)">
+            <animate attributeName="r" values="150;175;150" dur="6s" repeatCount="indefinite"/>
+          </circle>
+
+          <ellipse cx="90" cy="160" rx="70" ry="16" fill="#faf6ee" opacity="0.08">
+            <animate attributeName="cx" values="60;140;60" dur="26s" repeatCount="indefinite"/>
+          </ellipse>
+          <ellipse cx="300" cy="90" rx="90" ry="18" fill="#faf6ee" opacity="0.06">
+            <animate attributeName="cx" values="260;360;260" dur="34s" repeatCount="indefinite"/>
+          </ellipse>
+          <ellipse cx="180" cy="260" rx="60" ry="14" fill="#faf6ee" opacity="0.07">
+            <animate attributeName="cx" values="140;220;140" dur="20s" repeatCount="indefinite"/>
+          </ellipse>
+
+          <path d="M0,460 C120,420 340,430 520,400 L520,640 L0,640 Z" fill="url(#heroGroundGrad)"/>
+          <g fill="#d4a24e" opacity="0.35">
+            <circle cx="60" cy="520" r="2"/>
+            <circle cx="140" cy="560" r="1.6"/>
+            <circle cx="230" cy="500" r="2"/>
+            <circle cx="320" cy="580" r="1.8"/>
+            <circle cx="420" cy="540" r="2"/>
+            <circle cx="470" cy="600" r="1.5"/>
+            <circle cx="90" cy="600" r="1.4"/>
+          </g>
+
+          <path id="heroJourneyPath" d="M40,610 C160,560 140,470 260,450 C330,438 340,430 378,414"
+            fill="none" stroke="#faf6ee" stroke-width="2.5" stroke-linecap="round"
+            stroke-dasharray="2 14" opacity="0.55">
+            <animate attributeName="stroke-dashoffset" from="0" to="-160" dur="12s" repeatCount="indefinite"/>
+          </path>
+
+          <g stroke="#d4a24e" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.85">
+            <path d="M378,420 C372,438 368,450 358,468" stroke-dasharray="60 60">
+              <animate attributeName="stroke-dashoffset" values="60;0;0" dur="3.5s" repeatCount="indefinite"/>
+            </path>
+            <path d="M378,420 C380,440 384,452 392,472" stroke-dasharray="60 60">
+              <animate attributeName="stroke-dashoffset" values="60;60;0;0" keyTimes="0;0.1;0.5;1" dur="3.5s" repeatCount="indefinite"/>
+            </path>
+            <path d="M378,420 C378,444 378,458 378,480" stroke-dasharray="70 70">
+              <animate attributeName="stroke-dashoffset" values="70;70;0;0" keyTimes="0;0.05;0.45;1" dur="3.5s" repeatCount="indefinite"/>
+            </path>
+          </g>
+
+          <g transform="translate(362,378) scale(1.6)">
+            <path d="M16 2C9 8 4 14.5 4 20a12 12 0 0024 0c0-5.5-5-12-12-18z" fill="#d4a24e"/>
+          </g>
+
+          <g>
+            <circle cx="0" cy="-13" r="4" fill="#faf6ee"/>
+            <path d="M0,-9 L0,2 M0,-4 L-6,3 M0,-4 L6,2 M0,2 L-5,12 M0,2 L5,11" stroke="#faf6ee" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+            <animateMotion dur="16s" repeatCount="indefinite">
+              <mpath href="#heroJourneyPath"/>
+            </animateMotion>
+          </g>
+        </svg>
+        <span class="hero-overlay-word">Ground.</span>
       </div>
     </div>
   </section>
