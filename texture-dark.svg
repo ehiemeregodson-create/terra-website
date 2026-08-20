@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 700" width="700" height="700">
+  <g fill="#d4a24e" fill-opacity="0.07">
+
+    <!-- pine tree -->
+    <g transform="translate(60,50)">
+      <polygon points="30,0 54,34 6,34"/>
+      <polygon points="30,16 58,52 2,52"/>
+      <polygon points="30,34 62,74 -2,74"/>
+      <rect x="25" y="72" width="10" height="20"/>
+    </g>
+
+    <!-- small pine tree -->
+    <g transform="translate(600,120) scale(0.6)">
+      <polygon points="30,0 54,34 6,34"/>
+      <polygon points="30,16 58,52 2,52"/>
+      <polygon points="30,34 62,74 -2,74"/>
+      <rect x="25" y="72" width="10" height="20"/>
+    </g>
+
+    <!-- passport -->
+    <g transform="translate(300,30) rotate(-10)">
+      <rect x="0" y="0" width="56" height="76" rx="6"/>
+      <circle cx="28" cy="32" r="10" opacity="0.45"/>
+      <rect x="14" y="50" width="28" height="4" opacity="0.45"/>
+      <rect x="14" y="58" width="28" height="4" opacity="0.45"/>
+    </g>
+
+    <!-- airplane -->
+    <g transform="translate(480,80) rotate(25)">
+      <path d="M40 0 L45 18 L78 30 L78 36 L45 28 L41 50 L54 60 L54 65 L40 60 L26 65 L26 60 L39 50 L35 28 L2 36 L2 30 L35 18 Z"/>
+    </g>
+
+    <!-- car -->
+    <g transform="translate(90,270)">
+      <path d="M6 30 Q6 12 24 12 L38 12 Q48 12 54 22 L78 22 Q92 22 92 34 L92 40 L6 40 Z"/>
+      <circle cx="26" cy="42" r="9"/>
+      <circle cx="74" cy="42" r="9"/>
+    </g>
+
+    <!-- family -->
+    <g transform="translate(320,230)">
+      <circle cx="8" cy="8" r="8"/>
+      <path d="M-2 48 Q-2 22 8 22 Q18 22 18 48 Z"/>
+      <circle cx="32" cy="6" r="8"/>
+      <path d="M22 48 Q22 20 32 20 Q42 20 42 48 Z"/>
+      <circle cx="52" cy="18" r="6"/>
+      <path d="M45 48 Q45 30 52 30 Q59 30 59 48 Z"/>
+    </g>
+
+    <!-- suitcase -->
+    <g transform="translate(520,270)">
+      <rect x="16" y="-8" width="24" height="12" rx="5"/>
+      <rect x="0" y="10" width="60" height="46" rx="7"/>
+      <rect x="0" y="30" width="60" height="6" opacity="0.5"/>
+    </g>
+
+    <!-- Terra leaf / ground mark -->
+    <g transform="translate(150,430) scale(2.2)">
+      <path d="M16 2C9 8 4 14.5 4 20a12 12 0 0024 0c0-5.5-5-12-12-18z"/>
+    </g>
+
+    <!-- sparkle -->
+    <g transform="translate(420,420)">
+      <path d="M20 0 L25 15 L40 20 L25 25 L20 40 L15 25 L0 20 L15 15 Z"/>
+    </g>
+
+    <!-- small sparkle -->
+    <g transform="translate(120,600) scale(0.7)">
+      <path d="M20 0 L25 15 L40 20 L25 25 L20 40 L15 25 L0 20 L15 15 Z"/>
+    </g>
+
+    <!-- map pin -->
+    <g transform="translate(580,460) rotate(-8)">
+      <path d="M18 0a18 18 0 00-18 18c0 13 18 30 18 30s18-17 18-30a18 18 0 00-18-18z"/>
+      <circle cx="18" cy="18" r="7" opacity="0.5"/>
+    </g>
+
+  </g>
+</svg>

@@ -26,6 +26,22 @@ body {
   background: var(--cream);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+
+/* Site-wide decorative texture: trees, passports, cars, family and travel
+   motifs at very low opacity, fixed behind the header/chat/modal layers. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image: url("texture.svg");
+  background-repeat: repeat;
+}
+@media (prefers-color-scheme: dark) {
+  body::before { background-image: url("texture-dark.svg"); }
 }
 
 h1, h2, h3 {
