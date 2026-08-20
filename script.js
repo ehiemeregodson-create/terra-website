@@ -193,6 +193,19 @@ async function checkAuthState() {
       // happens from the dashboard's "+ New case" action instead).
       const getStartedLink = document.querySelector('.header-actions a[href="get-started.html"]');
       if (getStartedLink) getStartedLink.style.display = 'none';
+
+      // Logged-in visitors get a direct "Dashboard" link in every page's nav (this page might
+      // be Community, Jobs, the marketing view of index.html, etc.) so they can always get back
+      // in one click, no matter how they navigated away.
+      document.querySelectorAll('.nav-links').forEach((navList) => {
+        if (navList.querySelector('.nav-dashboard-link')) return;
+        const dashLink = document.createElement('a');
+        dashLink.href = 'index.html';
+        dashLink.className = 'nav-dashboard-link';
+        dashLink.setAttribute('data-i18n', 'nav.dashboard');
+        dashLink.textContent = t('nav.dashboard', 'Dashboard');
+        navList.prepend(dashLink);
+      });
     }
     return data;
   } catch (err) {
@@ -517,6 +530,38 @@ if (dashboardSection) {
   const marketingSections = document.querySelectorAll(
     '.logos-strip, #features, #how-it-works, #premium, #pricing, #faq, #get-started'
   );
+  const backToDashboardBtn = document.getElementById('backToDashboardBtn');
+  const MARKETING_HASHES = ['#features', '#how-it-works', '#premium', '#pricing', '#faq', '#get-started'];
+
+  // Lets a signed-in visitor step out to browse Terra's public pricing/features pages and
+  // back in to their dashboard, without losing their session or re-fetching dashboard data.
+  function showMarketingView(hash) {
+    marketingSections.forEach((el) => { el.hidden = false; });
+    dashboardSection.hidden = true;
+    if (backToDashboardBtn) backToDashboardBtn.hidden = false;
+    const target = hash && document.querySelector(hash);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      window.scrollTo({ top: 0 });
+    }
+  }
+
+  function showDashboardView() {
+    marketingSections.forEach((el) => { el.hidden = true; });
+    if (heroSection) heroSection.hidden = true;
+    dashboardSection.hidden = false;
+    if (backToDashboardBtn) backToDashboardBtn.hidden = true;
+    window.scrollTo({ top: 0 });
+  }
+
+  if (backToDashboardBtn) {
+    backToDashboardBtn.addEventListener('click', () => {
+      if (window.location.hash) history.replaceState(null, '', window.location.pathname + window.location.search);
+      showDashboardView();
+    });
+  }
+
   const dashboardWelcome = document.getElementById('dashboardWelcome');
   const dashboardLoading = document.getElementById('dashboardLoading');
   const dashboardEmpty = document.getElementById('dashboardEmpty');
@@ -853,9 +898,23 @@ if (dashboardSection) {
     if (!authData || !authData.authenticated) return; // logged-out visitors see the normal marketing homepage
 
     if (heroSection) heroSection.hidden = true;
-    marketingSections.forEach((el) => { el.hidden = true; });
-    dashboardSection.hidden = false;
+
+    // A logged-in visitor can land here with a marketing hash already in the URL — either by
+    // clicking Features/Pricing/etc. from another page, or an "Upgrade to Pro" link from a
+    // locked dashboard widget. Respect it instead of always forcing the dashboard.
+    if (MARKETING_HASHES.includes(window.location.hash)) {
+      showMarketingView(window.location.hash);
+    } else {
+      marketingSections.forEach((el) => { el.hidden = true; });
+      dashboardSection.hidden = false;
+    }
     if (dashboardLoading) dashboardLoading.hidden = false;
+
+    // Same-page nav clicks (already on index.html) don't reload — just change the hash — so
+    // catch those here to switch views without a refetch.
+    window.addEventListener('hashchange', () => {
+      if (MARKETING_HASHES.includes(window.location.hash)) showMarketingView(window.location.hash);
+    });
 
     if (dashboardWelcome) {
       const firstName = authData.user && authData.user.fullName ? authData.user.fullName.split(' ')[0] : '';

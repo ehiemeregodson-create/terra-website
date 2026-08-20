@@ -41,8 +41,9 @@ body::before {
   pointer-events: none;
   background-image: url("texture.svg");
   background-repeat: repeat;
+  background-size: 340px 340px;
   mix-blend-mode: soft-light;
-  opacity: 0.5;
+  opacity: 0.75;
 }
 
 h1, h2, h3 {
@@ -1298,6 +1299,29 @@ a { color: inherit; text-decoration: none; }
   .btn-outline:hover { background: #f4f0e4; color: var(--forest-dark); }
   .btn-ghost { color: #eef1ee; }
   .price-badge, .status-pill { color: var(--forest-dark); }
+}
+
+/* Back-to-dashboard floating button (shown when a logged-in visitor browses
+   Terra's marketing pages instead of their dashboard) */
+.back-to-dashboard-btn {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 90;
+  background: var(--forest);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+}
+.back-to-dashboard-btn:hover { background: var(--forest-light); }
+.back-to-dashboard-btn[hidden] { display: none; }
+@media (max-width: 640px) {
+  .back-to-dashboard-btn { left: 16px; bottom: 16px; padding: 10px 16px; font-size: 0.85rem; }
 }
 
 /* Chat widget */
