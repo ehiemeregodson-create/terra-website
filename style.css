@@ -30,7 +30,9 @@ body {
 }
 
 /* Site-wide decorative texture: trees, passports, cars, family and travel
-   motifs at very low opacity, fixed behind the header/chat/modal layers. */
+   motifs at very low opacity, fixed behind the header/chat/modal layers.
+   mix-blend-mode lets the same gold artwork read on both light sections
+   (cream/paper) and dark ones (Premium, footer) without a second asset. */
 body::before {
   content: "";
   position: fixed;
@@ -39,9 +41,8 @@ body::before {
   pointer-events: none;
   background-image: url("texture.svg");
   background-repeat: repeat;
-}
-@media (prefers-color-scheme: dark) {
-  body::before { background-image: url("texture-dark.svg"); }
+  mix-blend-mode: soft-light;
+  opacity: 0.5;
 }
 
 h1, h2, h3 {
