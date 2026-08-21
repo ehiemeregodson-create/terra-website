@@ -16,6 +16,7 @@ const accountTabs = document.querySelector('.account-tabs');
 const signupPanel = document.getElementById('signupPanel');
 const loginPanel = document.getElementById('loginPanel');
 const forgotPanel = document.getElementById('forgotPanel');
+const avatarPanel = document.getElementById('avatarPanel');
 const accountAuthenticated = document.getElementById('accountAuthenticated');
 const accountCard = document.querySelector('.account-card');
 
@@ -30,6 +31,7 @@ function showTab(tab) {
   signupPanel.hidden = !showSignup;
   loginPanel.hidden = showSignup;
   forgotPanel.hidden = true;
+  avatarPanel.hidden = true;
   accountAuthenticated.hidden = true;
   tabSignup.classList.toggle('active', showSignup);
   tabLogin.classList.toggle('active', !showSignup);
@@ -52,10 +54,19 @@ function showAuthenticated(user) {
   signupPanel.hidden = true;
   loginPanel.hidden = true;
   forgotPanel.hidden = true;
+  avatarPanel.hidden = true;
   accountAuthenticated.hidden = false;
   document.getElementById('authenticatedEmail').textContent = user.email
     ? `Logged in as ${user.email}`
     : 'You have an active session.';
+
+  const avatarImg = document.getElementById('accountAvatarImg');
+  if (user.avatarUrl) {
+    avatarImg.src = user.avatarUrl;
+    avatarImg.hidden = false;
+  } else {
+    avatarImg.hidden = true;
+  }
 }
 
 fetch('/api/auth/me')
@@ -162,8 +173,7 @@ signupPanel.addEventListener('submit', async (e) => {
     }
 
     trackEvent('account_signup');
-    signupNote.textContent = "You're in! Redirecting…";
-    window.location.href = getRedirectTarget();
+    showAvatarPanel('setup');
   } catch (err) {
     signupNote.textContent = "Sorry, I couldn't reach the server. Please check your connection and try again.";
     btn.disabled = false;
@@ -244,3 +254,136 @@ forgotPanel.addEventListener('submit', async (e) => {
     btn.disabled = false;
   }
 });
+
+/* ---------- Profile picture (10 presets, or upload your own) ---------- */
+
+const AVATAR_PRESET_COUNT = 10;
+const avatarPresetGrid = document.getElementById('avatarPresetGrid');
+const avatarUploadInput = document.getElementById('avatarUploadInput');
+const avatarPreviewRow = document.getElementById('avatarPreviewRow');
+const avatarPreviewImg = document.getElementById('avatarPreviewImg');
+const avatarSaveBtn = document.getElementById('avatarSaveBtn');
+const avatarSkipBtn = document.getElementById('avatarSkipBtn');
+const avatarNote = document.getElementById('avatarNote');
+
+let avatarMode = 'setup'; // 'setup' (just signed up, continuing to the redirect target) | 'edit' (changing it later from the logged-in view)
+let selectedPresetId = null;
+let selectedUpload = null; // { base64, contentType } once a file is chosen
+
+avatarPresetGrid.innerHTML = Array.from({ length: AVATAR_PRESET_COUNT }, (_, i) => {
+  const id = `avatar-${i + 1}`;
+  return `
+    <button type="button" class="avatar-preset-btn" data-preset-id="${id}" aria-label="${t('account.avatarOption', 'Profile picture option')} ${i + 1}">
+      <img src="avatars/${id}.svg" alt="">
+    </button>
+  `;
+}).join('');
+
+avatarPresetGrid.querySelectorAll('.avatar-preset-btn').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    selectedPresetId = btn.dataset.presetId;
+    selectedUpload = null;
+    avatarUploadInput.value = '';
+    avatarPresetGrid.querySelectorAll('.avatar-preset-btn').forEach((b) => b.classList.toggle('is-selected', b === btn));
+    avatarPreviewRow.hidden = true;
+    avatarNote.textContent = '';
+  });
+});
+
+avatarUploadInput.addEventListener('change', () => {
+  const file = avatarUploadInput.files[0];
+  if (!file) return;
+
+  const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+  if (!validTypes.includes(file.type)) {
+    avatarNote.textContent = t('account.avatarInvalidType', 'Please choose a JPEG, PNG, or WEBP image.');
+    avatarUploadInput.value = '';
+    return;
+  }
+  if (file.size > 2 * 1024 * 1024) {
+    avatarNote.textContent = t('account.avatarTooLarge', "That image is too large — please use one under 2MB.");
+    avatarUploadInput.value = '';
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const base64 = reader.result.split(',')[1] || '';
+    selectedUpload = { base64, contentType: file.type };
+    selectedPresetId = null;
+    avatarPresetGrid.querySelectorAll('.avatar-preset-btn').forEach((b) => b.classList.remove('is-selected'));
+    avatarPreviewImg.src = reader.result;
+    avatarPreviewRow.hidden = false;
+    avatarNote.textContent = '';
+  };
+  reader.readAsDataURL(file);
+});
+
+function showAvatarPanel(mode) {
+  avatarMode = mode;
+  selectedPresetId = null;
+  selectedUpload = null;
+  avatarUploadInput.value = '';
+  avatarPreviewRow.hidden = true;
+  avatarNote.textContent = '';
+  avatarPresetGrid.querySelectorAll('.avatar-preset-btn').forEach((b) => b.classList.remove('is-selected'));
+
+  accountTabs.hidden = true;
+  signupPanel.hidden = true;
+  loginPanel.hidden = true;
+  forgotPanel.hidden = true;
+  accountAuthenticated.hidden = true;
+  avatarPanel.hidden = false;
+}
+
+function afterAvatarStep() {
+  if (avatarMode === 'setup') {
+    window.location.href = getRedirectTarget();
+    return;
+  }
+  // 'edit' — re-fetch so the authenticated view reflects the (possibly just-changed) avatar.
+  fetch('/api/auth/me')
+    .then((res) => res.json())
+    .then((data) => {
+      if (data && data.authenticated && data.user) showAuthenticated(data.user);
+    });
+}
+
+avatarSkipBtn.addEventListener('click', () => afterAvatarStep());
+
+avatarSaveBtn.addEventListener('click', async () => {
+  if (!selectedPresetId && !selectedUpload) {
+    avatarNote.textContent = t('account.avatarChooseOne', 'Choose a picture above, or tap "Skip for now".');
+    return;
+  }
+
+  avatarSaveBtn.disabled = true;
+  avatarNote.textContent = t('account.avatarSaving', 'Saving…');
+
+  try {
+    const payload = selectedPresetId
+      ? { presetId: selectedPresetId }
+      : { imageBase64: selectedUpload.base64, contentType: selectedUpload.contentType };
+
+    const res = await fetch('/api/auth/update-avatar', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok || !data.success) {
+      avatarNote.textContent = data.error || 'Something went wrong — please try again.';
+      avatarSaveBtn.disabled = false;
+      return;
+    }
+
+    trackEvent('avatar_updated', { mode: avatarMode, preset: Boolean(selectedPresetId) });
+    afterAvatarStep();
+  } catch (err) {
+    avatarNote.textContent = "Sorry, I couldn't reach the server. Please check your connection and try again.";
+    avatarSaveBtn.disabled = false;
+  }
+});
+
+document.getElementById('changeAvatarBtn').addEventListener('click', () => showAvatarPanel('edit'));

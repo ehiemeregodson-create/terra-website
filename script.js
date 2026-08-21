@@ -983,6 +983,11 @@ if (dashboardSection) {
       const welcomeText = t('dashboard.welcome', 'Welcome back');
       dashboardWelcome.textContent = firstName ? `${welcomeText}, ${firstName}` : welcomeText;
     }
+    const dashboardAvatar = document.getElementById('dashboardAvatar');
+    if (dashboardAvatar && authData.user && authData.user.avatarUrl) {
+      dashboardAvatar.src = authData.user.avatarUrl;
+      dashboardAvatar.hidden = false;
+    }
 
     await refreshDashboard();
   });

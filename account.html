@@ -125,9 +125,32 @@
           <button type="button" class="link-btn" id="backToLoginLink" data-i18n="account.backToLogin">Back to log in</button>
         </form>
 
+        <div id="avatarPanel" class="account-form" hidden>
+          <h1 data-i18n="account.avatarTitle">Add a profile picture</h1>
+          <p class="section-sub" data-i18n="account.avatarSub">Pick one of these, upload your own photo, or skip for now — you can always change it later.</p>
+
+          <div class="avatar-picker-grid" id="avatarPresetGrid"></div>
+
+          <label class="avatar-upload-label" for="avatarUploadInput">
+            <span data-i18n="account.avatarUploadLabel">Or upload your own photo</span>
+            <input type="file" id="avatarUploadInput" accept="image/jpeg,image/png,image/webp">
+          </label>
+
+          <div class="avatar-preview-row" id="avatarPreviewRow" hidden>
+            <img id="avatarPreviewImg" alt="">
+            <span data-i18n="account.avatarSelected">Selected</span>
+          </div>
+
+          <button type="button" class="btn btn-primary btn-lg btn-block" id="avatarSaveBtn" data-i18n="account.avatarSaveBtn">Continue</button>
+          <button type="button" class="link-btn" id="avatarSkipBtn" data-i18n="account.avatarSkip">Skip for now</button>
+          <p class="cta-note" id="avatarNote"></p>
+        </div>
+
         <div id="accountAuthenticated" class="account-form" hidden>
+          <img class="account-avatar" id="accountAvatarImg" alt="" hidden>
           <h1 data-i18n="account.loggedInTitle">You're logged in</h1>
           <p class="section-sub" id="authenticatedEmail"></p>
+          <button type="button" class="link-btn" id="changeAvatarBtn" data-i18n="account.changeAvatarBtn">Change profile picture</button>
           <button type="button" class="btn btn-primary btn-lg btn-block" id="goToGetStarted" data-i18n="account.goToGetStarted">Go to my dashboard</button>
           <button type="button" class="btn btn-ghost btn-lg btn-block" id="accountLogoutBtn" data-i18n="account.logoutBtn">Log out</button>
           <button type="button" class="link-btn link-btn-danger" id="deleteAccountBtn" data-i18n="account.deleteAccountBtn">Delete my account</button>

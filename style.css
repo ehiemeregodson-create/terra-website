@@ -324,6 +324,9 @@ a { color: inherit; text-decoration: none; }
 .dashboard-head .eyebrow { margin-bottom: 6px; }
 .dashboard-head h1 { font-size: clamp(1.6rem, 3vw, 2.15rem); margin-bottom: 6px; }
 .dashboard-head p { color: var(--ink-soft); margin: 0; }
+.dashboard-head-identity { display: flex; align-items: center; gap: 16px; }
+.dashboard-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.dashboard-avatar[hidden] { display: none; }
 .dashboard-subhead { margin: 8px 0 16px; }
 .dashboard-subhead h2 { font-size: 1.2rem; color: var(--forest-dark); font-family: Georgia, serif; margin: 0; }
 .case-grid {
@@ -441,6 +444,11 @@ a { color: inherit; text-decoration: none; }
 .widget-card h3 { font-size: 0.98rem; color: var(--forest-dark); margin-bottom: 12px; font-family: Georgia, serif; }
 .widget-card .widget-inner { flex: 1; transition: filter 0.2s ease, opacity 0.2s ease; }
 .widget-card.is-locked .widget-inner { filter: blur(6px); opacity: 0.6; pointer-events: none; user-select: none; }
+/* The lock overlay is absolutely positioned, so it doesn't push the card taller on its own —
+   a card whose real (blurred) content is short, like Attorney Connection's one-line status,
+   could otherwise end before the lock icon/copy/button do, leaving the button poking out past
+   the card's bottom edge instead of sitting inside it. */
+.widget-card.is-locked { min-height: 210px; }
 
 .chart-container { position: relative; height: 190px; }
 .chart-container-sm { height: 120px; margin-bottom: 10px; }
@@ -966,6 +974,48 @@ a { color: inherit; text-decoration: none; }
 .account-form { display: flex; flex-direction: column; gap: 16px; }
 .account-form[hidden] { display: none; }
 .account-form h1 { font-size: 1.4rem; margin-bottom: 2px; }
+
+.avatar-picker-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.avatar-preset-btn {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--cream);
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.avatar-preset-btn img { width: 100%; height: 100%; display: block; }
+.avatar-preset-btn:hover { transform: scale(1.05); }
+.avatar-preset-btn.is-selected { border-color: var(--forest); }
+.avatar-upload-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--forest);
+  cursor: pointer;
+  text-align: center;
+}
+.avatar-upload-label:hover { background: var(--cream); }
+.avatar-upload-label input[type="file"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+.avatar-preview-row { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: var(--ink-soft); font-weight: 600; }
+.avatar-preview-row[hidden] { display: none; }
+.avatar-preview-row img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--forest); }
+.account-avatar { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; margin: 0 auto; }
+.account-avatar[hidden] { display: none; }
 .account-form .intake-field input {
   width: 100%;
   padding: 11px 14px;
