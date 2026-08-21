@@ -108,6 +108,8 @@ function jobResultCard(r) {
   `;
 }
 
+const JOB_MATCH_LAST_SEARCH_KEY = 'terraJobMatchLastSearch';
+
 function initJobMatch() {
   const form = document.getElementById('jobMatchForm');
   if (!form) return;
@@ -119,12 +121,16 @@ function initJobMatch() {
   const resultsTitle = document.getElementById('jobResultsTitle');
   const resetBtn = document.getElementById('jobMatchReset');
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+  function fillForm(payload) {
+    Object.entries(payload).forEach(([name, value]) => {
+      const field = form.elements.namedItem(name);
+      if (field) field.value = value;
+    });
+  }
+
+  async function runMatch(payload, { scroll } = { scroll: true }) {
     submitBtn.disabled = true;
     note.textContent = t('jobMatch.matching', 'Searching real sponsorship records…');
-
-    const payload = Object.fromEntries(new FormData(form).entries());
 
     try {
       const res = await fetch('/api/jobs/match', {
@@ -148,21 +154,51 @@ function initJobMatch() {
       const titleTpl = t('jobMatch.resultsTitle', 'Real employers matching your {industry} search');
       resultsTitle.textContent = titleTpl.replace('{industry}', payload.industry);
       resultsSection.hidden = false;
-      resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      trackEvent('job_match_submitted', { industry: payload.industry, sponsorshipType: payload.sponsorshipType });
+      if (scroll) resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      try {
+        localStorage.setItem(JOB_MATCH_LAST_SEARCH_KEY, JSON.stringify(payload));
+      } catch (storageErr) {
+        // localStorage unavailable (private browsing, etc.) — last search just won't persist.
+      }
     } catch (err) {
       note.textContent = t('jobMatch.errorConnection', "Sorry, we couldn't reach the server. Please check your connection and try again.");
     } finally {
       submitBtn.disabled = false;
     }
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const payload = Object.fromEntries(new FormData(form).entries());
+    trackEvent('job_match_submitted', { industry: payload.industry, sponsorshipType: payload.sponsorshipType });
+    runMatch(payload);
   });
 
   if (resetBtn) {
     resetBtn.addEventListener('click', () => {
       form.reset();
       resultsSection.hidden = true;
+      try {
+        localStorage.removeItem(JOB_MATCH_LAST_SEARCH_KEY);
+      } catch (storageErr) {
+        // ignore
+      }
       form.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
+  }
+
+  // Returning visitor with a previous search — restore it and re-run the match (fresh data,
+  // not cached results) so both the questionnaire and their last results show immediately.
+  try {
+    const saved = localStorage.getItem(JOB_MATCH_LAST_SEARCH_KEY);
+    if (saved) {
+      const payload = JSON.parse(saved);
+      fillForm(payload);
+      runMatch(payload, { scroll: false });
+    }
+  } catch (err) {
+    // Corrupt or unavailable storage — just show the empty questionnaire.
   }
 }
 
