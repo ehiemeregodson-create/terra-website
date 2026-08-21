@@ -91,6 +91,7 @@ function formatDate(d) {
 
 function jobResultCard(r) {
   const visaClass = r.visa_type === 'H-1B' ? 'job-visa-h1b' : 'job-visa-perm';
+  const reasons = Array.isArray(r.matchReasons) ? r.matchReasons : [];
   return `
     <div class="job-result-card">
       <div class="job-result-top">
@@ -103,6 +104,7 @@ function jobResultCard(r) {
         <span>${escapeHtml(r.city || '')}${r.city && r.state ? ', ' : ''}${escapeHtml(r.state || '')}</span>
         <span>${escapeHtml(formatDate(r.decision_date))}</span>
       </div>
+      ${reasons.length ? `<div class="job-match-reasons">${reasons.map((reason) => `<span class="job-match-reason">${escapeHtml(reason)}</span>`).join('')}</div>` : ''}
       <p class="job-result-case">Case ${escapeHtml(r.case_number)} · U.S. Dept. of Labor disclosure data</p>
     </div>
   `;
@@ -119,6 +121,7 @@ function initJobMatch() {
   const resultsSection = document.getElementById('jobResults');
   const resultsGrid = document.getElementById('jobResultsGrid');
   const resultsTitle = document.getElementById('jobResultsTitle');
+  const resultsBroadened = document.getElementById('jobResultsBroadened');
   const resetBtn = document.getElementById('jobMatchReset');
 
   function fillForm(payload) {
@@ -153,6 +156,7 @@ function initJobMatch() {
       }
       const titleTpl = t('jobMatch.resultsTitle', 'Real employers matching your {industry} search');
       resultsTitle.textContent = titleTpl.replace('{industry}', payload.industry);
+      if (resultsBroadened) resultsBroadened.hidden = !data.broadened;
       resultsSection.hidden = false;
       if (scroll) resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
