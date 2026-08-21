@@ -338,6 +338,19 @@ if (intakeForm) {
   const intakeEyebrow = document.getElementById('intakeEyebrow');
   const intakeSub = document.getElementById('intakeSub');
   const intakeSubmit = document.getElementById('intakeSubmit');
+  const deleteCaseBtn = document.getElementById('deleteCaseBtn');
+
+  // Warn before leaving with unsaved changes — cleared once the form actually submits (or the
+  // case is deleted) so a normal successful save/delete doesn't trigger the same prompt.
+  let formDirty = false;
+  let formSettled = false;
+  intakeForm.addEventListener('input', () => { formDirty = true; });
+  intakeForm.addEventListener('change', () => { formDirty = true; });
+  window.addEventListener('beforeunload', (e) => {
+    if (!formDirty || formSettled) return;
+    e.preventDefault();
+    e.returnValue = '';
+  });
 
   function goHomeAfter(delayMs) {
     setTimeout(() => {
@@ -392,6 +405,7 @@ if (intakeForm) {
           intakeNote.textContent = "Couldn't find that case — it may have been deleted.";
           return;
         }
+        if (deleteCaseBtn) deleteCaseBtn.hidden = false;
         const setVal = (id, value) => {
           const el = document.getElementById(id);
           if (el && value != null) el.value = value;
@@ -470,6 +484,8 @@ if (intakeForm) {
         return;
       }
 
+      formSettled = true;
+
       if (isEditMode) {
         trackEvent('case_updated', { category: payload.category, stage: payload.stage });
         intakeNote.textContent = t('intake.savedRedirect', 'Saved! Taking you to your dashboard…');
@@ -513,6 +529,49 @@ if (intakeForm) {
       submitBtn.disabled = false;
     }
   });
+
+  if (deleteCaseBtn) {
+    deleteCaseBtn.addEventListener('click', async () => {
+      const confirmMsg = t(
+        'intake.deleteCaseConfirm',
+        "Delete this case? This can't be undone, and all its history, alerts, and checklist will be lost."
+      );
+      if (!window.confirm(confirmMsg)) return;
+
+      deleteCaseBtn.disabled = true;
+      intakeSubmit.disabled = true;
+      intakeNote.textContent = t('intake.deletingNote', 'Deleting…');
+
+      try {
+        const res = await fetch('/api/cases/delete', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ id: editCaseId }),
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (res.status === 401) {
+          window.location.href = 'account.html?redirect=get-started.html';
+          return;
+        }
+        if (!res.ok || !data.success) {
+          intakeNote.textContent = "Something went wrong — please try again in a moment.";
+          deleteCaseBtn.disabled = false;
+          intakeSubmit.disabled = false;
+          return;
+        }
+
+        formSettled = true;
+        trackEvent('case_deleted', {});
+        intakeNote.textContent = t('intake.deletedRedirect', "Case deleted. Taking you to your dashboard…");
+        goHomeAfter(900);
+      } catch (err) {
+        intakeNote.textContent = "Sorry, I couldn't reach the server. Please check your connection and try again.";
+        deleteCaseBtn.disabled = false;
+        intakeSubmit.disabled = false;
+      }
+    });
+  }
 }
 
 /* ---------- Homepage dashboard (signed-in visitors only) ---------- */

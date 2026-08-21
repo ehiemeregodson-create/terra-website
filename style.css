@@ -999,6 +999,8 @@ a { color: inherit; text-decoration: none; }
 .link-btn:hover { color: var(--ink); }
 .link-btn-danger { color: #b3402f; margin-top: 4px; }
 .link-btn-danger:hover { color: #8f2f22; }
+#deleteCaseBtn { display: block; margin: 18px auto 0; }
+#deleteCaseBtn[hidden] { display: none; }
 
 /* Legal pages (Privacy, Terms, Disclaimer) */
 .legal-section { padding: 64px 0 96px; }
