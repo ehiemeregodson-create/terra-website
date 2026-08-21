@@ -721,11 +721,13 @@ if (dashboardSection) {
     `;
   }
 
-  function renderAlertsFeed(alerts) {
+  function renderAlertsFeed(alerts, hasCoverage) {
     const el = document.getElementById('alertsFeed');
     if (!el) return;
     if (!alerts.length) {
-      el.innerHTML = `<p class="widget-empty" data-i18n="dashboard.alerts.empty">No alerts yet — we'll notify you here when a policy change affects your case.</p>`;
+      el.innerHTML = hasCoverage
+        ? `<p class="widget-empty" data-i18n="dashboard.alerts.empty">No alerts yet — we'll notify you here when a policy change affects your case.</p>`
+        : `<p class="widget-empty" data-i18n="dashboard.alerts.noCoverage">Terra currently tracks official USCIS and DHS updates for U.S.-bound cases. Coverage for other destination countries is coming soon.</p>`;
       return;
     }
     el.innerHTML = alerts.map((a) => `
@@ -733,6 +735,7 @@ if (dashboardSection) {
         <div class="feed-item-title">${a.severity === 'action_needed' ? '<span class="severity-flag">● </span>' : ''}${escapeHtml(a.title)}</div>
         <div class="feed-item-meta">${new Date(a.published_at).toLocaleDateString()}</div>
         <div class="feed-item-body">${escapeHtml(a.body)}</div>
+        ${a.source_url ? `<a class="feed-item-source" href="${escapeHtml(a.source_url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t('dashboard.alerts.sourcePrefix', 'Source:'))} ${escapeHtml(a.source_label || 'Official source')} ↗</a>` : ''}
       </div>
     `).join('');
   }
@@ -906,7 +909,7 @@ if (dashboardSection) {
       }
       dashboardEmpty.hidden = true;
 
-      const { plan = 'free', caseEvents = [], checklistItems = [], timelineEstimates = [], attorneyConnections = [], policyAlerts = [] } = data;
+      const { plan = 'free', caseEvents = [], checklistItems = [], timelineEstimates = [], attorneyConnections = [], policyAlerts = [], policyAlertsCoverage = true } = data;
 
       const cards = cases.map((c) => {
         const stage = c.stage || 'Not sure';
@@ -934,7 +937,7 @@ if (dashboardSection) {
       renderKpis(cases, policyAlerts);
       renderDonut('chartByStage', stageCounts, describeCounts(t('dashboard.widget.byStage', 'Cases by Stage'), stageCounts));
       renderBar('chartByCategory', categoryCounts, describeCounts(t('dashboard.widget.byCategory', 'Cases by Category'), categoryCounts));
-      renderAlertsFeed(policyAlerts);
+      renderAlertsFeed(policyAlerts, policyAlertsCoverage);
       renderTimelineFeed(caseEvents);
       renderChecklist(checklistItems);
       renderEstimate(cases, timelineEstimates);
