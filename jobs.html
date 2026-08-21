@@ -78,14 +78,81 @@
     </div>
   </section>
 
-  <section class="companies" id="companies">
+  <section class="job-match" id="jobMatch">
     <div class="container">
       <div class="section-head">
-        <p class="eyebrow" data-i18n="companies.eyebrow">Employers</p>
-        <h2 data-i18n="companies.title">Companies known for sponsoring international talent</h2>
-        <p class="section-sub" data-i18n="companies.sub">A curated list based on publicly known visa sponsorship patterns, weighted toward the US, UK, and Canada — not a live ranked feed. Refresh the page for a different mix.</p>
+        <p class="eyebrow" data-i18n="jobMatch.eyebrow">Employer matching</p>
+        <h2 data-i18n="jobMatch.title">Find real employers that sponsor people like you</h2>
+        <p class="section-sub" data-i18n="jobMatch.sub">Answer a few questions and we'll match you against real, certified sponsorship cases — actual companies, job titles, and wages, not a generic list.</p>
       </div>
-      <div class="company-grid" id="companyGrid"></div>
+
+      <form class="intake-form job-match-form" id="jobMatchForm">
+        <div class="intake-grid job-match-grid">
+          <div class="intake-field intake-field-full">
+            <label for="jobType" data-i18n="jobMatch.jobTypeLabel">What kind of job are you looking for?</label>
+            <input type="text" id="jobType" name="jobType" placeholder="e.g. Software Engineer, Registered Nurse, Mechanical Engineer" data-i18n-placeholder="jobMatch.jobTypePlaceholder" required>
+          </div>
+          <div class="intake-field">
+            <label for="jobIndustry" data-i18n="jobMatch.industryLabel">Industry</label>
+            <select id="jobIndustry" name="industry" required>
+              <option value="" disabled selected data-i18n="intake.selectOne">Select one</option>
+              <option value="Technology" data-i18n="jobMatch.industry.tech">Technology</option>
+              <option value="Healthcare" data-i18n="jobMatch.industry.health">Healthcare</option>
+              <option value="Finance" data-i18n="jobMatch.industry.finance">Finance</option>
+              <option value="Engineering" data-i18n="jobMatch.industry.engineering">Engineering</option>
+              <option value="Education / Research" data-i18n="jobMatch.industry.education">Education / Research</option>
+              <option value="Consulting / IT Services" data-i18n="jobMatch.industry.consulting">Consulting / IT Services</option>
+              <option value="Hospitality" data-i18n="jobMatch.industry.hospitality">Hospitality</option>
+              <option value="Manufacturing" data-i18n="jobMatch.industry.manufacturing">Manufacturing</option>
+            </select>
+          </div>
+          <div class="intake-field">
+            <label for="jobSponsorship" data-i18n="jobMatch.sponsorshipLabel">What sponsorship do you need?</label>
+            <select id="jobSponsorship" name="sponsorshipType" required>
+              <option value="Either" data-i18n="jobMatch.sponsorship.either">Not sure / either works</option>
+              <option value="H-1B" data-i18n="jobMatch.sponsorship.h1b">H-1B (work visa)</option>
+              <option value="Green Card (PERM)" data-i18n="jobMatch.sponsorship.perm">Green card (PERM labor certification)</option>
+            </select>
+          </div>
+          <div class="intake-field">
+            <label for="jobStartDate" data-i18n="jobMatch.startLabel">When do you want to start?</label>
+            <select id="jobStartDate" name="startTimeline">
+              <option value="asap" data-i18n="jobMatch.start.asap">As soon as possible</option>
+              <option value="3months" data-i18n="jobMatch.start.3m">Within 3 months</option>
+              <option value="6months" data-i18n="jobMatch.start.6m">Within 6 months</option>
+              <option value="1year" data-i18n="jobMatch.start.1y">Within a year</option>
+              <option value="exploring" data-i18n="jobMatch.start.exploring">Just exploring</option>
+            </select>
+          </div>
+          <div class="intake-field">
+            <label for="jobState" data-i18n="jobMatch.stateLabel">Preferred U.S. state (optional)</label>
+            <input type="text" id="jobState" name="state" maxlength="2" placeholder="e.g. CA, NY, TX" data-i18n-placeholder="jobMatch.statePlaceholder">
+          </div>
+          <div class="intake-field">
+            <label for="jobExperience" data-i18n="jobMatch.experienceLabel">Experience level</label>
+            <select id="jobExperience" name="experienceLevel">
+              <option value="entry" data-i18n="jobMatch.experience.entry">Entry-level</option>
+              <option value="mid" data-i18n="jobMatch.experience.mid">Mid-level</option>
+              <option value="senior" data-i18n="jobMatch.experience.senior">Senior</option>
+            </select>
+          </div>
+          <div class="intake-field">
+            <label for="jobSalary" data-i18n="jobMatch.salaryLabel">Salary expectations (optional, USD/year)</label>
+            <input type="number" id="jobSalary" name="salaryExpectation" min="0" step="1000" placeholder="e.g. 95000" data-i18n-placeholder="jobMatch.salaryPlaceholder">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg" id="jobMatchSubmit" data-i18n="jobMatch.submit">Find my matches</button>
+        <p class="cta-note" id="jobMatchNote"></p>
+      </form>
+
+      <div class="job-results" id="jobResults" hidden>
+        <div class="job-results-head">
+          <h3 id="jobResultsTitle"></h3>
+          <button type="button" class="link-btn" id="jobMatchReset" data-i18n="jobMatch.startOver">Start over</button>
+        </div>
+        <div class="job-results-grid" id="jobResultsGrid"></div>
+        <p class="job-results-source" data-i18n="jobMatch.sourceNote">Every result above is a real, individually certified case from the U.S. Department of Labor's public LCA/PERM disclosure data — not an estimate or a generic listing. Currently covers U.S. employers only; more countries are coming soon.</p>
+      </div>
     </div>
   </section>
 
