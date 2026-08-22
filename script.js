@@ -782,17 +782,24 @@ if (dashboardSection) {
     return hasItems ? `<div class="case-pulse-next case-pulse-done">${escapeHtml(t('dashboard.pulse.allDone', 'All prep items complete'))}</div>` : '';
   }
 
+  // Last real activity on a case (most recent case_events row, falling back to creation) and
+  // whether it's gone stale — shared by the card-top "Needs an update" badge and the pulse block
+  // below it so both agree on the same signal.
+  function getCaseActivity(c, caseEvents) {
+    const caseEventsForCase = caseEvents.filter((e) => e.case_id === c.id);
+    const lastActivityAt = (caseEventsForCase[0] && caseEventsForCase[0].occurred_at) || c.created_at;
+    if (!lastActivityAt) return null;
+    const daysSince = Math.max(0, Math.floor((Date.now() - new Date(lastActivityAt).getTime()) / 86400000));
+    return { daysSince, isStale: daysSince >= STALE_CASE_DAYS };
+  }
+
   // Per-case "pulse" block (Pro+): time in the current stage, prep-checklist progress, and the
   // next incomplete prep item — all derived from case_events/prep_checklist_items the user's own
   // actions already generated, never fabricated. Free tier doesn't see this section at all rather
   // than a locked teaser inside every card, since the widget grid above already advertises Pro.
-  function buildCasePulse(c, caseEvents, checklistItems) {
-    const caseEventsForCase = caseEvents.filter((e) => e.case_id === c.id);
-    const lastActivityAt = (caseEventsForCase[0] && caseEventsForCase[0].occurred_at) || c.created_at;
-    if (!lastActivityAt) return '';
-
-    const daysSince = Math.max(0, Math.floor((Date.now() - new Date(lastActivityAt).getTime()) / 86400000));
-    const isStale = daysSince >= STALE_CASE_DAYS;
+  function buildCasePulse(activity, c, checklistItems) {
+    if (!activity) return '';
+    const { daysSince, isStale } = activity;
     const stageLine = daysSince === 0
       ? t('dashboard.pulse.stageToday', 'Updated today')
       : isStale
@@ -1098,12 +1105,19 @@ if (dashboardSection) {
         const filingLabel = filingLabelFn ? filingLabelFn() : 'Case';
         const name = c.case_name || filingLabel;
         const route = `${escapeHtml(c.country_from || '—')} → ${escapeHtml(c.country_to || '—')}`;
-        const pulseHtml = isPro ? buildCasePulse(c, caseEvents, checklistItems) : '';
+        const activity = isPro ? getCaseActivity(c, caseEvents) : null;
+        const pulseHtml = activity ? buildCasePulse(activity, c, checklistItems) : '';
+        const staleBadge = activity && activity.isStale
+          ? `<span class="status-pill status-attention" data-i18n="dashboard.pulse.needsUpdate">${escapeHtml(t('dashboard.pulse.needsUpdate', 'Needs an update'))}</span>`
+          : '';
         return `
           <a class="case-card dashboard-card" href="get-started.html?caseId=${encodeURIComponent(c.id)}">
             <div class="case-card-top">
               <span class="case-badge">${escapeHtml(name)}</span>
-              <span class="status-pill ${stageClass(stage)}">${escapeHtml(stage)}</span>
+              <div class="case-card-top-right">
+                ${staleBadge}
+                <span class="status-pill ${stageClass(stage)}">${escapeHtml(stage)}</span>
+              </div>
             </div>
             <div class="case-meta">
               <div class="case-meta-item">
