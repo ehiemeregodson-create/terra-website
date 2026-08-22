@@ -47,6 +47,13 @@ if (new URLSearchParams(window.location.search).get('mode') === 'login') {
   showTab('login');
 }
 
+// The inactivity auto-logout (script.js) redirects here with ?reason=inactivity — explain why
+// they're back at the login form instead of leaving them to wonder if something broke.
+if (new URLSearchParams(window.location.search).get('reason') === 'inactivity') {
+  const note = document.getElementById('loginNote');
+  if (note) note.textContent = t('session.loggedOutInactivity', "We logged you out due to inactivity. Please log in again to continue.");
+}
+
 /* ---------- Authenticated view ---------- */
 
 function showAuthenticated(user) {

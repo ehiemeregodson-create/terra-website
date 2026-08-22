@@ -215,6 +215,123 @@ async function checkAuthState() {
 
 const authStatePromise = checkAuthState();
 
+/* ---------- Inactivity auto-logout (30 min, warned 5 min ahead) ---------- */
+// Runs on every page once we know the visitor is logged in — a security measure, not a
+// dashboard-only feature. Activity is tracked via localStorage (not just in-memory) so it's
+// shared across tabs: typing in one tab keeps the session alive in all of them, and a warning
+// shown in a background tab disappears the moment activity happens anywhere else.
+(function initInactivityLogout() {
+  const INACTIVITY_LIMIT_MS = 30 * 60 * 1000;
+  const WARNING_LEAD_MS = 5 * 60 * 1000;
+  const WARNING_AT_MS = INACTIVITY_LIMIT_MS - WARNING_LEAD_MS;
+  const STORAGE_KEY = 'terraLastActivityAt';
+  const CHECK_INTERVAL_MS = 5000;
+  const WRITE_THROTTLE_MS = 2000;
+
+  let warningEl = null;
+  let countdownTimer = null;
+  let lastWriteAt = 0;
+
+  function getLastActivity() {
+    let stored = null;
+    try {
+      stored = Number(localStorage.getItem(STORAGE_KEY));
+    } catch (err) {
+      // localStorage unavailable — fall back to "just now" so the feature fails open rather
+      // than logging someone out immediately.
+    }
+    return Number.isFinite(stored) && stored > 0 ? stored : Date.now();
+  }
+
+  function hideWarning() {
+    if (!warningEl) return;
+    warningEl.remove();
+    warningEl = null;
+    if (countdownTimer) {
+      clearInterval(countdownTimer);
+      countdownTimer = null;
+    }
+  }
+
+  function recordActivity() {
+    hideWarning();
+    const nowTs = Date.now();
+    if (nowTs - lastWriteAt < WRITE_THROTTLE_MS) return;
+    lastWriteAt = nowTs;
+    try {
+      localStorage.setItem(STORAGE_KEY, String(nowTs));
+    } catch (err) {
+      // Nothing to persist — this tab's own in-memory clock still governs its own timers.
+    }
+  }
+
+  function updateCountdown() {
+    const remainingMs = Math.max(0, INACTIVITY_LIMIT_MS - (Date.now() - getLastActivity()));
+    const el = document.getElementById('sessionTimeoutCountdown');
+    if (el) {
+      const mins = Math.floor(remainingMs / 60000);
+      const secs = Math.floor((remainingMs % 60000) / 1000);
+      const timeStr = `${mins}:${String(secs).padStart(2, '0')}`;
+      el.textContent = t('session.timeRemaining', 'Logging out in {time}').replace('{time}', timeStr);
+    }
+    if (remainingMs <= 0) doLogout();
+  }
+
+  function showWarning() {
+    if (warningEl) return;
+    warningEl = document.createElement('div');
+    warningEl.className = 'session-timeout-overlay';
+    warningEl.innerHTML = `
+      <div class="session-timeout-card" role="alertdialog" aria-live="assertive" aria-label="${t('session.timeoutTitle', "You're about to be logged out")}">
+        <h2>${t('session.timeoutTitle', "You're about to be logged out")}</h2>
+        <p>${t('session.timeoutBody', "For your security, Terra logs you out after 30 minutes of inactivity.")}</p>
+        <p class="session-timeout-countdown" id="sessionTimeoutCountdown"></p>
+        <button type="button" class="btn btn-primary btn-lg" id="sessionTimeoutStay">${t('session.stayLoggedIn', 'Stay logged in')}</button>
+      </div>
+    `;
+    document.body.appendChild(warningEl);
+    updateCountdown();
+    countdownTimer = setInterval(updateCountdown, 1000);
+  }
+
+  async function doLogout() {
+    hideWarning();
+    clearInterval(tickTimer);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (err) {}
+    await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {});
+    window.location.href = 'account.html?mode=login&reason=inactivity';
+  }
+
+  function tick() {
+    const elapsed = Date.now() - getLastActivity();
+    if (elapsed >= INACTIVITY_LIMIT_MS) {
+      doLogout();
+    } else if (elapsed >= WARNING_AT_MS) {
+      showWarning();
+    }
+  }
+
+  let tickTimer = null;
+
+  authStatePromise.then((data) => {
+    if (!data || !data.authenticated) return;
+
+    recordActivity();
+    ['click', 'keydown', 'mousemove', 'scroll', 'touchstart'].forEach((evt) => {
+      window.addEventListener(evt, recordActivity, { passive: true });
+    });
+    // Activity in another tab (or the warning being dismissed there) should clear this tab's
+    // warning too — without this, a tab left in the background could still show a stale
+    // "logging out in 0:03" dialog after the user has been actively using a different tab.
+    window.addEventListener('storage', (e) => {
+      if (e.key === STORAGE_KEY) hideWarning();
+    });
+    tickTimer = setInterval(tick, CHECK_INTERVAL_MS);
+  });
+})();
+
 /* ---------- 45-second signup overlay ---------- */
 
 (function initSignupOverlay() {
