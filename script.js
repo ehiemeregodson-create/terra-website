@@ -1033,14 +1033,27 @@ if (dashboardSection) {
         const filingLabelFn = FILING_FOR_LABELS[c.filing_for];
         const filingLabel = filingLabelFn ? filingLabelFn() : 'Case';
         const name = c.case_name || filingLabel;
+        const route = `${escapeHtml(c.country_from || '—')} → ${escapeHtml(c.country_to || '—')}`;
         return `
           <a class="case-card dashboard-card" href="get-started.html?caseId=${encodeURIComponent(c.id)}">
             <div class="case-card-top">
               <span class="case-badge">${escapeHtml(name)}</span>
               <span class="status-pill ${stageClass(stage)}">${escapeHtml(stage)}</span>
             </div>
-            <div class="case-row"><span>${escapeHtml(filingLabel)}</span><span>${escapeHtml(c.category || '')}</span></div>
-            <div class="case-row"><span>${escapeHtml(c.country_from || '')} → ${escapeHtml(c.country_to || '')}</span><span></span></div>
+            <div class="case-meta">
+              <div class="case-meta-item">
+                <span class="case-meta-label" data-i18n="dashboard.meta.filingFor">Filing for</span>
+                <span class="case-meta-value">${escapeHtml(filingLabel)}</span>
+              </div>
+              <div class="case-meta-item">
+                <span class="case-meta-label" data-i18n="dashboard.meta.category">Category</span>
+                <span class="case-meta-value">${escapeHtml(c.category || '—')}</span>
+              </div>
+              <div class="case-meta-item">
+                <span class="case-meta-label" data-i18n="dashboard.meta.route">Route</span>
+                <span class="case-meta-value">${route}</span>
+              </div>
+            </div>
             <div class="case-card-edit"><span data-i18n="dashboard.edit">Edit</span></div>
           </a>
         `;
