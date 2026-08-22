@@ -761,7 +761,6 @@ if (dashboardSection) {
   const STALE_CASE_DAYS = 30;
 
   function formatDuration(days) {
-    if (days <= 0) return t('dashboard.pulse.today', 'today');
     if (days === 1) return t('dashboard.pulse.oneDay', '1 day');
     return t('dashboard.pulse.days', '{n} days').replace('{n}', days);
   }
@@ -777,10 +776,11 @@ if (dashboardSection) {
 
     const daysSince = Math.max(0, Math.floor((Date.now() - new Date(lastActivityAt).getTime()) / 86400000));
     const isStale = daysSince >= STALE_CASE_DAYS;
-    const durationText = formatDuration(daysSince);
-    const stageLine = isStale
-      ? t('dashboard.pulse.stale', 'No update in {duration} — consider checking in').replace('{duration}', durationText)
-      : t('dashboard.pulse.stageDuration', 'In this stage for {duration}').replace('{duration}', durationText);
+    const stageLine = daysSince === 0
+      ? t('dashboard.pulse.stageToday', 'Updated today')
+      : isStale
+        ? t('dashboard.pulse.stale', 'No update in {duration} — consider checking in').replace('{duration}', formatDuration(daysSince))
+        : t('dashboard.pulse.stageDuration', 'In this stage for {duration}').replace('{duration}', formatDuration(daysSince));
 
     const caseChecklist = checklistItems.filter((i) => i.case_id === c.id);
     const completedCount = caseChecklist.filter((i) => i.completed).length;
