@@ -765,6 +765,23 @@ if (dashboardSection) {
     return t('dashboard.pulse.days', '{n} days').replace('{n}', days);
   }
 
+  // Shared by the per-case pulse block and the top-level Prep widget so both speak the same
+  // visual/copy language for "how much prep is done" and "what to do next".
+  function buildProgressBarHtml(completed, total) {
+    return `
+      <div class="case-pulse-progress">
+        <div class="case-progress-track"><div class="case-progress-fill" style="width:${Math.round((completed / total) * 100)}%"></div></div>
+        <span class="case-progress-label">${escapeHtml(t('dashboard.pulse.prepDone', '{completed}/{total} prep items done').replace('{completed}', completed).replace('{total}', total))}</span>
+      </div>`;
+  }
+
+  function buildNextStepHtml(nextItem, hasItems) {
+    if (nextItem) {
+      return `<div class="case-pulse-next">${escapeHtml(t('dashboard.pulse.nextStep', 'Next: {step}').replace('{step}', nextItem.label))}</div>`;
+    }
+    return hasItems ? `<div class="case-pulse-next case-pulse-done">${escapeHtml(t('dashboard.pulse.allDone', 'All prep items complete'))}</div>` : '';
+  }
+
   // Per-case "pulse" block (Pro+): time in the current stage, prep-checklist progress, and the
   // next incomplete prep item — all derived from case_events/prep_checklist_items the user's own
   // actions already generated, never fabricated. Free tier doesn't see this section at all rather
@@ -787,15 +804,8 @@ if (dashboardSection) {
     const totalCount = caseChecklist.length;
     const nextItem = caseChecklist.find((i) => !i.completed);
 
-    const progressHtml = totalCount > 0 ? `
-      <div class="case-pulse-progress">
-        <div class="case-progress-track"><div class="case-progress-fill" style="width:${Math.round((completedCount / totalCount) * 100)}%"></div></div>
-        <span class="case-progress-label">${escapeHtml(t('dashboard.pulse.prepDone', '{completed}/{total} prep items done').replace('{completed}', completedCount).replace('{total}', totalCount))}</span>
-      </div>` : '';
-
-    const nextStepHtml = nextItem
-      ? `<div class="case-pulse-next">${escapeHtml(t('dashboard.pulse.nextStep', 'Next: {step}').replace('{step}', nextItem.label))}</div>`
-      : (totalCount > 0 ? `<div class="case-pulse-next case-pulse-done">${escapeHtml(t('dashboard.pulse.allDone', 'All prep items complete'))}</div>` : '');
+    const progressHtml = totalCount > 0 ? buildProgressBarHtml(completedCount, totalCount) : '';
+    const nextStepHtml = buildNextStepHtml(nextItem, totalCount > 0);
 
     return `
       <div class="case-pulse">
@@ -921,10 +931,12 @@ if (dashboardSection) {
 
   function renderChecklist(items) {
     const listEl = document.getElementById('checklistList');
+    const summaryEl = document.getElementById('checklistSummary');
     if (!listEl) return;
 
     if (!items.length) {
       listEl.innerHTML = `<p class="widget-empty" data-i18n="dashboard.checklist.empty">No checklist items yet.</p>`;
+      if (summaryEl) summaryEl.innerHTML = '';
       return;
     }
 
@@ -963,6 +975,10 @@ if (dashboardSection) {
 
     const completed = items.filter((i) => i.completed).length;
     const remaining = items.length - completed;
+    const nextItem = items.find((i) => !i.completed);
+    if (summaryEl) {
+      summaryEl.innerHTML = buildProgressBarHtml(completed, items.length) + buildNextStepHtml(nextItem, items.length > 0);
+    }
     renderDonut(
       'chartChecklist',
       {
