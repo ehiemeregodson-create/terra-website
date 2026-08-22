@@ -758,6 +758,53 @@ if (dashboardSection) {
     return '';
   }
 
+  const STALE_CASE_DAYS = 30;
+
+  function formatDuration(days) {
+    if (days <= 0) return t('dashboard.pulse.today', 'today');
+    if (days === 1) return t('dashboard.pulse.oneDay', '1 day');
+    return t('dashboard.pulse.days', '{n} days').replace('{n}', days);
+  }
+
+  // Per-case "pulse" block (Pro+): time in the current stage, prep-checklist progress, and the
+  // next incomplete prep item — all derived from case_events/prep_checklist_items the user's own
+  // actions already generated, never fabricated. Free tier doesn't see this section at all rather
+  // than a locked teaser inside every card, since the widget grid above already advertises Pro.
+  function buildCasePulse(c, caseEvents, checklistItems) {
+    const caseEventsForCase = caseEvents.filter((e) => e.case_id === c.id);
+    const lastActivityAt = (caseEventsForCase[0] && caseEventsForCase[0].occurred_at) || c.created_at;
+    if (!lastActivityAt) return '';
+
+    const daysSince = Math.max(0, Math.floor((Date.now() - new Date(lastActivityAt).getTime()) / 86400000));
+    const isStale = daysSince >= STALE_CASE_DAYS;
+    const durationText = formatDuration(daysSince);
+    const stageLine = isStale
+      ? t('dashboard.pulse.stale', 'No update in {duration} — consider checking in').replace('{duration}', durationText)
+      : t('dashboard.pulse.stageDuration', 'In this stage for {duration}').replace('{duration}', durationText);
+
+    const caseChecklist = checklistItems.filter((i) => i.case_id === c.id);
+    const completedCount = caseChecklist.filter((i) => i.completed).length;
+    const totalCount = caseChecklist.length;
+    const nextItem = caseChecklist.find((i) => !i.completed);
+
+    const progressHtml = totalCount > 0 ? `
+      <div class="case-pulse-progress">
+        <div class="case-progress-track"><div class="case-progress-fill" style="width:${Math.round((completedCount / totalCount) * 100)}%"></div></div>
+        <span class="case-progress-label">${escapeHtml(t('dashboard.pulse.prepDone', '{completed}/{total} prep items done').replace('{completed}', completedCount).replace('{total}', totalCount))}</span>
+      </div>` : '';
+
+    const nextStepHtml = nextItem
+      ? `<div class="case-pulse-next">${escapeHtml(t('dashboard.pulse.nextStep', 'Next: {step}').replace('{step}', nextItem.label))}</div>`
+      : (totalCount > 0 ? `<div class="case-pulse-next case-pulse-done">${escapeHtml(t('dashboard.pulse.allDone', 'All prep items complete'))}</div>` : '');
+
+    return `
+      <div class="case-pulse">
+        <div class="case-pulse-stage${isStale ? ' is-stale' : ''}">${escapeHtml(stageLine)}</div>
+        ${progressHtml}
+        ${nextStepHtml}
+      </div>`;
+  }
+
   // Brand palette, reused across every chart so they read as one system rather than
   // Chart.js defaults.
   const CHART_COLORS = ['#1b4332', '#d4a24e', '#2d6a4f', '#b8853a', '#4c5a53', '#8a9a91', '#e4ddcf'];
@@ -1028,12 +1075,14 @@ if (dashboardSection) {
 
       const { plan = 'free', caseEvents = [], checklistItems = [], timelineEstimates = [], attorneyConnections = [], policyAlerts = [], policyAlertsCoverage = true } = data;
 
+      const isPro = plan === 'pro' || plan === 'premium';
       const cards = cases.map((c) => {
         const stage = c.stage || 'Not sure';
         const filingLabelFn = FILING_FOR_LABELS[c.filing_for];
         const filingLabel = filingLabelFn ? filingLabelFn() : 'Case';
         const name = c.case_name || filingLabel;
         const route = `${escapeHtml(c.country_from || '—')} → ${escapeHtml(c.country_to || '—')}`;
+        const pulseHtml = isPro ? buildCasePulse(c, caseEvents, checklistItems) : '';
         return `
           <a class="case-card dashboard-card" href="get-started.html?caseId=${encodeURIComponent(c.id)}">
             <div class="case-card-top">
@@ -1054,6 +1103,7 @@ if (dashboardSection) {
                 <span class="case-meta-value">${route}</span>
               </div>
             </div>
+            ${pulseHtml}
             <div class="case-card-edit"><span data-i18n="dashboard.edit">Edit</span></div>
           </a>
         `;
