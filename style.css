@@ -513,10 +513,16 @@ a { color: inherit; text-decoration: none; }
 .kpi-tile .kpi-value { font-family: var(--font-heading); font-size: 1.8rem; color: var(--forest-dark); line-height: 1.1; margin-bottom: 2px; }
 .kpi-tile .kpi-label { font-size: 0.8rem; color: var(--ink-soft); font-weight: 600; }
 
+/* Fixed 2-column grid rather than auto-fit — with content-driven widgets whose height varies a
+   lot (more cases, more checklist items), auto-fit's dense packing could still pair a short,
+   bounded widget (Policy Alerts) against a tall, unbounded one (Prep, Predicted Timeline) in the
+   same row track, leaving a large empty gap below the short one that no per-card sizing fixes.
+   Only the two small, always-similar-height chart widgets pair up (both plain, half-width);
+   every other widget is .widget-wide (full-width, always alone in its row) so pairing — and the
+   dead space it can cause — simply can't happen. */
 .dashboard-widgets {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  grid-auto-flow: dense;
+  grid-template-columns: repeat(2, 1fr);
   align-items: start;
   gap: 14px;
   margin-bottom: 24px;
@@ -638,6 +644,7 @@ a { color: inherit; text-decoration: none; }
 .widget-lock p { font-size: 0.88rem; font-weight: 600; color: var(--forest-dark); margin: 0; }
 
 @media (max-width: 720px) {
+  .dashboard-widgets { grid-template-columns: 1fr; }
   .widget-card.widget-wide { grid-column: span 1; }
 }
 

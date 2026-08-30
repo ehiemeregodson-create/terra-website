@@ -1142,6 +1142,7 @@ if (dashboardSection) {
   }
 
   function formatRelativeDays(days) {
+    if (days < 1) return t('dashboard.estimate.relSoon', 'very soon');
     if (days < 14) return t('dashboard.estimate.relDays', 'in about {n} days').replace('{n}', days);
     const weeks = Math.round(days / 7);
     if (weeks < 8) return t('dashboard.estimate.relWeeks', 'in about {n} weeks').replace('{n}', weeks);
