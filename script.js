@@ -1115,7 +1115,8 @@ if (dashboardSection) {
       .sort((a, b) => new Date(a.occurred_at) - new Date(b.occurred_at));
     if (!events.length) return null;
 
-    const dateLabel = (iso) => new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    const shortLabel = (iso) => new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    const longLabel = (date) => date.toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
     const isTerminal = /approved|denied/i.test(c.stage || '');
 
     let projection = null;
@@ -1124,16 +1125,55 @@ if (dashboardSection) {
       const last = new Date(events[events.length - 1].occurred_at).getTime();
       const avgIntervalMs = (last - first) / (events.length - 1);
       if (avgIntervalMs > 0) {
-        projection = { label: dateLabel(new Date(last + avgIntervalMs)) };
+        const date = new Date(last + avgIntervalMs);
+        const days = Math.round(avgIntervalMs / 86400000);
+        projection = { shortLabel: shortLabel(date), longLabel: longLabel(date), days };
       }
     }
 
     return {
-      labels: events.map((e) => dateLabel(e.occurred_at)),
+      labels: events.map((e) => shortLabel(e.occurred_at)),
+      longLabels: events.map((e) => longLabel(new Date(e.occurred_at))),
       titles: events.map((e) => e.title),
+      lastLongLabel: longLabel(new Date(events[events.length - 1].occurred_at)),
       isTerminal,
       projection,
     };
+  }
+
+  function formatRelativeDays(days) {
+    if (days < 14) return t('dashboard.estimate.relDays', 'in about {n} days').replace('{n}', days);
+    const weeks = Math.round(days / 7);
+    if (weeks < 8) return t('dashboard.estimate.relWeeks', 'in about {n} weeks').replace('{n}', weeks);
+    const months = Math.round(days / 30);
+    return t('dashboard.estimate.relMonths', 'in about {n} months').replace('{n}', months);
+  }
+
+  // The "completion slot" is always rendered in the same spot with the same visual weight,
+  // whether we have a real projection, a terminal result, or nothing yet — so the widget never
+  // looks broken or inconsistent, just honestly blank when there isn't enough to go on.
+  function buildCompletionSlotHtml(data) {
+    if (data && data.isTerminal) {
+      return `
+        <div class="completion-slot is-done">
+          <span class="completion-slot-label" data-i18n="dashboard.estimate.completedLabel">Completed</span>
+          <span class="completion-slot-value">${escapeHtml(data.lastLongLabel)}</span>
+        </div>`;
+    }
+    if (data && data.projection) {
+      return `
+        <div class="completion-slot is-estimated">
+          <span class="completion-slot-label" data-i18n="dashboard.estimate.completionLabel">Possible completion</span>
+          <span class="completion-slot-value">${escapeHtml(data.projection.longLabel)}</span>
+          <span class="completion-slot-relative">${escapeHtml(formatRelativeDays(data.projection.days))}</span>
+        </div>`;
+    }
+    return `
+      <div class="completion-slot is-empty">
+        <span class="completion-slot-label" data-i18n="dashboard.estimate.completionLabel">Possible completion</span>
+        <span class="completion-slot-value completion-slot-dash">—</span>
+        <span class="completion-slot-relative" data-i18n="dashboard.estimate.needMoreHistoryShort">Not enough history yet</span>
+      </div>`;
   }
 
   function renderCaseTimelineChart(canvasId, data) {
@@ -1143,7 +1183,8 @@ if (dashboardSection) {
     if (existing) existing.destroy();
 
     const actualValues = data.labels.map((_, i) => i + 1);
-    const labels = data.projection ? [...data.labels, data.projection.label] : data.labels;
+    const labels = data.projection ? [...data.labels, data.projection.shortLabel] : data.labels;
+    const longLabels = data.projection ? [...data.longLabels, data.projection.longLabel] : data.longLabels;
     const actualData = data.projection ? [...actualValues, null] : actualValues;
     const projectedData = data.projection
       ? labels.map((_, i) => (i === labels.length - 2 ? actualValues[actualValues.length - 1] : i === labels.length - 1 ? actualValues.length + 1 : null))
@@ -1153,10 +1194,15 @@ if (dashboardSection) {
       label: t('dashboard.estimate.actual', 'Actual'),
       data: actualData,
       borderColor: '#1b4332',
-      backgroundColor: '#1b4332',
-      pointRadius: 5,
-      pointHoverRadius: 6,
-      tension: 0,
+      backgroundColor: 'rgba(27, 67, 50, 0.1)',
+      borderWidth: 3,
+      pointBackgroundColor: '#1b4332',
+      pointBorderColor: '#fff',
+      pointBorderWidth: 2,
+      pointRadius: 6,
+      pointHoverRadius: 8,
+      fill: true,
+      tension: 0.15,
     }];
     if (projectedData) {
       datasets.push({
@@ -1164,9 +1210,14 @@ if (dashboardSection) {
         data: projectedData,
         borderColor: '#d4a24e',
         backgroundColor: '#d4a24e',
-        borderDash: [6, 4],
-        pointRadius: (context) => (context.dataIndex === labels.length - 1 ? 5 : 0),
-        pointHoverRadius: 6,
+        borderWidth: 3,
+        borderDash: [7, 5],
+        pointBackgroundColor: '#d4a24e',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: (context) => (context.dataIndex === labels.length - 1 ? 7 : 0),
+        pointHoverRadius: 8,
+        fill: false,
         tension: 0,
       });
     }
@@ -1177,10 +1228,14 @@ if (dashboardSection) {
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        interaction: { mode: 'nearest', intersect: false },
         plugins: {
-          legend: { display: false },
+          legend: projectedData
+            ? { display: true, position: 'top', align: 'end', labels: { boxWidth: 10, font: { size: 11 }, usePointStyle: true } }
+            : { display: false },
           tooltip: {
             callbacks: {
+              title: (items) => longLabels[items[0].dataIndex] || '',
               label: (context) => {
                 if (context.datasetIndex === 1) return t('dashboard.estimate.projectedTooltip', 'Estimated — based on this case\'s own pace');
                 return data.titles[context.dataIndex] || '';
@@ -1189,7 +1244,7 @@ if (dashboardSection) {
           },
         },
         scales: {
-          y: { display: false, beginAtZero: true },
+          y: { display: false, beginAtZero: true, grace: '20%' },
           x: { ticks: { font: { size: 10 } }, grid: { display: false } },
         },
       },
@@ -1204,23 +1259,16 @@ if (dashboardSection) {
       const canvasId = `timelineChart-${c.id}`;
       const data = buildCaseTimelineData(c, caseEvents);
       const name = c.case_name || c.category || t('dashboard.case', 'Case');
-
-      let note;
-      if (!data) {
-        note = t('dashboard.estimate.needMoreHistory', "We'll estimate a possible decision date once this case has more history to learn from.");
-      } else if (data.isTerminal) {
-        note = t('dashboard.estimate.terminalNote', "This case's timeline is complete.");
-      } else if (data.projection) {
-        note = t('dashboard.estimate.disclaimer', "Rough estimate based on how fast this case has moved so far — not an official USCIS timeline.");
-      } else {
-        note = t('dashboard.estimate.needMoreHistory', "We'll estimate a possible decision date once this case has more history to learn from.");
-      }
+      const chartHtml = data
+        ? `<div class="chart-container chart-container-timeline"><canvas id="${canvasId}"></canvas></div>`
+        : `<div class="chart-container chart-container-timeline chart-container-empty">${escapeHtml(t('dashboard.estimate.noHistory', 'No case activity logged yet.'))}</div>`;
 
       return `
         <div class="case-timeline-block">
           <div class="case-timeline-header">${escapeHtml(name)}</div>
-          ${data ? `<div class="chart-container chart-container-timeline"><canvas id="${canvasId}"></canvas></div>` : ''}
-          <p class="case-timeline-note">${escapeHtml(note)}</p>
+          ${buildCompletionSlotHtml(data)}
+          ${chartHtml}
+          ${data && !data.isTerminal ? `<p class="case-timeline-note">${escapeHtml(t('dashboard.estimate.disclaimer', "Rough estimate based on how fast this case has moved so far — not an official USCIS timeline."))}</p>` : ''}
         </div>
       `;
     }).join('');
@@ -1325,32 +1373,34 @@ if (dashboardSection) {
           : '';
         return `
           <a class="case-card dashboard-card" href="get-started.html?caseId=${encodeURIComponent(c.id)}">
-            <div class="case-card-top">
-              <span class="case-badge">${escapeHtml(name)}</span>
-              <div class="case-card-top-right">
-                ${staleBadge}
-                <span class="status-pill ${stageClass(stage)}">${escapeHtml(stage)}</span>
+            <div class="case-card-hoverzone">
+              <div class="case-card-top">
+                <span class="case-badge">${escapeHtml(name)}</span>
+                <div class="case-card-top-right">
+                  ${staleBadge}
+                  <span class="status-pill ${stageClass(stage)}">${escapeHtml(stage)}</span>
+                </div>
               </div>
+              <div class="case-meta">
+                <div class="case-meta-item">
+                  <span class="case-meta-label" data-i18n="dashboard.meta.filingFor">Filing for</span>
+                  <span class="case-meta-value">${escapeHtml(filingLabel)}</span>
+                </div>
+                <div class="case-meta-item">
+                  <span class="case-meta-label" data-i18n="dashboard.meta.category">Category</span>
+                  <span class="case-meta-value">${escapeHtml(c.category || '—')}</span>
+                </div>
+                <div class="case-meta-item">
+                  <span class="case-meta-label" data-i18n="dashboard.meta.route">Route</span>
+                  <span class="case-meta-value">${route}</span>
+                </div>
+              </div>
+              ${pulseHtml}
+              <div class="case-card-edit"><span data-i18n="dashboard.edit">Edit case</span></div>
             </div>
-            <div class="case-meta">
-              <div class="case-meta-item">
-                <span class="case-meta-label" data-i18n="dashboard.meta.filingFor">Filing for</span>
-                <span class="case-meta-value">${escapeHtml(filingLabel)}</span>
-              </div>
-              <div class="case-meta-item">
-                <span class="case-meta-label" data-i18n="dashboard.meta.category">Category</span>
-                <span class="case-meta-value">${escapeHtml(c.category || '—')}</span>
-              </div>
-              <div class="case-meta-item">
-                <span class="case-meta-label" data-i18n="dashboard.meta.route">Route</span>
-                <span class="case-meta-value">${route}</span>
-              </div>
-            </div>
-            ${pulseHtml}
             <div class="case-card-footer">
               <button type="button" class="btn btn-outline btn-sm case-update-btn" data-case-id="${escapeHtml(c.id)}" data-case-stage="${escapeHtml(stage)}" data-case-name="${escapeHtml(name)}" data-i18n="dashboard.update.button">${escapeHtml(t('dashboard.update.button', 'Log an update'))}</button>
             </div>
-            <div class="case-card-edit"><span data-i18n="dashboard.edit">Edit</span></div>
           </a>
         `;
       }).join('');
