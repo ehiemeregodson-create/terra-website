@@ -57,15 +57,30 @@
 
 <main>
 
-  <section class="jobs-hero">
-    <div class="container">
-      <p class="eyebrow" data-i18n="jobs.eyebrow">Jobs</p>
-      <h1 data-i18n="jobs.title">Live alerts and employers who sponsor</h1>
-      <p class="section-sub" data-i18n="jobs.sub">A running feed of immigration deadlines and reminders, plus companies that hire and file for international talent.</p>
+  <div class="access-gate" id="accessGate" hidden>
+    <div class="access-gate-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
     </div>
-  </section>
+    <p class="eyebrow" data-i18n="jobsGate.eyebrow">Members only</p>
+    <h1 data-i18n="jobsGate.title">See who's actually sponsoring</h1>
+    <p data-i18n="jobsGate.body">Create a free Terra account to see live immigration deadline alerts and get matched against real, certified sponsorship cases — actual employers, job titles, and wages.</p>
+    <div class="access-gate-actions">
+      <a href="account.html?redirect=jobs.html" class="btn btn-primary btn-lg" data-i18n="overlay.createAccount">Create free account</a>
+      <a href="account.html?mode=login&redirect=jobs.html" class="btn btn-ghost" data-i18n="overlay.haveAccount">I already have an account</a>
+    </div>
+    <p class="access-gate-note" data-i18n="jobsGate.note">Free, and takes less than a minute.</p>
+  </div>
 
-  <section class="newsroom" id="newsroom">
+  <div id="mainContent" hidden>
+    <section class="jobs-hero">
+      <div class="container">
+        <p class="eyebrow" data-i18n="jobs.eyebrow">Jobs</p>
+        <h1 data-i18n="jobs.title">Live alerts and employers who sponsor</h1>
+        <p class="section-sub" data-i18n="jobs.sub">A running feed of immigration deadlines and reminders, plus companies that hire and file for international talent.</p>
+      </div>
+    </section>
+
+    <section class="newsroom" id="newsroom">
     <div class="container">
       <div class="newsroom-card">
         <div class="newsroom-header">
@@ -155,7 +170,8 @@
         <p class="job-results-source" data-i18n="jobMatch.sourceNote">Every result above is a real, individually certified case from the U.S. Department of Labor's public LCA/PERM disclosure data — not an estimate or a generic listing. Currently covers U.S. employers only; more countries are coming soon.</p>
       </div>
     </div>
-  </section>
+    </section>
+  </div>
 
 </main>
 

@@ -57,28 +57,44 @@
 
 <main>
 
-  <section class="jobs-hero">
-    <div class="container">
-      <p class="eyebrow" data-i18n="community.eyebrow">Community</p>
-      <h1 data-i18n="community.title">Ask the community, get real answers</h1>
-      <p class="section-sub" data-i18n="community.sub">Post a question about your case or the process. Every post is AI-moderated before it appears — and if no one's answered within 24 hours, Jay will.</p>
+  <div class="access-gate" id="accessGate" hidden>
+    <div class="access-gate-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
     </div>
-  </section>
+    <p class="eyebrow" data-i18n="communityGate.eyebrow">Members only</p>
+    <h1 data-i18n="communityGate.title">Join the conversation</h1>
+    <p data-i18n="communityGate.body">Create a free Terra account to ask questions, get real answers from people going through the same process, and hear from Jay if no one's answered within 24 hours.</p>
+    <div class="access-gate-actions">
+      <a href="account.html?redirect=community.html" class="btn btn-primary btn-lg" data-i18n="overlay.createAccount">Create free account</a>
+      <a href="account.html?mode=login&redirect=community.html" class="btn btn-ghost" data-i18n="overlay.haveAccount">I already have an account</a>
+    </div>
+    <p class="access-gate-note" data-i18n="communityGate.note">Free, and takes less than a minute.</p>
+  </div>
 
-  <section class="discussion" id="discussion">
-    <div class="container">
-      <form class="discussion-form" id="questionForm">
-        <input type="text" id="questionName" placeholder="Your name (optional)" maxlength="80" autocomplete="name" data-i18n-placeholder="community.namePlaceholder">
-        <textarea id="questionText" placeholder="Ask a question about your case, the process, or what to expect…" rows="3" maxlength="1000" required data-i18n-placeholder="community.questionPlaceholder"></textarea>
-        <button type="submit" class="btn btn-primary" data-i18n="community.postButton">Post question</button>
-        <p class="cta-note" id="questionNote"></p>
-      </form>
-
-      <div class="discussion-list" id="discussionList">
-        <p class="discussion-empty" id="discussionLoading" data-i18n="community.loading">Loading discussion…</p>
+  <div id="mainContent" hidden>
+    <section class="jobs-hero">
+      <div class="container">
+        <p class="eyebrow" data-i18n="community.eyebrow">Community</p>
+        <h1 data-i18n="community.title">Ask the community, get real answers</h1>
+        <p class="section-sub" data-i18n="community.sub">Post a question about your case or the process. Every post is AI-moderated before it appears — and if no one's answered within 24 hours, Jay will.</p>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <section class="discussion" id="discussion">
+      <div class="container">
+        <form class="discussion-form" id="questionForm">
+          <input type="text" id="questionName" placeholder="Your name (optional)" maxlength="80" autocomplete="name" data-i18n-placeholder="community.namePlaceholder">
+          <textarea id="questionText" placeholder="Ask a question about your case, the process, or what to expect…" rows="3" maxlength="1000" required data-i18n-placeholder="community.questionPlaceholder"></textarea>
+          <button type="submit" class="btn btn-primary" data-i18n="community.postButton">Post question</button>
+          <p class="cta-note" id="questionNote"></p>
+        </form>
+
+        <div class="discussion-list" id="discussionList">
+          <p class="discussion-empty" id="discussionLoading" data-i18n="community.loading">Loading discussion…</p>
+        </div>
+      </div>
+    </section>
+  </div>
 
 </main>
 

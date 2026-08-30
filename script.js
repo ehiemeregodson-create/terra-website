@@ -215,6 +215,23 @@ async function checkAuthState() {
 
 const authStatePromise = checkAuthState();
 
+// Members-only pages (Community, Jobs): #accessGate / #mainContent only exist on those pages,
+// so this is a no-op everywhere else. #mainContent starts hidden in the HTML so a signed-out
+// visitor never sees a flash of the real content before the gate takes over.
+(function initAccessGate() {
+  const gate = document.getElementById('accessGate');
+  const content = document.getElementById('mainContent');
+  if (!gate || !content) return;
+
+  authStatePromise.then((data) => {
+    if (data && data.authenticated) {
+      content.hidden = false;
+    } else {
+      gate.hidden = false;
+    }
+  });
+})();
+
 /* ---------- Inactivity auto-logout (30 min, warned 5 min ahead) ---------- */
 // Runs on every page once we know the visitor is logged in — a security measure, not a
 // dashboard-only feature. Activity is tracked via localStorage (not just in-memory) so it's

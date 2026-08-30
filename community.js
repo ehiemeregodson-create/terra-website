@@ -295,4 +295,8 @@ questionForm.addEventListener('submit', async (e) => {
   loadDiscussion();
 });
 
-loadDiscussion();
+// The board is members-only now — no point calling the (also gated) API before we know the
+// visitor is actually signed in, since #mainContent is hidden behind the sign-up gate anyway.
+authStatePromise.then((data) => {
+  if (data && data.authenticated) loadDiscussion();
+});
