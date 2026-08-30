@@ -4,7 +4,7 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
-const CHART_COLORS = ['#1b4332', '#d4a24e', '#2d6a4f', '#b8853a', '#4c5a53', '#8a9a91', '#e4ddcf'];
+const CHART_COLORS = ['#1c1b19', '#d4a24e', '#3a3835', '#9c6f2c', '#59564f', '#8f8b82', '#ddd9d1'];
 
 const CONSTRUCT_LABELS = {
   c1: 'C1 Info Clarity',
@@ -65,7 +65,7 @@ function renderLineChart(canvasId, points) {
       labels: points.map((p) => p.date.slice(5)),
       datasets: [{
         data: points.map((p) => p.count),
-        borderColor: '#1b4332',
+        borderColor: '#1c1b19',
         backgroundColor: 'rgba(27,67,50,0.08)',
         fill: true,
         tension: 0.3,

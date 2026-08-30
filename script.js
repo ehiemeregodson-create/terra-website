@@ -944,7 +944,7 @@ if (dashboardSection) {
 
   // Brand palette, reused across every chart so they read as one system rather than
   // Chart.js defaults.
-  const CHART_COLORS = ['#1b4332', '#d4a24e', '#2d6a4f', '#b8853a', '#4c5a53', '#8a9a91', '#e4ddcf'];
+  const CHART_COLORS = ['#1c1b19', '#d4a24e', '#3a3835', '#9c6f2c', '#59564f', '#8f8b82', '#ddd9d1'];
 
   function countBy(items, keyFn) {
     const counts = {};
@@ -999,7 +999,7 @@ if (dashboardSection) {
       type: 'bar',
       data: {
         labels: Object.keys(counts),
-        datasets: [{ data: Object.values(counts), backgroundColor: '#1b4332', borderRadius: 4, maxBarThickness: 36 }],
+        datasets: [{ data: Object.values(counts), backgroundColor: '#1c1b19', borderRadius: 4, maxBarThickness: 36 }],
       },
       options: {
         responsive: true,
@@ -1211,10 +1211,10 @@ if (dashboardSection) {
     const datasets = [{
       label: t('dashboard.estimate.actual', 'Actual'),
       data: actualData,
-      borderColor: '#1b4332',
+      borderColor: '#1c1b19',
       backgroundColor: 'rgba(27, 67, 50, 0.1)',
       borderWidth: 3,
-      pointBackgroundColor: '#1b4332',
+      pointBackgroundColor: '#1c1b19',
       pointBorderColor: '#fff',
       pointBorderWidth: 2,
       pointRadius: 6,

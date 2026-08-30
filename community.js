@@ -21,7 +21,7 @@ function formatRelativeTime(value) {
   return `${Math.floor(diffMonth / 12)}y ago`;
 }
 
-const AVATAR_COLORS = ['#1b4332', '#2d6a4f', '#b8853a', '#4c5a53', '#10281f'];
+const AVATAR_COLORS = ['#1c1b19', '#3a3835', '#9c6f2c', '#59564f', '#0f0e0d'];
 
 function avatarColor(name) {
   let hash = 0;
