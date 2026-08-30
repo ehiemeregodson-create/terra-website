@@ -133,6 +133,8 @@ a { color: inherit; text-decoration: none; }
 .btn-primary:hover { background: var(--forest-light); box-shadow: 0 8px 20px rgba(27,67,50,0.25); }
 .btn-outline { background: transparent; color: var(--forest-dark); border-color: var(--forest-dark); }
 .btn-outline:hover { background: var(--forest-dark); color: #fff; }
+.btn-gold { background: var(--gold); color: var(--forest-dark); }
+.btn-gold:hover { background: #e0b563; box-shadow: 0 8px 20px rgba(212,162,78,0.35); }
 .btn-ghost { background: transparent; color: var(--ink); }
 .btn-ghost:hover { color: var(--forest); }
 .btn-lg { padding: 15px 28px; font-size: 1rem; }
@@ -799,6 +801,11 @@ a { color: inherit; text-decoration: none; }
   border-color: var(--forest);
   box-shadow: var(--shadow-lg);
 }
+/* Premium's own accent (gold, matching the Premium marketing section's CTA) rather than
+   reusing Pro's green — otherwise Premium's card is visually identical to Free's, undermining
+   the very tier it's meant to sell. */
+.price-card.premium-tier { border-color: var(--gold); }
+.price-card.premium-tier h3 { color: var(--gold-dark); }
 .price-badge {
   position: absolute;
   top: -13px; left: 32px;
@@ -824,9 +831,10 @@ a { color: inherit; text-decoration: none; }
 .price-card li::before {
   content: "✓";
   position: absolute; left: 0;
-  color: var(--forest-light);
+  color: var(--forest-dark);
   font-weight: 700;
 }
+.price-card.premium-tier li::before { color: var(--gold-dark); }
 
 /* Intake form */
 .intake { padding: 0 0 96px; }
@@ -1598,22 +1606,15 @@ a { color: inherit; text-decoration: none; }
   .recommend-columns { grid-template-columns: 1fr; }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --cream: #10281f;
-    --paper: #16342a;
-    --ink: #eef1ee;
-    --ink-soft: #a9b6ae;
-    --line: #234437;
-  }
-  h1, h2, h3 { color: #f4f0e4; }
-  .site-header { background: rgba(16, 40, 31, 0.9); }
-  .logo { color: #f4f0e4; }
-  .btn-outline { color: #f4f0e4; border-color: #f4f0e4; }
-  .btn-outline:hover { background: #f4f0e4; color: var(--forest-dark); }
-  .btn-ghost { color: #eef1ee; }
-  .price-badge, .status-pill { color: var(--forest-dark); }
-}
+/* Deliberately no @media (prefers-color-scheme: dark) override. A previous partial attempt
+   swapped only the base cream/paper surface colors to dark green without touching the dozens of
+   components (pricing cards, checkmarks, charts, status pills, etc.) that hardcode forest-green
+   text/borders assuming a light surface — on a phone with system dark mode on, that left large
+   swaths of text and icons nearly invisible against an also-dark-green background. Rather than
+   audit every component for a proper dark theme, the site renders the same (thoroughly tuned)
+   light theme regardless of OS preference — a complete, working light theme beats a half-built
+   dark one that actively breaks legibility.
+*/
 
 /* Back-to-dashboard floating button (shown when a logged-in visitor browses
    Terra's marketing pages instead of their dashboard) */
@@ -1774,8 +1775,4 @@ a { color: inherit; text-decoration: none; }
   .chat-panel { width: calc(100vw - 32px); height: calc(100vh - 120px); bottom: 72px; }
   .flag { font-size: 0.9rem; }
   .flag-featured { font-size: 1.3rem; }
-}
-
-@media (prefers-color-scheme: dark) {
-  .chat-messages { background: var(--paper); }
 }
