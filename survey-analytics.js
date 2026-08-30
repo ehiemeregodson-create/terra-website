@@ -66,7 +66,7 @@ function renderLineChart(canvasId, points) {
       datasets: [{
         data: points.map((p) => p.count),
         borderColor: '#1c1b19',
-        backgroundColor: 'rgba(27,67,50,0.08)',
+        backgroundColor: 'rgba(28,27,25,0.08)',
         fill: true,
         tension: 0.3,
         pointRadius: 2,
