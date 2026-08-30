@@ -456,6 +456,7 @@ if (intakeForm) {
   const intakeSub = document.getElementById('intakeSub');
   const intakeSubmit = document.getElementById('intakeSubmit');
   const deleteCaseBtn = document.getElementById('deleteCaseBtn');
+  const logUpdateBtn = document.getElementById('logUpdateBtn');
 
   // Warn before leaving with unsaved changes — cleared once the form actually submits (or the
   // case is deleted) so a normal successful save/delete doesn't trigger the same prompt.
@@ -523,6 +524,17 @@ if (intakeForm) {
           return;
         }
         if (deleteCaseBtn) deleteCaseBtn.hidden = false;
+        if (logUpdateBtn) {
+          logUpdateBtn.hidden = false;
+          logUpdateBtn.onclick = () => {
+            openCaseUpdateModal({
+              caseId: editCaseId,
+              caseName: match.case_name || match.category || 'Case',
+              currentStage: match.stage,
+              onSaved: () => window.location.reload(),
+            });
+          };
+        }
         const setVal = (id, value) => {
           const el = document.getElementById(id);
           if (el && value != null) el.value = value;
@@ -697,6 +709,97 @@ function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str == null ? '' : String(str);
   return div.innerHTML;
+}
+
+// Same 7 stage options as get-started.html's intake form (kept in sync manually — there's no
+// shared source of truth for this list today).
+const CASE_STAGE_OPTIONS = [
+  { key: 'intake.stage.notFiled', fallback: "Haven't filed yet" },
+  { key: 'intake.stage.filed', fallback: 'Filed — awaiting decision' },
+  { key: 'intake.stage.evidence', fallback: 'Asked for more evidence/documents' },
+  { key: 'intake.stage.interview', fallback: 'Interview scheduled' },
+  { key: 'intake.stage.approved', fallback: 'Approved' },
+  { key: 'intake.stage.denied', fallback: 'Denied / appealing' },
+  { key: 'intake.stage.notSure', fallback: 'Not sure' },
+];
+
+// Shared quick-update modal, used from both the dashboard's My Cases cards and the case-edit
+// page — built dynamically (same pattern as the inactivity-logout overlay) so neither page needs
+// its own copy of the markup. Lets a user log a stage change and/or a short free-text note
+// without resubmitting the full intake form.
+function openCaseUpdateModal({ caseId, caseName, currentStage, onSaved }) {
+  const existing = document.querySelector('.case-update-overlay');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.className = 'case-update-overlay';
+  const optionsHtml = CASE_STAGE_OPTIONS.map(({ key, fallback }) => {
+    const label = t(key, fallback);
+    const selected = label === currentStage ? ' selected' : '';
+    return `<option data-i18n="${key}"${selected}>${escapeHtml(label)}</option>`;
+  }).join('');
+
+  overlay.innerHTML = `
+    <div class="case-update-card" role="dialog" aria-modal="true" aria-label="${escapeHtml(t('dashboard.update.title', 'Log an update'))}">
+      <h2>${escapeHtml(t('dashboard.update.title', 'Log an update'))}</h2>
+      <p class="case-update-case-name">${escapeHtml(caseName || '')}</p>
+      <label class="case-update-field">
+        <span>${escapeHtml(t('dashboard.update.stageLabel', 'Current stage'))}</span>
+        <select id="caseUpdateStage">${optionsHtml}</select>
+      </label>
+      <label class="case-update-field">
+        <span>${escapeHtml(t('dashboard.update.noteLabel', 'Add a note (optional)'))}</span>
+        <textarea id="caseUpdateNote" rows="3" placeholder="${escapeHtml(t('dashboard.update.notePlaceholder', 'e.g. Received an RFE, mailed additional evidence…'))}"></textarea>
+      </label>
+      <p class="case-update-error" id="caseUpdateError" hidden></p>
+      <div class="case-update-actions">
+        <button type="button" class="btn btn-outline" id="caseUpdateCancel">${escapeHtml(t('dashboard.update.cancel', 'Cancel'))}</button>
+        <button type="button" class="btn btn-primary" id="caseUpdateSave">${escapeHtml(t('dashboard.update.save', 'Save update'))}</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  const close = () => overlay.remove();
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+  document.addEventListener('keydown', function onKey(e) {
+    if (e.key === 'Escape') { close(); document.removeEventListener('keydown', onKey); }
+  });
+  overlay.querySelector('#caseUpdateCancel').addEventListener('click', close);
+
+  const errorEl = overlay.querySelector('#caseUpdateError');
+  const saveBtn = overlay.querySelector('#caseUpdateSave');
+  saveBtn.addEventListener('click', async () => {
+    const stage = overlay.querySelector('#caseUpdateStage').value;
+    const note = overlay.querySelector('#caseUpdateNote').value.trim();
+    if (stage === currentStage && !note) {
+      errorEl.textContent = t('dashboard.update.needsSomething', 'Change the stage or add a note before saving.');
+      errorEl.hidden = false;
+      return;
+    }
+    errorEl.hidden = true;
+    saveBtn.disabled = true;
+    try {
+      const res = await fetch('/api/cases/log-update', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: caseId, stage, note }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        errorEl.textContent = data.error || t('dashboard.update.error', 'Something went wrong — please try again.');
+        errorEl.hidden = false;
+        saveBtn.disabled = false;
+        return;
+      }
+      close();
+      if (onSaved) onSaved();
+    } catch (err) {
+      errorEl.textContent = t('dashboard.update.error', 'Something went wrong — please try again.');
+      errorEl.hidden = false;
+      saveBtn.disabled = false;
+    }
+  });
 }
 
 const dashboardSection = document.getElementById('dashboardSection');
@@ -999,23 +1102,133 @@ if (dashboardSection) {
     );
   }
 
-  function renderEstimate(cases, estimates) {
+  // No reliable public dataset of real USCIS per-category processing times exists that we could
+  // hand-verify the way the job-sponsor/policy-alert data was (the official tool is an
+  // interactive per-office lookup, not a downloadable dataset, and third-party aggregators
+  // disagree with each other by 3-5x) — so instead of an external benchmark, this projects a
+  // rough "next milestone" date purely from how fast THIS case has moved through its own
+  // case_events so far. Clearly labeled as a personal pace estimate, never as an official timeline.
+  function buildCaseTimelineData(c, caseEvents) {
+    const events = caseEvents
+      .filter((e) => e.case_id === c.id)
+      .slice()
+      .sort((a, b) => new Date(a.occurred_at) - new Date(b.occurred_at));
+    if (!events.length) return null;
+
+    const dateLabel = (iso) => new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    const isTerminal = /approved|denied/i.test(c.stage || '');
+
+    let projection = null;
+    if (!isTerminal && events.length >= 2) {
+      const first = new Date(events[0].occurred_at).getTime();
+      const last = new Date(events[events.length - 1].occurred_at).getTime();
+      const avgIntervalMs = (last - first) / (events.length - 1);
+      if (avgIntervalMs > 0) {
+        projection = { label: dateLabel(new Date(last + avgIntervalMs)) };
+      }
+    }
+
+    return {
+      labels: events.map((e) => dateLabel(e.occurred_at)),
+      titles: events.map((e) => e.title),
+      isTerminal,
+      projection,
+    };
+  }
+
+  function renderCaseTimelineChart(canvasId, data) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx || typeof Chart === 'undefined') return;
+    const existing = Chart.getChart(ctx);
+    if (existing) existing.destroy();
+
+    const actualValues = data.labels.map((_, i) => i + 1);
+    const labels = data.projection ? [...data.labels, data.projection.label] : data.labels;
+    const actualData = data.projection ? [...actualValues, null] : actualValues;
+    const projectedData = data.projection
+      ? labels.map((_, i) => (i === labels.length - 2 ? actualValues[actualValues.length - 1] : i === labels.length - 1 ? actualValues.length + 1 : null))
+      : null;
+
+    const datasets = [{
+      label: t('dashboard.estimate.actual', 'Actual'),
+      data: actualData,
+      borderColor: '#1b4332',
+      backgroundColor: '#1b4332',
+      pointRadius: 5,
+      pointHoverRadius: 6,
+      tension: 0,
+    }];
+    if (projectedData) {
+      datasets.push({
+        label: t('dashboard.estimate.projected', 'Estimated'),
+        data: projectedData,
+        borderColor: '#d4a24e',
+        backgroundColor: '#d4a24e',
+        borderDash: [6, 4],
+        pointRadius: (context) => (context.dataIndex === labels.length - 1 ? 5 : 0),
+        pointHoverRadius: 6,
+        tension: 0,
+      });
+    }
+
+    new Chart(ctx, {
+      type: 'line',
+      data: { labels, datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                if (context.datasetIndex === 1) return t('dashboard.estimate.projectedTooltip', 'Estimated — based on this case\'s own pace');
+                return data.titles[context.dataIndex] || '';
+              },
+            },
+          },
+        },
+        scales: {
+          y: { display: false, beginAtZero: true },
+          x: { ticks: { font: { size: 10 } }, grid: { display: false } },
+        },
+      },
+    });
+  }
+
+  function renderEstimate(cases, caseEvents) {
     const el = document.getElementById('estimateBody');
     if (!el) return;
-    const matches = cases
-      .map((c) => estimates.find((e) => e.category === c.category && e.stage === c.stage))
-      .filter(Boolean);
 
-    if (!matches.length) {
-      el.innerHTML = `<p class="widget-empty" data-i18n="dashboard.estimate.empty">We're still gathering data for accurate estimates in your case category — check back soon.</p>`;
-      return;
-    }
-    el.innerHTML = matches.map((m) => `
-      <div class="feed-item">
-        <div class="feed-item-title">${escapeHtml(m.category)}</div>
-        <div class="feed-item-body">${m.min_months}–${m.max_months} ${t('dashboard.estimate.months', 'months')}${m.note ? ' — ' + escapeHtml(m.note) : ''}</div>
-      </div>
-    `).join('');
+    el.innerHTML = cases.map((c) => {
+      const canvasId = `timelineChart-${c.id}`;
+      const data = buildCaseTimelineData(c, caseEvents);
+      const name = c.case_name || c.category || t('dashboard.case', 'Case');
+
+      let note;
+      if (!data) {
+        note = t('dashboard.estimate.needMoreHistory', "We'll estimate a possible decision date once this case has more history to learn from.");
+      } else if (data.isTerminal) {
+        note = t('dashboard.estimate.terminalNote', "This case's timeline is complete.");
+      } else if (data.projection) {
+        note = t('dashboard.estimate.disclaimer', "Rough estimate based on how fast this case has moved so far — not an official USCIS timeline.");
+      } else {
+        note = t('dashboard.estimate.needMoreHistory', "We'll estimate a possible decision date once this case has more history to learn from.");
+      }
+
+      return `
+        <div class="case-timeline-block">
+          <div class="case-timeline-header">${escapeHtml(name)}</div>
+          ${data ? `<div class="chart-container chart-container-timeline"><canvas id="${canvasId}"></canvas></div>` : ''}
+          <p class="case-timeline-note">${escapeHtml(note)}</p>
+        </div>
+      `;
+    }).join('');
+
+    cases.forEach((c) => {
+      const data = buildCaseTimelineData(c, caseEvents);
+      if (data) renderCaseTimelineChart(`timelineChart-${c.id}`, data);
+    });
   }
 
   const ATTORNEY_STATUS_LABELS = {
@@ -1096,7 +1309,7 @@ if (dashboardSection) {
       }
       dashboardEmpty.hidden = true;
 
-      const { plan = 'free', caseEvents = [], checklistItems = [], timelineEstimates = [], attorneyConnections = [], policyAlerts = [], policyAlertsCoverage = true } = data;
+      const { plan = 'free', caseEvents = [], checklistItems = [], attorneyConnections = [], policyAlerts = [], policyAlertsCoverage = true } = data;
 
       const isPro = plan === 'pro' || plan === 'premium';
       const cards = cases.map((c) => {
@@ -1134,6 +1347,9 @@ if (dashboardSection) {
               </div>
             </div>
             ${pulseHtml}
+            <div class="case-card-footer">
+              <button type="button" class="btn btn-outline btn-sm case-update-btn" data-case-id="${escapeHtml(c.id)}" data-case-stage="${escapeHtml(stage)}" data-case-name="${escapeHtml(name)}" data-i18n="dashboard.update.button">${escapeHtml(t('dashboard.update.button', 'Log an update'))}</button>
+            </div>
             <div class="case-card-edit"><span data-i18n="dashboard.edit">Edit</span></div>
           </a>
         `;
@@ -1141,6 +1357,19 @@ if (dashboardSection) {
 
       dashboardGrid.innerHTML = cards +
         `<a class="case-card add-new" href="get-started.html" data-i18n="dashboard.newCase">+ New case</a>`;
+
+      dashboardGrid.querySelectorAll('.case-update-btn').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          openCaseUpdateModal({
+            caseId: btn.dataset.caseId,
+            caseName: btn.dataset.caseName,
+            currentStage: btn.dataset.caseStage,
+            onSaved: refreshDashboard,
+          });
+        });
+      });
 
       const stageCounts = countBy(cases, (c) => c.stage);
       const categoryCounts = countBy(cases, (c) => c.category);
@@ -1150,7 +1379,7 @@ if (dashboardSection) {
       renderAlertsFeed(policyAlerts, policyAlertsCoverage);
       renderTimelineFeed(caseEvents);
       renderChecklist(checklistItems);
-      renderEstimate(cases, timelineEstimates);
+      renderEstimate(cases, caseEvents);
       renderAttorney(cases, attorneyConnections);
       applyTierLocks(plan);
 

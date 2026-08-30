@@ -539,6 +539,12 @@ a { color: inherit; text-decoration: none; }
 .chart-container { position: relative; height: 190px; }
 .chart-container-sm { height: 120px; margin-bottom: 10px; }
 .chart-container-lg { height: 240px; }
+.chart-container-timeline { height: 130px; margin-bottom: 4px; }
+
+.case-timeline-block { padding: 12px 0; }
+.case-timeline-block + .case-timeline-block { border-top: 1px solid var(--line); }
+.case-timeline-header { font-family: var(--font-heading); font-weight: 700; font-size: 0.92rem; color: var(--ink); margin-bottom: 8px; }
+.case-timeline-note { font-size: 0.76rem; color: var(--ink-soft); margin: 0; }
 .widget-card.widget-primary h3 { font-size: 1.08rem; }
 
 .widget-empty { color: var(--ink-soft); font-size: 0.88rem; text-align: center; padding: 30px 10px; }
@@ -1145,6 +1151,7 @@ a { color: inherit; text-decoration: none; }
 }
 .link-btn:hover { color: var(--ink); }
 .link-btn-danger { color: #b3402f; margin-top: 4px; }
+.intake-edit-actions { display: flex; gap: 20px; align-self: center; }
 .link-btn-danger:hover { color: #8f2f22; }
 #deleteCaseBtn { display: block; margin: 18px auto 0; }
 #deleteCaseBtn[hidden] { display: none; }
@@ -1227,6 +1234,48 @@ a { color: inherit; text-decoration: none; }
 .session-timeout-card p { color: var(--ink-soft); }
 .session-timeout-countdown { font-size: 1.4rem; font-weight: 700; color: var(--forest-dark); font-family: var(--font-heading); margin: 16px 0; }
 .session-timeout-card .btn { margin-top: 8px; }
+
+/* Quick case-update modal — built dynamically in script.js, shared by the dashboard's My Cases
+   cards and the case-edit page, so neither needs its own copy of the markup. */
+.case-update-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 40, 31, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 24px;
+}
+.case-update-card {
+  max-width: 440px;
+  width: 100%;
+  background: var(--paper);
+  border-radius: var(--radius);
+  padding: 32px;
+  box-shadow: var(--shadow-lg);
+  text-align: left;
+}
+.case-update-card h2 { font-size: 1.2rem; margin-bottom: 4px; }
+.case-update-case-name { color: var(--ink-soft); font-size: 0.88rem; margin-bottom: 20px; }
+.case-update-field { display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem; font-weight: 600; color: var(--ink); margin-bottom: 16px; }
+.case-update-field select,
+.case-update-field textarea {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 400;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink);
+  resize: vertical;
+}
+.case-update-error { color: #b3402f; font-size: 0.82rem; margin: 0 0 12px; }
+.case-update-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.case-card-footer { margin-top: 14px; display: flex; justify-content: flex-start; }
 
 /* Jobs page */
 .jobs-hero { padding: 64px 0 48px; text-align: center; }
