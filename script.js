@@ -155,6 +155,21 @@ initDestinationsScroll();
   }
 })();
 
+(function initWhoWeHelpCarousel() {
+  const images = document.querySelectorAll('.who-we-help-img');
+  if (images.length < 2) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  let activeIndex = Array.from(images).findIndex((img) => img.classList.contains('is-active'));
+  if (activeIndex === -1) activeIndex = 0;
+
+  setInterval(() => {
+    images[activeIndex].classList.remove('is-active');
+    activeIndex = (activeIndex + 1) % images.length;
+    images[activeIndex].classList.add('is-active');
+  }, 3000);
+})();
+
 const header = document.getElementById('header');
 const navToggle = document.getElementById('navToggle');
 
