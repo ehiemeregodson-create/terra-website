@@ -169,6 +169,7 @@ initDestinationsScroll();
     { name: 'Javier & Sofía', roleKey: 'whoWeHelp.persona3.role', roleFallback: 'Spousal & family visa' },
     { name: 'Zara', roleKey: 'whoWeHelp.persona4.role', roleFallback: 'Marketing professional' },
     { name: 'Mei', roleKey: 'whoWeHelp.persona5.role', roleFallback: 'Small business owner' },
+    { name: 'Godson', roleKey: 'whoWeHelp.persona6.role', roleFallback: 'PhD candidate, EB-2 NIW' },
   ];
 
   let activeIndex = Array.from(images).findIndex((img) => img.classList.contains('is-active'));
