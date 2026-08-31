@@ -157,17 +157,43 @@ initDestinationsScroll();
 
 (function initWhoWeHelpCarousel() {
   const images = document.querySelectorAll('.who-we-help-img');
+  const listItems = document.querySelectorAll('.who-we-help-list-item');
+  const captionName = document.getElementById('whoWeHelpCaptionName');
+  const captionRole = document.getElementById('whoWeHelpCaptionRole');
   if (images.length < 2) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  // Kept in sync with the persona list markup in index.html — index order must match.
+  const PERSONAS = [
+    { name: 'Amara', roleKey: 'whoWeHelp.persona1.role', roleFallback: 'International student' },
+    { name: 'Daniel', roleKey: 'whoWeHelp.persona2.role', roleFallback: 'Software engineer, work visa' },
+    { name: 'Javier & Sofía', roleKey: 'whoWeHelp.persona3.role', roleFallback: 'Spousal & family visa' },
+    { name: 'Zara', roleKey: 'whoWeHelp.persona4.role', roleFallback: 'Marketing professional' },
+    { name: 'Mei', roleKey: 'whoWeHelp.persona5.role', roleFallback: 'Small business owner' },
+  ];
 
   let activeIndex = Array.from(images).findIndex((img) => img.classList.contains('is-active'));
   if (activeIndex === -1) activeIndex = 0;
 
-  setInterval(() => {
+  function goTo(index) {
     images[activeIndex].classList.remove('is-active');
-    activeIndex = (activeIndex + 1) % images.length;
+    listItems[activeIndex] && listItems[activeIndex].classList.remove('is-current');
+    activeIndex = index;
     images[activeIndex].classList.add('is-active');
-  }, 3000);
+    listItems[activeIndex] && listItems[activeIndex].classList.add('is-current');
+    const persona = PERSONAS[activeIndex];
+    if (persona && captionName && captionRole) {
+      captionName.textContent = persona.name;
+      captionRole.textContent = typeof t === 'function' ? t(persona.roleKey, persona.roleFallback) : persona.roleFallback;
+    }
+  }
+
+  listItems.forEach((item, index) => {
+    item.addEventListener('click', () => goTo(index));
+  });
+
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    setInterval(() => goTo((activeIndex + 1) % images.length), 3000);
+  }
 })();
 
 const header = document.getElementById('header');
