@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const { supabaseRequest } = require('../../lib/supabase');
 const { captureError } = require('../../lib/monitor');
 
@@ -40,9 +41,15 @@ async function generateAnswer(questionText) {
 
 module.exports = async (req, res) => {
   // Vercel Cron sends this header automatically when CRON_SECRET is set — rejects any
-  // other caller from triggering AI-generated posts on demand.
-  const authHeader = req.headers.authorization;
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  // other caller from triggering AI-generated posts on demand. Requires CRON_SECRET to
+  // actually be set (an unset env var must never match) and compares with a fixed-time
+  // check, same pattern as the Stripe webhook signature check in lib/stripe.js.
+  const cronSecret = process.env.CRON_SECRET;
+  const expected = Buffer.from(`Bearer ${cronSecret || ''}`);
+  const actual = Buffer.from(req.headers.authorization || '');
+  const authorized =
+    Boolean(cronSecret) && expected.length === actual.length && crypto.timingSafeEqual(expected, actual);
+  if (!authorized) {
     res.status(401).json({ error: 'Unauthorized' });
     return;
   }
